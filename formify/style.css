@@ -1,0 +1,56 @@
+QLineEdit {
+    border-radius: 3px;
+    padding: 2px;
+}
+
+
+
+/* ------------------------------------------------------------------------ */
+/* Sidebar ---------------------------------------------------------------- */
+/* ------------------------------------------------------------------------ */
+
+Sidebar {
+    background-color: #262e32;
+}
+
+
+/* QPushButton ------------------------------------------------------------
+
+https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qpushbutton
+
+--------------------------------------------------------------------------- */
+Sidebar > QPushButton {
+    background-color: #262e32;
+    border: 0;
+    border-radius: 0px;
+    color: #F0F0F0;
+    padding: 8px;
+    font-size: 13pt;
+    text-align: left;
+    /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
+    min-width: 80px;
+}
+
+Sidebar > QPushButton:disabled {
+  color: #787878;
+}
+
+Sidebar > QPushButton:checked, Sidebar > QPushButton:checked:hover, Sidebar > QPushButton:checked:focus {
+    background-color: #3b4e5c;
+    color: #f6f6f6;
+    font-weight: bold;
+    border-top: 1px solid #456176;
+    border-bottom: 1px solid #456176;
+}
+
+Sidebar > QPushButton:hover {
+  background-color: #303d44;
+}
+
+Sidebar > QPushButton:focus {
+    border: 1px solid #5882a1;
+}
+
+Sidebar > QPushButton:pressed {
+    background-color: #1b2023;
+}
