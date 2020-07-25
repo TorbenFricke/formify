@@ -42,6 +42,7 @@ class Form(QtWidgets.QDialog):
             controls.ControlInt(variable_name="int"),
             controls.ControlText(variable_name="text"),
             controls.ControlText("no event"),
+            controls.ControlCombo("combo", items=["cat", ("dog", "Hund")], variable_name="combo"),
             tabs({
                 "Stator": controls.ControlFloatMicro(variable_name="microStator"),
                 "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),

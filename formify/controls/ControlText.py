@@ -8,6 +8,8 @@ class ControlText(ControlBase):
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def on_change():
+			# catch errors on the on change function, as a ControlFloat might fail while writing
+			# someting like "2e-3"
 			try:
 				self._on_change()
 			except ValueError:

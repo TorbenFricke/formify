@@ -59,14 +59,12 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 	             variable_name:str=None,
 	             value:typing.Any=None,
 	             parent:QtWidgets.QWidget=None,
-	             on_change:typing.Callable=None,
-	             **kwargs):
+	             on_change:typing.Callable=None):
 		"""
 		Base Class for all controls. On its own, this is just a Label in a BoxLayout.
 
 		:param label: Text for the label.
 		:param variable_name: Variable name, if this control is inside a ControlledForm.
-		:param kwargs:
 		"""
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
