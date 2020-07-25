@@ -2,7 +2,6 @@ import typing
 from PySide2 import QtWidgets, QtCore
 from formify.controls import ControlBase
 
-
 from formify.layout.sidebar import Sidebar
 
 TAB_PADDING = 5
@@ -33,24 +32,15 @@ class BaseLayout:
 
 	@staticmethod
 	def formset_children(layout: QtWidgets.QLayout, controls, parent, children_controls):
-		def add_children_controls(control):
-			try:
-				if children_controls is not None:
-					children_controls.append(control)
-			finally:
-				pass
-
 		for item in controls:
 
 			# another nested layout element
-			if isinstance(item, BaseLayout):
-				child = item.generate(parent, children_controls)
-				add_layout_or_widget(layout, child)
+			if isinstance(item, QtWidgets.QLayout):
+				layout.addWidget(ensure_widget(item))
 
 			# a formify ControlBase
 			elif isinstance(item, ControlBase):
-				layout.addWidget(ensure_widget(item.layout))
-				add_children_controls(item)
+				layout.addWidget(item)
 
 			# a nested QWidget - For example a label
 			# Note: The order is important, as sometimes Controls subclass ControlBase and QWidget.
@@ -65,29 +55,34 @@ class BaseLayout:
 		return layout
 
 
-class Row(BaseLayout):
+class _Row(BaseLayout):
 	def _make_layout(self):
 		return QtWidgets.QHBoxLayout()
 
+def row(*args, **kwargs):
+	return _Row(*args, **kwargs).generate()
 
-class Column(BaseLayout):
+
+class _Column(BaseLayout):
 	def _make_layout(self):
 		layout = QtWidgets.QVBoxLayout()
 		layout.setAlignment(QtCore.Qt.AlignTop)
 		return layout
 
+def col(*args, **kwargs):
+	return _Column(*args, **kwargs).generate()
 
-class Tabs(BaseLayout):
+class _Tabs(BaseLayout):
 	def __init__(self, tabs_dict: dict, **kwargs):
 		BaseLayout.__init__(self, **kwargs)
 		self.tabs_dict = tabs_dict
 
 	def generate(self, parent=None, children_controls:list = None) -> QtWidgets.QWidget:
 		def layout_box(_content):
-			if isinstance(_content, BaseLayout):
-				return _content.generate(parent=tabs, children_controls=children_controls)
+			if isinstance(_content, QtWidgets.QLayout):
+				return _content
 			# make a Column containing the content
-			return Column(_content).generate(parent=tabs, children_controls=children_controls)
+			return col(_content)
 
 		tabs = QtWidgets.QTabWidget(parent)
 		for label, content in self.tabs_dict.items():
@@ -98,3 +93,5 @@ class Tabs(BaseLayout):
 				label)
 		return tabs
 
+def tabs(*args, **kwargs):
+	return _Tabs(*args, **kwargs).generate()

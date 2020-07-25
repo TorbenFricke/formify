@@ -4,7 +4,7 @@ from PySide2 import QtWidgets
 
 import formify
 from formify import controls
-from formify.layout import Row, Column, Tabs
+from formify.layout import row, col, tabs
 
 def change(sender, value):
     print(f"{sender}: {value}")
@@ -25,30 +25,46 @@ class Form(QtWidgets.QDialog):
         def set_on_click():
             btn1.on_click = beep
 
+        def set_form_data():
+            some_form.value = {
+                "microRotor": 10e-6,
+                "microStator": 20e-6,
+                "int": 123,
+            }
+
         btn1 = controls.ControlButton("boop", on_click=boop)
         btn2 = controls.ControlButton("change boop to beep", on_click=set_on_click)
-        btns = (btn1, btn2)
+        btn3 = controls.ControlButton("set form data", on_click=set_form_data)
+        btns = (btn1, btn2, btn3)
 
-        layout = Row(
+        some_form = controls.Form(col(
+            controls.ControlText("2 events", on_change=change, variable_name="2_changes"),
+            controls.ControlInt(variable_name="int"),
+            controls.ControlText(variable_name="text"),
+            controls.ControlText("no event"),
+            tabs({
+                "Stator": controls.ControlFloatMicro(variable_name="microStator"),
+                "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
+            }),
+            *btns,
+        ), on_change=change)
+
+
+        layout = row(
             formify.layout.Sidebar(),
-            Tabs({
-                "something": Row(
+            tabs({
+                "something": row(
                     controls.ControlText("changing", on_change=change),
                     controls.ControlText(on_change=change)
                 ),
-                "something else": Row(
+                "something else": row(
                     controls.ControlInt(on_change=change),
                     controls.ControlInt(on_change=change),
                     controls.ControlFloatMega(on_change=change),
                 ),
             }),
-            Column(
-                controls.ControlText(on_change=change),
-                controls.ControlInt(),
-                controls.ControlText(),
-                *btns,
-            ),
-        ).generate()
+            some_form,
+        )
         layout.setMargin(10)
 
         self.setLayout(layout)

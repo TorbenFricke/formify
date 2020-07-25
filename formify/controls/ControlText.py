@@ -13,7 +13,7 @@ class ControlText(ControlBase):
 			except ValueError:
 				pass
 
-		self.control = QtWidgets.QLineEdit(parent=self.parent)
+		self.control = QtWidgets.QLineEdit(parent=self)
 		self.control.textChanged.connect(on_change)
 
 		# optionally set a validator
