@@ -50,20 +50,25 @@ class Form(QtWidgets.QDialog):
             *btns,
         ), on_change=change)
 
+        conditional_form = controls.ConditionalForm({
+            "v-pm": col(
+                controls.ControlText("changing", on_change=change),
+                controls.ControlText(on_change=change),
+                btn1 = controls.ControlButton("boop", on_click=boop),
+            ),
+            "bar-pm": col(
+                tabs({
+                    "Stator": controls.ControlFloatMicro(variable_name="microStator"),
+                    "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
+                }),
+                controls.ControlText(variable_name="text"),
+            )
+        }, on_change=change)
+
 
         layout = row(
             formify.layout.Sidebar(),
-            tabs({
-                "something": row(
-                    controls.ControlText("changing", on_change=change),
-                    controls.ControlText(on_change=change)
-                ),
-                "something else": row(
-                    controls.ControlInt(on_change=change),
-                    controls.ControlInt(on_change=change),
-                    controls.ControlFloatMega(on_change=change),
-                ),
-            }),
+            conditional_form,
             some_form,
         )
         layout.setMargin(10)
