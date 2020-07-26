@@ -42,7 +42,7 @@ class Form(QtWidgets.QDialog):
             controls.ControlInt(variable_name="int"),
             controls.ControlText(variable_name="text"),
             controls.ControlText("no event"),
-            controls.ControlCombo("combo", items=["cat", ("dog", "Hund")], variable_name="combo"),
+            controls.ControlCombo("combo", items=["cat", ("dog", "Hund"), (1, "one")], variable_name="combo"),
             tabs({
                 "Stator": controls.ControlFloatMicro(variable_name="microStator"),
                 "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
@@ -54,6 +54,7 @@ class Form(QtWidgets.QDialog):
             "v-pm": col(
                 controls.ControlText("changing", on_change=change),
                 controls.ControlText(on_change=change),
+                controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
                 btn1 = controls.ControlButton("boop", on_click=boop),
             ),
             "bar-pm": col(
@@ -81,7 +82,6 @@ class Form(QtWidgets.QDialog):
 if __name__ == '__main__':
     # Create the Qt Application
     app = QtWidgets.QApplication(sys.argv)
-    #app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     app.setStyleSheet(formify.stylesheet())
 
     form = Form()

@@ -53,6 +53,7 @@ class ValueMixin:
 
 class ControlBase(QtWidgets.QWidget, ValueMixin):
 	alignment_flag = QtCore.Qt.AlignTop
+	_layout_class = QtWidgets.QVBoxLayout
 
 	def __init__(self,
 	             label:str=None,
@@ -89,11 +90,15 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 		# to be implemented by subclass
 		pass
 
-	def _formset(self) -> QtWidgets.QLayout:
-		layout = QtWidgets.QVBoxLayout()
+	def make_layout(self):
+		layout = self._layout_class()
 		layout.setAlignment(self.alignment_flag)
 		layout.setMargin(0)
 		layout.setSpacing(3)
+		return layout
+
+	def _formset(self) -> QtWidgets.QLayout:
+		layout = self.make_layout()
 		layout.addWidget(self.label_widget)
 
 		controls = self._make_control_widget()
