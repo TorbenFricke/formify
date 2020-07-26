@@ -63,21 +63,20 @@ class Form(QtWidgets.QDialog):
                 }),
                 controls.ControlText(variable_name="text"),
             )
-        }, on_change=change)
-
+        }, variable_name="__flatten__")
 
         layout = row(
             formify.layout.Sidebar(),
-            conditional_form,
+            controls.Form(col(
+                conditional_form,
+                controls.ControlInt(variable_name="another int"),
+            ), on_change=change),
             some_form,
         )
         layout.setMargin(10)
 
         self.setLayout(layout)
 
-
-import qdarkstyle
-print(qdarkstyle)
 
 if __name__ == '__main__':
     # Create the Qt Application

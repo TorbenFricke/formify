@@ -27,6 +27,8 @@ class suspend_updates:
 		self.form._suspend_update_events = False
 
 
+__FLATTEN__ = "__flatten__"
+
 class Form(QtWidgets.QWidget, ValueMixin):
 	def __init__(self,
 	             layout:QtWidgets.QLayout,
@@ -34,6 +36,19 @@ class Form(QtWidgets.QWidget, ValueMixin):
 	             value: typing.Any = None,
 	             on_change: typing.Callable = None,
 	             parent:QtWidgets.QWidget=None,):
+		"""
+		Acts as a master control for all controls inside the "layout" that include a variable name.
+
+		:param layout: QLayout that includes the controls for the Form
+		:param variable_name: Variable name of the form itself. There is one special case:
+		If the variable name "__flatten__" is used inside a child form, its values are included directly
+		in this forms values.
+		Normal behavior: "{"child_form_variable_name": {"control1": 1, "control_b": 2}}"
+		__flatten__ behavior: "{"control1": 1, "control_b": 2}"
+		:param value: Dict of all the child control values
+		:param on_change: One change handler. Internally calls subscribe_change(on_change).
+		:param parent:
+		"""
 
 		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 		QtWidgets.QWidget.__init__(self, parent=parent)
@@ -57,9 +72,12 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		# this method is passed as a handler to all child controls
 		if self._suspend_update_events:
 			return
-		self._on_change({
-			sender.variable_name: value
-		})
+		if sender.variable_name == __FLATTEN__:
+			self._on_change(value)
+		else:
+			self._on_change({
+				sender.variable_name: value
+			})
 
 	def _subscribe_to_controls(self):
 		for key, control in self.controls_dict.items():
@@ -68,9 +86,14 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 	@property
 	def value(self):
-		return {
-			key: control.value for key, control in self.controls_dict.items()
-		}
+		out = {}
+		for variable, control in self.controls_dict.items():
+			value = control.value
+			if variable == __FLATTEN__ and isinstance(value, dict):
+				out.update(value)
+			else:
+				out[variable] = value
+		return out
 
 
 	@value.setter
@@ -81,8 +104,19 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 		# set child values
 		with suspend_updates(self):
-			for key, val in relevant_values.items():
-				self.controls_dict[key].value = val
+			for variable, control in self.controls_dict.items():
+				# update flattened forms
+				if variable == __FLATTEN__ and isinstance(control, Form):
+					# set child values
+					control.value = value
+					# remember, which values were set
+					relevant_values.update({
+						key: val for key, val in value.items() if key in control.controls_dict
+					})
+				else:
+					# set all other controls
+					if variable in self.controls_dict and variable in relevant_values:
+						self.controls_dict[variable].value = relevant_values[variable]
 
 		# trigger the event manually
 		self._on_change(relevant_values)
