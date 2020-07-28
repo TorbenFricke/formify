@@ -3,7 +3,46 @@ QLineEdit {
     padding: 2px;
 }
 
+QListWidget {
+    border: 1px solid #fefefe;
+    border-radius: 3px;
+}
 
+QWidget[whatsThis="segment"] {
+    background-color: #e3e3e3;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+
+QLabel[whatsThis="h1"] {
+    color: #494949;
+    font-weight: bold;
+    font-size: 22pt;
+}
+
+QLabel[whatsThis="h2"] {
+    color: #494949;
+    font-weight: bold;
+    font-size: 20pt;
+}
+
+QLabel[whatsThis="h3"] {
+    color: #494949;
+    font-weight: bold;
+    font-size: 16pt;
+}
+
+QLabel[whatsThis="h4"] {
+    color: #494949;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+QLabel[whatsThis="h5"] {
+    color: #494949;
+    font-weight: bold;
+}
 
 /* ------------------------------------------------------------------------ */
 /* Sidebar ---------------------------------------------------------------- */
@@ -14,11 +53,6 @@ Sidebar {
 }
 
 
-/* QPushButton ------------------------------------------------------------
-
-https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qpushbutton
-
---------------------------------------------------------------------------- */
 Sidebar > QPushButton {
     background-color: #262e32;
     border: 0;
@@ -38,7 +72,6 @@ Sidebar > QPushButton:disabled {
 Sidebar > QPushButton:checked, Sidebar > QPushButton:checked:hover, Sidebar > QPushButton:checked:focus {
     background-color: #3b4e5c;
     color: #f6f6f6;
-    font-weight: bold;
     border-top: 1px solid #456176;
     border-bottom: 1px solid #456176;
 }
@@ -53,4 +86,49 @@ Sidebar > QPushButton:focus {
 
 Sidebar > QPushButton:pressed {
     background-color: #1b2023;
+}
+
+
+/* ------------------------------------------------------------------------ */
+/* Sidebar - light -------------------------------------------------------- */
+/* ------------------------------------------------------------------------ */
+
+SidebarLight {
+    background-color: #dbdbdb;
+}
+
+SidebarLight > QPushButton {
+    background-color: #dbdbdb;
+    border: 0;
+    border-radius: 0px;
+    color: #535353;
+    padding: 8px;
+    font-size: 13pt;
+    text-align: left;
+    font-weight: bold;
+    /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
+    min-width: 80px;
+}
+
+SidebarLight > QPushButton:disabled {
+    color: #959595;
+}
+
+SidebarLight > QPushButton:checked, Sidebar > QPushButton:checked:hover, Sidebar > QPushButton:checked:focus {
+    background-color: #ececec;
+    color: #0a0a0a;
+    border: 0;
+}
+
+SidebarLight > QPushButton:hover {
+    background-color: #dedede;
+}
+
+SidebarLight > QPushButton:focus {
+    border: 1px solid #a1a1a1;
+    border-radius: 3px;
+}
+
+SidebarLight > QPushButton:pressed {
+    background-color: #dbdbdb;
 }

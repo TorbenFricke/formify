@@ -1,5 +1,5 @@
 from formify.controls import Form
-from formify.layout import col, ensure_widget
+from formify.layout import Col, ensure_widget
 from formify.controls import ControlCombo
 
 
@@ -40,7 +40,7 @@ class ConditionalForm(Form):
 			self._conditional_panels[key] = ensure_widget(sub_layout)
 
 		# the global layout, everything gets put into
-		master_layout = col(
+		master_layout = Col(
 			self.condition_control,
 			*list(self._conditional_panels.values()),
 		)

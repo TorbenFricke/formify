@@ -3,6 +3,14 @@ from PySide2 import QtWidgets
 import typing
 
 
+def key_value(_items):
+	for item in _items:
+		if type(item) == str:
+			yield item, item
+		else:
+			yield item[0], item[1]
+
+
 class ControlCombo(ControlBase):
 	def __init__(self,
 	             label:str=None,
@@ -10,12 +18,6 @@ class ControlCombo(ControlBase):
 	             *args,
 	             **kwargs):
 		# normalize items array
-		def key_value(_items):
-			for item in _items:
-				if type(item) == str:
-					yield item, item
-				else:
-					yield item[0], item[1]
 		self._items = list(key_value(items))
 
 		super().__init__(label,

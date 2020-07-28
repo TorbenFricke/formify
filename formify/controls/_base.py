@@ -32,6 +32,8 @@ class ValueMixin:
 
 	def _on_change(self, value: typing.Any = None):
 		# to be called by subclass, when value changes
+		if len(self._change_subscriptions) == 0:
+			return
 		if value is None:
 			value = self.value
 		for handler in self._change_subscriptions:

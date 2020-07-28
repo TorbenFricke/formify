@@ -4,7 +4,7 @@ from PySide2 import QtWidgets
 
 import formify
 from formify import controls
-from formify.layout import row, col, tabs
+from formify.layout import Row, Col, Tabs, Segment, h5, h4, h3
 
 def change(sender, value):
     print(f"{sender}: {value}")
@@ -26,10 +26,11 @@ class Form(QtWidgets.QDialog):
             btn1.on_click = beep
 
         def set_form_data():
-            some_form.value = {
+            conditional_form.value = some_form.value = {
                 "microRotor": 10e-6,
                 "microStator": 20e-6,
                 "int": 123,
+                "list": "two",
             }
 
         btn1 = controls.ControlButton("boop", on_click=boop)
@@ -37,13 +38,16 @@ class Form(QtWidgets.QDialog):
         btn3 = controls.ControlButton("set form data", on_click=set_form_data)
         btns = (btn1, btn2, btn3)
 
-        some_form = controls.Form(col(
-            controls.ControlText("2 events", on_change=change, variable_name="2_changes"),
-            controls.ControlInt(variable_name="int"),
-            controls.ControlText(variable_name="text"),
+        some_form = controls.Form(Col(
+            Segment(
+                h3("Segment"),
+                controls.ControlText("2 events", on_change=change, variable_name="2_changes"),
+                controls.ControlInt(variable_name="int"),
+                controls.ControlText(variable_name="text"),
+            ),
             controls.ControlText("no event"),
             controls.ControlCombo("combo", items=["cat", ("dog", "Hund"), (1, "one")], variable_name="combo"),
-            tabs({
+            Tabs({
                 "Stator": controls.ControlFloatMicro(variable_name="microStator"),
                 "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
             }),
@@ -51,24 +55,25 @@ class Form(QtWidgets.QDialog):
         ), on_change=change)
 
         conditional_form = controls.ConditionalForm({
-            "v-pm": col(
+            "v-pm": Col(
                 controls.ControlText("changing", on_change=change),
                 controls.ControlText(on_change=change),
                 controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
                 btn1 = controls.ControlButton("boop", on_click=boop),
             ),
-            "bar-pm": col(
-                tabs({
+            "bar-pm": Col(
+                Tabs({
                     "Stator": controls.ControlFloatMicro(variable_name="microStator"),
                     "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
                 }),
+                controls.ComboComboList("List control", items=["one", "two"], variable_name="list"),
                 controls.ControlText(variable_name="text"),
             )
         }, variable_name="__flatten__")
 
-        layout = row(
-            formify.layout.Sidebar(),
-            controls.Form(col(
+        layout = Row(
+            formify.layout.SidebarLight(),
+            controls.Form(Col(
                 conditional_form,
                 controls.ControlInt(variable_name="another int"),
             ), on_change=change),

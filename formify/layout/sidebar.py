@@ -47,3 +47,7 @@ class Sidebar(QtWidgets.QFrame):
 	def checked(self, value):
 		self._checked = value
 		self._update_checked()
+
+
+class SidebarLight(Sidebar):
+	pass
