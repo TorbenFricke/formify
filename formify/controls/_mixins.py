@@ -58,6 +58,8 @@ class ItemMixin:
 		self.set_items(self._items)
 
 		# set the correct index
+		if index == -1:
+			index = 0
 		if len(self._items) > index:
 			self.index = index
 		elif len(self._items) > 0:

@@ -4,6 +4,7 @@ from PySide2 import QtWidgets
 import typing
 
 from formify.controls._mixins import ItemMixin
+from formify.controls._events import EventDispatcher
 
 class ControlList(ControlBase, ItemMixin):
 	def __init__(self,
@@ -16,10 +17,12 @@ class ControlList(ControlBase, ItemMixin):
 	             parent: QtWidgets.QWidget = None,
 	             on_change: typing.Callable = None):
 
+		# events
 		self.add_click = add_click
 		self.remove_click = self.removeCurrentItem
 		if remove_click is not None:
 			self.remove_click = remove_click
+		self.index_changed = EventDispatcher(self)
 
 		ControlBase.__init__(self,
 					    	 label=label,
@@ -31,11 +34,18 @@ class ControlList(ControlBase, ItemMixin):
 		ItemMixin.__init__(self, items)
 
 	def removeCurrentItem(self):
+		if len(self._items) == 0:
+			return
 		del self._items[self.index]
 		self.items = self._items
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
+		# set the on change handler
+		self.control.itemSelectionChanged.connect(
+			lambda: self.index_changed()
+		)
+
 		yield self.control
 
 		# make the buttons
@@ -65,13 +75,17 @@ class ControlList(ControlBase, ItemMixin):
 
 	def set_items(self, items):
 		self.control.clear()
+		if items == 0:
+			return
 		self.control.addItems([
 			display_name for _, display_name in items
 		])
+		# call the on change event "manually"
+		self.change()
 
 	@property
 	def value(self):
-		return self.items
+		return [value for value, _ in self.items]
 
 	@value.setter
 	def value(self, value):

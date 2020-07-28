@@ -62,7 +62,7 @@ class Form(QtWidgets.QDialog):
                 controls.ControlText("changing", on_change=change),
                 controls.ControlText(on_change=change),
                 controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
-                controls.ControlList("Some List", add_click=add_animal),
+                controls.ControlList("Some List", add_click=add_animal, on_change=change),
                 btn1 = controls.ControlButton("boop", on_click=boop),
             ),
             "bar-pm": Col(
