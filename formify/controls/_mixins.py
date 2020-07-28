@@ -98,12 +98,6 @@ class ItemMixin:
 		elif len(self._items) > 0:
 			self.index = len(self._items) - 1
 
-		# TODO make this prettier
-		try:
-			self.control.repaint()
-		except:
-			pass
-
 	@property
 	def selected_item(self):
 		if len(self._items) == 0:

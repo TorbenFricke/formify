@@ -79,6 +79,7 @@ class ControlList(ControlBase, ItemMixin):
 			self.control.clear()
 			if len(display_names) > 0:
 				self.control.addItems(display_names)
+			self.control.repaint()
 
 	@property
 	def value(self):
