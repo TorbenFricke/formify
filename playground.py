@@ -74,6 +74,14 @@ class Form(QtWidgets.QDialog):
             )
         }, variable_name="__flatten__")
 
+        list_form = controls.ListForm(
+            model_form=controls.Form(Col(
+                controls.ControlText("Magnet", variable_name="magnet"),
+                controls.ControlInt("# Magnets", variable_name="no_magnets"),
+                controls.ControlInt("Temperature", variable_name="temperature"),
+            )), label="Magnets"
+        )
+
         layout = Row(
             formify.layout.SidebarLight(),
             controls.Form(Col(
@@ -81,6 +89,7 @@ class Form(QtWidgets.QDialog):
                 controls.ControlInt(variable_name="another int"),
             ), on_change=change),
             some_form,
+            list_form,
         )
         layout.setMargin(10)
 

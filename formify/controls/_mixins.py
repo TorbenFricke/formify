@@ -28,9 +28,30 @@ class ValueMixin:
 		self._value = value
 
 
+class _ListChangeDetector:
+	def __init__(self, initial=None):
+		self.prev = initial
+
+	def __call__(self, new):
+		if self.prev is None:
+			self.prev = new
+			return True
+
+		if len(new) != len(self.prev):
+			self.prev = new
+			return True
+
+		for new_item, prev_item in zip(new, self.prev):
+			if new_item != prev_item:
+				return True
+
+		self.prev = new
+		return False
+
 
 class ItemMixin:
 	def __init__(self, items):
+		self.display_names_change_detector = _ListChangeDetector()
 		self._items = []
 		self.items = items
 		self.index = 0
@@ -40,10 +61,15 @@ class ItemMixin:
 		if _items is None:
 			return []
 		for item in _items:
-			if type(item) == str:
-				yield item, item
-			else:
-				yield item[0], item[1]
+			yield ItemMixin.key_value_single(item)
+
+	@staticmethod
+	def key_value_single(item):
+		if type(item) == str:
+			return item, item
+		else:
+			return item[0], item[1]
+
 
 	@property
 	def items(self):
@@ -54,8 +80,14 @@ class ItemMixin:
 		self._items = list(self.key_value(value))
 		index = self.index
 
+		display_names = [
+			name for _, name in self._items
+		]
+		if not self.display_names_change_detector(display_names):
+			return
+
 		# set the items in actual widget
-		self.set_items(self._items)
+		self.set_display_names(display_names)
 
 		# set the correct index
 		if index == -1:
@@ -65,6 +97,24 @@ class ItemMixin:
 		elif len(self._items) > 0:
 			self.index = len(self._items) - 1
 
+		# TODO make this prettier
+		try:
+			self.control.repaint()
+		except:
+			pass
+
+	@property
+	def selected_item(self):
+		if len(self._items) == 0:
+			return None, None
+		return self._items[self.index]
+
+	@selected_item.setter
+	def selected_item(self, value):
+		self._items[self.index] = value
+		self.items = self._items
+
+
 	@property
 	def index(self) -> int:
 		raise NotImplemented
@@ -73,5 +123,5 @@ class ItemMixin:
 	def index(self, value: int):
 		raise NotImplemented
 
-	def set_items(self, items):
+	def set_display_names(self, display_names):
 		raise NotImplemented

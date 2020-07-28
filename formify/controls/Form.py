@@ -13,20 +13,6 @@ def _walk(widget) -> typing.List[ValueMixin]:
 			controls += _walk(child)
 	return controls
 
-
-
-class suspend_updates:
-	def __init__(self, form):
-		self.form = form
-
-	def __enter__(self):
-		self.form._suspend_update_events = True
-		return self
-
-	def __exit__(self, exc_type, exc_value, exc_traceback):
-		self.form._suspend_update_events = False
-
-
 __FLATTEN__ = "__flatten__"
 
 class Form(QtWidgets.QWidget, ValueMixin):
@@ -53,8 +39,6 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
-		self._suspend_update_events = False
-
 		self.setLayout(layout)
 		self.all_controls, self.controls_dict = self.get_controls()
 		self._subscribe_to_controls()
@@ -70,8 +54,6 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 	def _on_child_change(self, sender, value):
 		# this method is passed as a handler to all child controls
-		if self._suspend_update_events:
-			return
 		if sender.variable_name == __FLATTEN__:
 			self.change(value)
 		else:
@@ -103,7 +85,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		}
 
 		# set child values
-		with suspend_updates(self):
+		with self.change.suspend_updates():
 			for variable, control in self.controls_dict.items():
 				# update flattened forms
 				if variable == __FLATTEN__ and isinstance(control, Form):

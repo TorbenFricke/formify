@@ -22,7 +22,7 @@ class ControlList(ControlBase, ItemMixin):
 		self.remove_click = self.removeCurrentItem
 		if remove_click is not None:
 			self.remove_click = remove_click
-		self.index_changed = EventDispatcher(self)
+		self.index_change = EventDispatcher(self)
 
 		ControlBase.__init__(self,
 					    	 label=label,
@@ -43,7 +43,7 @@ class ControlList(ControlBase, ItemMixin):
 		self.control = QtWidgets.QListWidget(parent=self)
 		# set the on change handler
 		self.control.itemSelectionChanged.connect(
-			lambda: self.index_changed()
+			lambda: self.index_change(self.index)
 		)
 
 		yield self.control
@@ -73,15 +73,13 @@ class ControlList(ControlBase, ItemMixin):
 	def index(self, value: int):
 		self.control.setCurrentRow(value)
 
-	def set_items(self, items):
-		self.control.clear()
-		if items == 0:
-			return
-		self.control.addItems([
-			display_name for _, display_name in items
-		])
-		# call the on change event "manually"
-		self.change()
+	def set_display_names(self, display_names):
+		with self.index_change.suspend_updates():
+			self.control.clear()
+			if len(display_names) > 0:
+				self.control.addItems(display_names)
+			# call the on change event "manually"
+			self.change()
 
 	@property
 	def value(self):

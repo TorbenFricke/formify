@@ -32,12 +32,10 @@ class ControlCombo(ControlBase, ItemMixin):
 		self.control.setCurrentIndex(value)
 
 
-	def set_items(self, items):
+	def set_display_names(self, display_names):
 		# add items
 		self.control.clear()
-		self.control.addItems([
-			display_name for _, display_name in items
-		])
+		self.control.addItems(display_names)
 
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
