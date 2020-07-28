@@ -6,7 +6,7 @@ import typing
 
 
 class ListForm(Form):
-	def __init__(self, model_form: Form, items:typing.List=None, label:str="", *args, **kwargs):
+	def __init__(self, model_form: Form, items:typing.List=None, label:str="",*args, **kwargs):
 		self.model_form = model_form
 		self._suspend_update_events = False
 
@@ -34,8 +34,10 @@ class ListForm(Form):
 
 
 	def _update_form(self, *args):
-		print("_update_form")
+		if self._suspend_update_events:
+			return
 		with suspend_updates(self):
+			print("_update_form")
 			form_data = self.control.selected_item[0]
 			if form_data is None:
 				return
@@ -43,11 +45,12 @@ class ListForm(Form):
 
 
 	def _update_list(self):
-		print("_update_list")
 		if self._suspend_update_events:
 			return
-		form_data = self.model_form.value
-		self.control.selected_item = (
-			form_data,
-			str(form_data)
-		)
+		with suspend_updates(self):
+			print("_update_list")
+			form_data = self.model_form.value
+			self.control.selected_item = (
+				form_data,
+				str(form_data)
+			)

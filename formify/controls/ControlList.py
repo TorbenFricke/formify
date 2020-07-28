@@ -32,6 +32,7 @@ class ControlList(ControlBase, ItemMixin):
 		                     on_change=on_change)
 
 		ItemMixin.__init__(self, items)
+		self.change = self.items_change
 
 	def removeCurrentItem(self):
 		if len(self._items) == 0:
@@ -78,8 +79,6 @@ class ControlList(ControlBase, ItemMixin):
 			self.control.clear()
 			if len(display_names) > 0:
 				self.control.addItems(display_names)
-			# call the on change event "manually"
-			self.change()
 
 	@property
 	def value(self):

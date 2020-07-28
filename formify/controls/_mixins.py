@@ -52,9 +52,9 @@ class _ListChangeDetector:
 class ItemMixin:
 	def __init__(self, items):
 		self.display_names_change_detector = _ListChangeDetector()
+		self.items_change = EventDispatcher(self)
 		self._items = []
 		self.items = items
-		self.index = 0
 
 	@staticmethod
 	def key_value(_items):
@@ -78,6 +78,7 @@ class ItemMixin:
 	@items.setter
 	def items(self, value):
 		self._items = list(self.key_value(value))
+		self.items_change(self._items)
 		index = self.index
 
 		display_names = [

@@ -89,7 +89,7 @@ class Form(QtWidgets.QDialog):
                 controls.ControlInt(variable_name="another int"),
             ), on_change=change),
             some_form,
-            list_form,
+            Segment(list_form),
         )
         layout.setMargin(10)
 
