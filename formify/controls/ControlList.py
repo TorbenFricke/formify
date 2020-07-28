@@ -1,33 +1,78 @@
-from formify.controls import ControlCombo
+from formify.controls import ControlBase, ControlButton
+from formify.layout import Row, ensure_widget
 from PySide2 import QtWidgets
 import typing
 
+from formify.controls._mixins import ItemMixin
 
-class ComboComboList(ControlCombo):
+class ControlList(ControlBase, ItemMixin):
+	def __init__(self,
+	             label: str = None,
+	             variable_name: str = None,
+	             value: typing.Any = None,
+	             add_click: typing.Callable = None,
+	             remove_click: typing.Callable = None,
+	             items: list=None,
+	             parent: QtWidgets.QWidget = None,
+	             on_change: typing.Callable = None):
 
-	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
+		self.add_click = add_click
+		self.remove_click = self.removeCurrentItem
+		if remove_click is not None:
+			self.remove_click = remove_click
+
+		ControlBase.__init__(self,
+					    	 label=label,
+		                     variable_name=variable_name,
+		                     value=value,
+		                     parent=parent,
+		                     on_change=on_change)
+
+		ItemMixin.__init__(self, items)
+
+	def removeCurrentItem(self):
+		del self._items[self.index]
+		self.items = self._items
+
+	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
+		yield self.control
 
-		# add items
-		for key, display_name in self._items:
-			self.control.addItem(display_name)
-		if len(self._items) > 0:
-			self.control.setCurrentRow(0)
+		# make the buttons
+		def make_handler(func_name):
+			def wrapped():
+				# we have to get the function this way, as otherwise you
+				# would not be able to set a different function later
+				func = getattr(self, func_name)
+				if func is None:
+					return
+				try:
+					func(self)
+				except TypeError:
+					func()
+			return wrapped
+		self.add_button = ControlButton("+ Add", on_click=make_handler("add_click"))
+		self.remove_button = ControlButton("- Remove", on_click=make_handler("remove_click"))
+		yield ensure_widget(Row(self.add_button, self.remove_button))
 
-		# set the on change handler
-		self.control.itemSelectionChanged.connect(
-			lambda: self._on_change()
-		)
+	@property
+	def index(self) -> int:
+		return self.control.currentRow()
 
-		return self.control
+	@index.setter
+	def index(self, value: int):
+		self.control.setCurrentRow(value)
+
+	def set_items(self, items):
+		self.control.clear()
+		self.control.addItems([
+			display_name for _, display_name in items
+		])
 
 	@property
 	def value(self):
-		return self._items[self.control.currentRow()][0]
+		return self.items
 
 	@value.setter
 	def value(self, value):
-		for i, item in enumerate(self._items):
-			if item[1] == value:
-				self.control.setCurrentRow(i)
-				return
+		self.items = value

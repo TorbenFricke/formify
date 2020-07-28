@@ -69,7 +69,7 @@ Sidebar > QPushButton:disabled {
   color: #787878;
 }
 
-Sidebar > QPushButton:checked, Sidebar > QPushButton:checked:hover, Sidebar > QPushButton:checked:focus {
+Sidebar > QPushButton:checked, Sidebar > QPushButton:checked:hover {
     background-color: #3b4e5c;
     color: #f6f6f6;
     border-top: 1px solid #456176;
@@ -80,7 +80,7 @@ Sidebar > QPushButton:hover {
   background-color: #303d44;
 }
 
-Sidebar > QPushButton:focus {
+Sidebar > QPushButton:focus, Sidebar > QPushButton:checked:focus {
     border: 1px solid #5882a1;
 }
 
@@ -114,17 +114,17 @@ SidebarLight > QPushButton:disabled {
     color: #959595;
 }
 
-SidebarLight > QPushButton:checked, Sidebar > QPushButton:checked:hover, Sidebar > QPushButton:checked:focus {
+SidebarLight > QPushButton:checked, SidebarLight > QPushButton:checked:hover {
     background-color: #ececec;
     color: #0a0a0a;
     border: 0;
 }
 
 SidebarLight > QPushButton:hover {
-    background-color: #dedede;
+    background-color: #e5e5e5;
 }
 
-SidebarLight > QPushButton:focus {
+SidebarLight > QPushButton:focus, SidebarLight > QPushButton:checked:focus {
     border: 1px solid #a1a1a1;
     border-radius: 3px;
 }

@@ -31,7 +31,7 @@ class ConditionalForm(Form):
 
 		# only show relevant the form
 		self._update_show_hide()
-		self.subscribe_change(self._update_show_hide)
+		self.change.subscribe(self._update_show_hide)
 
 
 	def _generate(self):

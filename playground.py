@@ -15,6 +15,9 @@ def boop():
 def beep():
     print("beep")
 
+def add_animal(sender):
+    import random
+    sender.items += [random.choice(["Cat", "Elefant", "Dog", "Horse", "Platypus", "Duck", "Chicken"])]
 
 class Form(QtWidgets.QDialog):
 
@@ -59,6 +62,7 @@ class Form(QtWidgets.QDialog):
                 controls.ControlText("changing", on_change=change),
                 controls.ControlText(on_change=change),
                 controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
+                controls.ControlList("Some List", add_click=add_animal),
                 btn1 = controls.ControlButton("boop", on_click=boop),
             ),
             "bar-pm": Col(
@@ -66,7 +70,6 @@ class Form(QtWidgets.QDialog):
                     "Stator": controls.ControlFloatMicro(variable_name="microStator"),
                     "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
                 }),
-                controls.ComboComboList("List control", items=["one", "two"], variable_name="list"),
                 controls.ControlText(variable_name="text"),
             )
         }, variable_name="__flatten__")

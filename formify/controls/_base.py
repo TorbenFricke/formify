@@ -1,57 +1,7 @@
 from PySide2 import QtWidgets, QtCore
 import typing
 
-
-class ValueMixin:
-	def __init__(self,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             on_change: typing.Callable = None):
-
-		self.variable_name = variable_name
-
-		# event handling
-		self._change_subscriptions = []
-		if on_change is not None:
-			self.subscribe_change(on_change)
-
-		# set the new value
-		self._value = value
-		if not value is None:
-			self.value = value
-
-	def subscribe_change(self, handler):
-		self._change_subscriptions.append(handler)
-
-	def unsubscribe_change(self, handler):
-		try:
-			del self._change_subscriptions[self._change_subscriptions.index(handler)]
-		except:
-			return False
-		return True
-
-	def _on_change(self, value: typing.Any = None):
-		# to be called by subclass, when value changes
-		if len(self._change_subscriptions) == 0:
-			return
-		if value is None:
-			value = self.value
-		for handler in self._change_subscriptions:
-			try:
-				# Try to provide the handler with the sender and the new value....
-				handler(self, value)
-			except TypeError:
-				# ... if that fails, try just to call it
-				handler()
-
-	@property
-	def value(self):
-		return self._value
-
-	@value.setter
-	def value(self, value):
-		self._value = value
-
+from formify.controls._mixins import ValueMixin
 
 class ControlBase(QtWidgets.QWidget, ValueMixin):
 	alignment_flag = QtCore.Qt.AlignTop
@@ -92,6 +42,10 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 		# to be implemented by subclass
 		pass
 
+	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
+		# to be implemented by subclass if multiple widgets shall be created
+		return []
+
 	def make_layout(self):
 		layout = self._layout_class()
 		layout.setAlignment(self.alignment_flag)
@@ -103,9 +57,11 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 		layout = self.make_layout()
 		layout.addWidget(self.label_widget)
 
-		controls = self._make_control_widget()
-		if not controls is None:
-			layout.addWidget(controls)
+		control = self._make_control_widget()
+		if not control is None:
+			layout.addWidget(control)
+		for control in self._make_control_widgets():
+			layout.addWidget(control)
 
 		return layout
 

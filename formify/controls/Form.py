@@ -1,4 +1,4 @@
-from formify.controls._base import ValueMixin
+from formify.controls._mixins import ValueMixin
 from PySide2 import QtWidgets
 import typing
 
@@ -73,15 +73,15 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		if self._suspend_update_events:
 			return
 		if sender.variable_name == __FLATTEN__:
-			self._on_change(value)
+			self.change(value)
 		else:
-			self._on_change({
+			self.change({
 				sender.variable_name: value
 			})
 
 	def _subscribe_to_controls(self):
 		for key, control in self.controls_dict.items():
-			control.subscribe_change(self._on_child_change)
+			control.change.subscribe(self._on_child_change)
 
 
 	@property
@@ -119,4 +119,4 @@ class Form(QtWidgets.QWidget, ValueMixin):
 						self.controls_dict[variable].value = relevant_values[variable]
 
 		# trigger the event manually
-		self._on_change(relevant_values)
+		self.change(relevant_values)

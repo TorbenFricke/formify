@@ -11,7 +11,7 @@ class ControlText(ControlBase):
 			# catch errors on the on change function, as a ControlFloat might fail while writing
 			# someting like "2e-3"
 			try:
-				self._on_change()
+				self.change()
 			except ValueError:
 				pass
 
