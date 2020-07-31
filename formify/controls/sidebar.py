@@ -1,11 +1,12 @@
 from PySide2 import QtWidgets, QtCore
 import typing
 from formify.controls import ControlButton
-from formify.controls._mixins import ItemMixin
+from formify.controls._mixins import ItemMixin, ValueMixin
 from formify.controls._events import EventDispatcher
 
-class Sidebar(QtWidgets.QFrame, ItemMixin):
-	def __init__(self, items):
+class Sidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
+	def __init__(self, items:typing.List[str], variable_name:str=None,
+	             value:str=None, on_change:typing.Callable=None):
 		QtWidgets.QFrame.__init__(self)
 		self.buttons: typing.List[QtWidgets.QPushButton] = []
 		self._make_layout()
@@ -17,6 +18,10 @@ class Sidebar(QtWidgets.QFrame, ItemMixin):
 		self._index = -1
 		ItemMixin.__init__(self, items)
 		self.index = 0
+
+		ValueMixin.__init__(self, variable_name, value, on_change)
+
+		self.index_change.subscribe(self._update_checked_states)
 
 
 	def _make_button(self, text):
@@ -67,14 +72,26 @@ class Sidebar(QtWidgets.QFrame, ItemMixin):
 			if n == len(self.buttons):
 				return
 			while n < len(self.buttons):
-				self.buttons[-1].destroy()
-				del self.buttons[-1]
+				btn = self.layout().takeAt(n)
+				self.buttons.pop(n)
+				btn.widget().deleteLater()
 			while n > len(self.buttons):
 				self._make_button("")
 
 		ensure_number_buttons(len(display_names))
 		for i, name in enumerate(display_names):
 			self.buttons[i].setText(name)
+
+
+	@property
+	def value(self):
+		return self.items[self.index][0]
+
+	@value.setter
+	def value(self, value):
+		for i, item in enumerate(self.items):
+			if item[0] == value:
+				self.index = i
 
 
 

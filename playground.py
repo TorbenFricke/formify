@@ -87,12 +87,13 @@ class Form(QtWidgets.QDialog):
             repr=lambda x: f'{x["magnet"]} ({x["no_magnets"]} @ {x["temperature"]}°C)'
         )
 
-
-        layout = ensure_layout(SidebarContentView({
+        sidebar = SidebarContentView({
             "Conditional Form": conditional_form,
             "Lots of Things": some_form,
             "List From": list_form,
-        }))
+        })
+
+        layout = ensure_layout(sidebar)
         layout.setMargin(0)
 
         self.setLayout(layout)

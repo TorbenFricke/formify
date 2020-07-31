@@ -58,6 +58,8 @@ class ListForm(Form):
 				return
 			self.model_form.value = self.control.selected_item[0]
 
+		self.repaint()
+
 	def _repr(self, x):
 		try:
 			out = self.repr(x)
