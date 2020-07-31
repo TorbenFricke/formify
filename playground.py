@@ -4,7 +4,7 @@ from PySide2 import QtWidgets
 
 import formify
 from formify import controls
-from formify.layout import Row, Col, Tabs, Segment, h5, h4, h3
+from formify.layout import Row, Col, Tabs, Segment, h5, h4, h3, SidebarContentView, ensure_layout
 
 def change(sender, value):
     print(f"{sender}: {value}")
@@ -41,20 +41,22 @@ class Form(QtWidgets.QDialog):
         btn3 = controls.ControlButton("set form data", on_click=set_form_data)
         btns = (btn1, btn2, btn3)
 
-        some_form = controls.Form(Col(
+        some_form = controls.Form(Row(
             Segment(
                 h3("Segment"),
                 controls.ControlText("2 events", on_change=change, variable_name="2_changes"),
                 controls.ControlInt(variable_name="int"),
                 controls.ControlText(variable_name="text"),
             ),
-            controls.ControlText("no event"),
-            controls.ControlCombo("combo", items=["cat", ("dog", "Hund"), (1, "one")], variable_name="combo"),
-            Tabs({
-                "Stator": controls.ControlFloatMicro(variable_name="microStator"),
-                "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
-            }),
-            *btns,
+            Col(
+                controls.ControlText("no event"),
+                controls.ControlCombo("combo", items=["cat", ("dog", "Hund"), (1, "one")], variable_name="combo"),
+                Tabs({
+                    "Stator": controls.ControlFloatMicro(variable_name="microStator"),
+                    "Rotor": controls.ControlFloatMicro(variable_name="microRotor"),
+                }),
+                *btns,
+            ),
         ), on_change=change)
 
         conditional_form = controls.ConditionalForm({
@@ -85,16 +87,13 @@ class Form(QtWidgets.QDialog):
             repr=lambda x: f'{x["magnet"]} ({x["no_magnets"]} @ {x["temperature"]}°C)'
         )
 
-        layout = Row(
-            formify.layout.SidebarLight(),
-            controls.Form(Col(
-                conditional_form,
-                controls.ControlInt(variable_name="another int"),
-            ), on_change=change),
-            some_form,
-            Segment(list_form),
-        )
-        layout.setMargin(10)
+
+        layout = ensure_layout(SidebarContentView({
+            "Conditional Form": conditional_form,
+            "Lots of Things": some_form,
+            "List From": list_form,
+        }))
+        layout.setMargin(0)
 
         self.setLayout(layout)
 

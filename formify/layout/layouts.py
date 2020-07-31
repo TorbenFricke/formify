@@ -14,6 +14,14 @@ def ensure_widget(layout_or_widget: typing.Union[QtWidgets.QWidget, QtWidgets.QL
 	return widget
 
 
+def ensure_layout(layout_or_widget: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout]) -> QtWidgets.QLayout:
+	if isinstance(layout_or_widget, QtWidgets.QLayout):
+		return layout_or_widget
+	layout = QtWidgets.QVBoxLayout()
+	layout.addWidget(layout_or_widget)
+	return layout
+
+
 def add_layout_or_widget(parent, child):
 	if isinstance(child, QtWidgets.QWidget):
 		parent.addWidget(child)

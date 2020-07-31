@@ -50,6 +50,7 @@ QLabel[whatsThis="h5"] {
 
 Sidebar {
     background-color: #262e32;
+    min-width: 150px;
 }
 
 
