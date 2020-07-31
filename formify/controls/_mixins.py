@@ -91,8 +91,10 @@ class ItemMixin:
 		self.set_display_names(display_names)
 
 		# set the correct index
-		if index == -1:
+		if index == -1 and len(self._items) > 0:
 			index = 0
+		if len(self._items) == 0:
+			index = -1
 		if len(self._items) > index:
 			self.index = index
 		elif len(self._items) > 0:

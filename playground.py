@@ -79,7 +79,10 @@ class Form(QtWidgets.QDialog):
                 controls.ControlText("Magnet", variable_name="magnet"),
                 controls.ControlInt("# Magnets", variable_name="no_magnets"),
                 controls.ControlInt("Temperature", variable_name="temperature"),
-            )), label="Magnets"
+            )),
+            label="Magnets",
+            value=[{"magnet": "cat"}, {"magnet": "cat2"}],
+            repr=lambda x: f'{x["magnet"]} ({x["no_magnets"]} @ {x["temperature"]}°C)'
         )
 
         layout = Row(

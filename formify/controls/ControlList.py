@@ -23,6 +23,8 @@ class ControlList(ControlBase, ItemMixin):
 		if remove_click is not None:
 			self.remove_click = remove_click
 		self.index_change = EventDispatcher(self)
+		# repaint on every index change. Otherwise, the selection somtimes does not show on macOs Catalina
+		self.index_change.subscribe(self.repaint)
 
 		ControlBase.__init__(self,
 					    	 label=label,
@@ -73,6 +75,9 @@ class ControlList(ControlBase, ItemMixin):
 	@index.setter
 	def index(self, value: int):
 		self.control.setCurrentRow(value)
+		# if the current row is set to -1 no event is triggered automatically. So we do it manually
+		if value == -1:
+			self.index_change(value)
 
 	def set_display_names(self, display_names):
 		with self.index_change.suspend_updates():
