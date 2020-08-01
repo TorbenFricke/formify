@@ -10,7 +10,7 @@ class ControlCheckbox(ControlBase):
 
 		# set the on change handler
 		self.control.stateChanged.connect(
-			lambda: self._on_change()
+			lambda: self.change()
 		)
 
 	@property
