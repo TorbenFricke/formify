@@ -34,7 +34,8 @@ class ControlList(ControlBase, ItemMixin):
 		                     on_change=on_change)
 
 		ItemMixin.__init__(self, items)
-		self.change = self.items_change
+		self.change = EventDispatcher(self)
+		self.items_change.subscribe(lambda: self.change())
 
 	def removeCurrentItem(self):
 		if len(self._items) == 0:

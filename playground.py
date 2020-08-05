@@ -23,7 +23,7 @@ class Form(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("My Form")
+        self.setWindowTitle("My Window")
 
         def set_on_click():
             btn1.on_click = beep
@@ -60,12 +60,14 @@ class Form(QtWidgets.QDialog):
         ), on_change=change)
 
         conditional_form = controls.ConditionalForm({
-            "v-pm": Col(
-                controls.ControlText("changing", on_change=change),
-                controls.ControlText(on_change=change),
-                controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
+            "v-pm": Row(
+                Col(
+                    controls.ControlText("changing", on_change=change),
+                    controls.ControlText(on_change=change),
+                    controls.ControlCheckbox("Include Losses", variable_name="checkbox_losses"),
+                    btn1=controls.ControlButton("boop", on_click=boop),
+                ),
                 controls.ControlList("Some List", add_click=add_animal, on_change=change),
-                btn1 = controls.ControlButton("boop", on_click=boop),
             ),
             "bar-pm": Col(
                 Tabs({
@@ -88,7 +90,7 @@ class Form(QtWidgets.QDialog):
         )
 
         sidebar = SidebarContentView({
-            "Conditional Form": conditional_form,
+            "Conditional Window": conditional_form,
             "Lots of Things": some_form,
             "List From": list_form,
         })

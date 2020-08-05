@@ -26,6 +26,11 @@ class ListForm(Form):
 		self._update_form()
 		self.control.index_change.subscribe(self._update_form)
 
+		# set own event handler to the event handler of the child ControlList.
+		# Its important to bring the subscriptions with it
+		self.control.change.subscriptions += self.change.subscriptions
+		self.change = self.control.change
+
 		# update list, when the form changes
 		self.model_form.change.subscribe(self._update_list)
 
@@ -51,7 +56,7 @@ class ListForm(Form):
 		else:
 			self.model_form.setVisible(True)
 
-		with suspend_updates(self):
+		with self.model_form.change.suspend_updates():
 			print("_update_form")
 			form_data = self.control.selected_item[0]
 			if form_data is None:
