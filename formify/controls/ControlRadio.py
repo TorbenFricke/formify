@@ -1,9 +1,10 @@
+from formify.controls import ControlBase
 from formify.controls._mixins import ValueMixin
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtCore
 import typing
 
 
-class ControlCheckbox(ValueMixin, QtWidgets.QCheckBox):
+class ControlRadio(ValueMixin, QtWidgets.QRadioButton):
 	def __init__(self,
 	             label: str = None,
 	             variable_name: str = None,
@@ -17,12 +18,12 @@ class ControlCheckbox(ValueMixin, QtWidgets.QCheckBox):
 			else:
 				label = variable_name
 
-		QtWidgets.QCheckBox.__init__(self, parent=parent, text=label)
+		QtWidgets.QRadioButton.__init__(self, parent=parent, text=label)
 
 		ValueMixin.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
 
 		# set the on change handler
-		self.stateChanged.connect(
+		self.toggled.connect(
 			lambda: self.change()
 		)
 
