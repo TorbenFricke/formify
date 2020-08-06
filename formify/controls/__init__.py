@@ -7,6 +7,10 @@ from formify.controls.ControlCombo import ControlCombo
 from formify.controls.ControlRadio import ControlRadio
 from formify.controls.ControlCheckbox import ControlCheckbox
 from formify.controls.ControlList import ControlList
+from formify.controls.ControlTable import ControlTable
+
+# TODO check if matplotlib is installed
+from formify.controls.ControlMatplotlib import ControlMatplotlib
 
 from formify.controls.Form import Form
 from formify.controls.ConditionalForm import ConditionalForm
