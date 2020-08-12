@@ -4,7 +4,9 @@ from PySide2 import QtWidgets
 
 import formify
 from formify import controls
-from formify.layout import Row, Col, Tabs, Segment, h5, h4, h3, SidebarContentView, ensure_layout
+from formify.layout import Row, Col, SidebarContentView, ensure_layout
+
+from formify.tools import BackgroundMethod
 
 
 class Window(QtWidgets.QDialog):
@@ -15,6 +17,25 @@ class Window(QtWidgets.QDialog):
 
 		plot = controls.ControlMatplotlib()
 
+		fac = 0
+		def factor():
+			nonlocal fac
+			fac += 1
+			return fac
+
+		def _draw(fig, factor):
+			from time import sleep
+			sleep(1)
+			import numpy as np
+			fig.clear()
+			ax = fig.gca()
+			x = np.linspace(0, 2 * np.pi)
+			ax.plot(x, np.sin(x) * factor)
+
+		draw = BackgroundMethod(_draw, cleanup=plot.canvas.draw, lazy=True)
+		draw(plot.fig, 3)
+		draw(plot.fig, 4)
+
 		def toggle_toolbar():
 			plot.toolbar_visible = not plot.toolbar_visible
 
@@ -22,6 +43,7 @@ class Window(QtWidgets.QDialog):
 			"Frickes": Col(
 				plot,
 				controls.ControlButton("Toggle Toolbar", on_click=toggle_toolbar),
+				controls.ControlButton("Draw", on_click=lambda : draw(plot.fig, factor())),
 			),
 			"Ludolfs": Col(
 				controls.ControlFloat("Hedwig"),
