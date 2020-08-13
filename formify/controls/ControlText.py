@@ -1,7 +1,6 @@
 from formify.controls import ControlBase
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui
 import typing
-
 
 class ControlText(ControlBase):
 	_line_edit_validator = None
@@ -9,7 +8,7 @@ class ControlText(ControlBase):
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def on_change():
 			# catch errors on the on change function, as a ControlFloat might fail while writing
-			# someting like "2e-3"
+			# something like "2e-3"
 			try:
 				self.change()
 			except ValueError:
