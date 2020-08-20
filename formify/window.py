@@ -9,20 +9,6 @@ def ensure_form(thing: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form])
 	return Form(formify.layout.ensure_layout(thing))
 
 
-class Window(QtWidgets.QDialog):
-	def __init__(self,
-	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
-	             title: str="",
-	             margin=0,):
-		super().__init__()
-		self.setWindowTitle(title)
-
-		self.form = ensure_form(layout_widget_form)
-		layout = formify.layout.ensure_layout(self.form)
-		layout.setMargin(margin)
-		self.setLayout(layout)
-
-
 def extract_file_name(dialog_return: tuple):
 	file_name = dialog_return[0].url()
 	# clean file name
@@ -36,8 +22,8 @@ class MainWindow(QtWidgets.QMainWindow):
 	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
 	             title: str="",
 	             margin=0,
-	             main_menu:dict=None,
-	             auto_run=True,):
+	             menu:dict=None,
+	             auto_run=True, ):
 		super().__init__()
 
 		self.setWindowTitle(title)
@@ -48,7 +34,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		self.file_name: str = ""
 		# make menu
-		self.make_menu(main_menu)
+		self.make_menu(menu)
 
 		if auto_run:
 			self.show()
