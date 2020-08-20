@@ -65,4 +65,14 @@ class ConditionalForm(Form):
 
 	@Form.all_values.getter
 	def all_values(self):
-		return extract_values_dict(self.controls)
+		# We want to do this complicated dance instead of just writing "retrun extract_values_dict(self.controls)" to
+		# make sure, the values of the currently shown controls 'win' if there are multiple controls with the same
+		# variable_name.
+		out = {}
+		conditional = self.condition_control.value
+		for key, controls in self._controls_by_condition.items():
+			if key == conditional:
+				continue
+			out.update(extract_values_dict(controls))
+		out.update(extract_values_dict(self._controls_by_condition[conditional]))
+		return out
