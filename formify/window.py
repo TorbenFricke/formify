@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui
 import formify, typing, json
 from formify.controls import Form
 import warnings
@@ -12,13 +12,14 @@ def ensure_form(thing: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form])
 class Window(QtWidgets.QDialog):
 	def __init__(self,
 	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
-	             title: str="",):
+	             title: str="",
+	             margin=0,):
 		super().__init__()
 		self.setWindowTitle(title)
 
 		self.form = ensure_form(layout_widget_form)
 		layout = formify.layout.ensure_layout(self.form)
-		layout.setMargin(0)
+		layout.setMargin(margin)
 		self.setLayout(layout)
 
 
@@ -34,23 +35,33 @@ class MainWindow(QtWidgets.QMainWindow):
 	def __init__(self,
 	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
 	             title: str="",
-	             main_menu:dict=None,):
+	             margin=0,
+	             main_menu:dict=None,
+	             auto_run=True,):
 		super().__init__()
 
 		self.setWindowTitle(title)
 
 		self.form = ensure_form(layout_widget_form)
+		self.form.layout().setMargin(margin)
 		self.setCentralWidget(self.form)
 
 		self.file_name: str = ""
 		# make menu
 		self.make_menu(main_menu)
 
+		if auto_run:
+			self.show()
+			formify.run()
 
 	def make_menu(self, menu_items: dict=None):
-		def make_action(text, func):
+		def make_action(text, func, shortcut="") -> QtWidgets.QAction:
 			action = QtWidgets.QAction(text, self)
 			action.triggered.connect(func)
+			if shortcut != "":
+				action.setShortcut(
+					QtGui.QKeySequence(shortcut)
+				)
 			return action
 
 		def add_menus(menu, menu_items):
@@ -58,24 +69,30 @@ class MainWindow(QtWidgets.QMainWindow):
 				# another sub menu
 				if isinstance(item, dict):
 					add_menus(menu.addMenu(key), item)
-				# seperators
+				# separators
 				elif key.startswith("-"):
 					menu.addSeparator()
-				# actions
-				else:
+				# actions with shortcut
+				elif isinstance(item, tuple):
+					menu.addAction(
+						make_action(key, *item)
+					)
+				# action
+				elif callable(item):
 					menu.addAction(
 						make_action(key, item)
 					)
-
+				else:
+					warnings.warn(f"Unknown menu item type: {type(item)} - {item}")
 		if menu_items is None:
 			menu_items = {}
 
 		menubar = self.menuBar()
 		key = "File"
 		menu = menubar.addMenu(key)
-		menu.addAction(make_action("Open...", self.open))
-		menu.addAction(make_action("Save...", self.save))
-		menu.addAction(make_action("Save As...", self.save_as))
+		menu.addAction(make_action("Open...", self.open, "ctrl+o"))
+		menu.addAction(make_action("Save...", self.save, "ctrl+s"))
+		menu.addAction(make_action("Save As...", self.save_as, "ctrl+shift+s"))
 		menu.addSeparator()
 
 		add_menus(menu, menu_items.pop(key, {}))
@@ -109,6 +126,8 @@ class MainWindow(QtWidgets.QMainWindow):
 				caption="Open...",
 			)
 		)
+		if self.file_name == "":
+			return
 		with open(self.file_name) as f:
 			s = f.read()
 		try:
