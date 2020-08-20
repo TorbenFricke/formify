@@ -1,4 +1,5 @@
 from formify.controls import Form
+from formify.controls.Form import walk, extract_values_dict
 from formify.layout import Col, ensure_widget
 from formify.controls import ControlCombo
 
@@ -22,6 +23,7 @@ class ConditionalForm(Form):
 			self.condition_control = condition_control
 
 		self._conditional_panels = {}
+		self._controls_by_condition = {}
 
 		# generate the master layout containing all widgets and sub layouts
 		layout = self._generate()
@@ -38,6 +40,7 @@ class ConditionalForm(Form):
 		# make all the sub layouts for the different conditions
 		for key, sub_layout in self.layouts.items():
 			self._conditional_panels[key] = ensure_widget(sub_layout)
+			self._controls_by_condition[key] = walk(self._conditional_panels[key])
 
 		# the global layout, everything gets put into
 		master_layout = Col(
@@ -53,3 +56,13 @@ class ConditionalForm(Form):
 		for key, panel in self._conditional_panels.items():
 			panel.setVisible(key == condition)
 
+
+	@Form.value.getter
+	def value(self):
+		out = extract_values_dict(self._controls_by_condition[self.condition_control.value])
+		out[self.condition_control.variable_name] = self.condition_control.value
+		return out
+
+	@Form.all_values.getter
+	def all_values(self):
+		return extract_values_dict(self.controls)

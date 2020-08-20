@@ -2,7 +2,7 @@ from formify.controls._mixins import ValueMixin
 from PySide2 import QtWidgets
 import typing
 
-def _walk(widget) -> typing.List[ValueMixin]:
+def walk(widget) -> typing.List[ValueMixin]:
 	controls = []
 	for child in widget.children():
 		if isinstance(child, ValueMixin):
@@ -10,8 +10,21 @@ def _walk(widget) -> typing.List[ValueMixin]:
 			controls.append(child)
 		elif isinstance(child,QtWidgets.QWidget):
 			#print(f"{child} is not a control")
-			controls += _walk(child)
+			controls += walk(child)
 	return controls
+
+
+def extract_values_dict(controls):
+	out = {}
+	for control in controls:
+		value = control.value
+		variable = control.variable_name
+		if variable == __FLATTEN__ and isinstance(value, dict):
+			out.update(value)
+		else:
+			out[variable] = value
+	return out
+
 
 __FLATTEN__ = "__flatten__"
 
@@ -47,7 +60,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 
 	def get_controls(self):
-		controls = _walk(self)
+		controls = walk(self)
 		controls = [control for control in controls if control.variable_name is not None]
 		return controls
 
@@ -68,15 +81,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 	@property
 	def value(self):
-		out = {}
-		for control in self.controls:
-			value = control.value
-			variable = control.variable_name
-			if variable == __FLATTEN__ and isinstance(value, dict):
-				out.update(value)
-			else:
-				out[variable] = value
-		return out
+		return extract_values_dict(self.controls)
 
 
 	@value.setter
