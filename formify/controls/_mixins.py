@@ -27,6 +27,15 @@ class ValueMixin:
 	def value(self, value):
 		self._value = value
 
+	@property
+	def all_values(self):
+		return self.value
+
+	@all_values.setter
+	def all_values(self, value):
+		self.value = value
+
+
 
 class _ListChangeDetector:
 	def __init__(self, initial=None):

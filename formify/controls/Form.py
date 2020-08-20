@@ -40,16 +40,16 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
 		self.setLayout(layout)
-		self.all_controls, self.controls_dict = self.get_controls()
+		# Forms should not add any margin
+		layout.setMargin(0)
+		self.controls = self.get_controls()
 		self._subscribe_to_controls()
 
 
 	def get_controls(self):
 		controls = _walk(self)
-		controls_dict = {
-			control.variable_name: control for control in controls if control.variable_name is not None
-		}
-		return controls, controls_dict
+		controls = [control for control in controls if control.variable_name is not None]
+		return controls
 
 
 	def _on_child_change(self, sender, value):
@@ -62,15 +62,16 @@ class Form(QtWidgets.QWidget, ValueMixin):
 			})
 
 	def _subscribe_to_controls(self):
-		for key, control in self.controls_dict.items():
+		for control in self.controls:
 			control.change.subscribe(self._on_child_change)
 
 
 	@property
 	def value(self):
 		out = {}
-		for variable, control in self.controls_dict.items():
+		for control in self.controls:
 			value = control.value
+			variable = control.variable_name
 			if variable == __FLATTEN__ and isinstance(value, dict):
 				out.update(value)
 			else:
@@ -80,25 +81,30 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 	@value.setter
 	def value(self, value):
-		relevant_values = {
-			key: val for key, val in value.items() if key in self.controls_dict
-		}
+		relevant_values = {}
 
 		# set child values
 		with self.change.suspend_updates():
-			for variable, control in self.controls_dict.items():
+			for control in self.controls:
+				variable = control.variable_name
+
+				# keep track of relevant values
+				if variable in value:
+					relevant_values[variable] = value[variable]
+
 				# update flattened forms
 				if variable == __FLATTEN__ and isinstance(control, Form):
 					# set child values
 					control.value = value
 					# remember, which values were set
+					child_variables = [c.variable_name for c in control.controls]
 					relevant_values.update({
-						key: val for key, val in value.items() if key in control.controls_dict
+						key: val for key, val in value.items() if key in child_variables
 					})
 				else:
 					# set all other controls
-					if variable in self.controls_dict and variable in relevant_values:
-						self.controls_dict[variable].value = relevant_values[variable]
+					if variable in relevant_values:
+						control.value = relevant_values[variable]
 
 		# trigger the event manually
 		self.change(relevant_values)
