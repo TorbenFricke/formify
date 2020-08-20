@@ -1,5 +1,5 @@
 from formify import controls, layout, tools
-from formify.window import Window, MainWindow
+from formify.window import MainWindow
 
 import pathlib
 
