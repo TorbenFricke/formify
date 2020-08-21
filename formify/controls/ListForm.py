@@ -7,10 +7,10 @@ import typing
 
 class ListForm(Form):
 	def __init__(self, model_form: Form, value:typing.List=None, label:str="",
-	             repr:typing.Callable=str, *args, **kwargs):
+	             display_name_callback:typing.Callable=str, *args, **kwargs):
 		self.model_form = model_form
 		self._suspend_update_events = False
-		self.repr = repr
+		self.repr = display_name_callback
 
 		# generate the master layout containing all widgets and sub layouts
 		self.control = ControlList(label=label, add_click=self.new_item)
@@ -57,7 +57,7 @@ class ListForm(Form):
 			self.model_form.setVisible(True)
 
 		with self.model_form.change.suspend_updates():
-			print("_update_form")
+			#print("_update_form")
 			form_data = self.control.selected_item[0]
 			if form_data is None:
 				return
@@ -79,7 +79,7 @@ class ListForm(Form):
 		if self._suspend_update_events:
 			return
 		with suspend_updates(self):
-			print("_update_list")
+			#print("_update_list")
 			form_data = self.model_form.value
 			self.control.selected_item = (
 				form_data,

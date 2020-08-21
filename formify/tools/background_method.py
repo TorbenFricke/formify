@@ -1,6 +1,7 @@
-import typing
+import typing, warnings
 from queue import Queue
 from threading import Thread
+from inspect import signature
 
 
 class Task:
@@ -37,7 +38,7 @@ class BackgroundMethod(Thread):
 				if self.cleanup:
 					self.cleanup()
 			except Exception as e:
-				print(e.__traceback__)
+				warnings.warn(str(e))
 
 
 	def __call__(self, *args, **kwargs):
@@ -48,7 +49,12 @@ class BackgroundMethod(Thread):
 		:param kwargs:
 		:return:
 		"""
+		if len(signature(self.target).parameters) == 0:
+			func = self.target
+		else:
+			func = lambda: self.target(*args, **kwargs)
+
 		self.queue.put(Task(
-			lambda : self.target(*args, **kwargs),
+			func,
 			lazy=self.lazy
 		))

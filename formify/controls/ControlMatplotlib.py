@@ -1,10 +1,17 @@
-from PySide2 import QtWidgets
-import typing
+from PySide2 import QtWidgets, QtCore
+import typing, warnings
 from formify.controls._events import EventDispatcher
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.pyplot import style
+
+class Signaller(QtCore.QObject):
+	signal = QtCore.Signal(str)
+
+	def __init__(self):
+		super().__init__()
+
 
 class ControlMatplotlib(QtWidgets.QWidget):
 	def __init__(self,
@@ -26,6 +33,10 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(layout)
 
+		# we use a signal to make sure redrawing is done in the main Thread
+		self._repaint_signal = Signaller()
+		self._repaint_signal.signal.connect(self._actually_draw)
+
 	@property
 	def fig(self) -> Figure:
 		return self._fig
@@ -37,3 +48,18 @@ class ControlMatplotlib(QtWidgets.QWidget):
 	@toolbar_visible.setter
 	def toolbar_visible(self, value):
 		self.toolbar.setVisible(value)
+
+	def draw(self):
+		"""
+		Draws the figure, like plt.show()
+		:return:
+		"""
+		try:
+			self.canvas.draw()
+		except Exception as e:
+			warnings.warn("Error while drawing matplotlib figure: \n" + str(e))
+		self._repaint_signal.signal.emit("emitting")
+
+	@QtCore.Slot(str)
+	def _actually_draw(self, value):
+		self.repaint()
