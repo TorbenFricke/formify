@@ -86,7 +86,7 @@ class Form(QtWidgets.QDialog):
             )),
             label="Magnets",
             value=[{"magnet": "cat"}, {"magnet": "cat2"}],
-            repr=lambda x: f'{x["magnet"]} ({x["no_magnets"]} @ {x["temperature"]}°C)'
+            display_name_callback=lambda x: f'{x["magnet"]} ({x["no_magnets"]} @ {x["temperature"]}°C)'
         )
 
         sidebar = SidebarContentView({
