@@ -14,7 +14,7 @@ sub_content = layout.Segment(
 
 
 content = layout.Segment(
-	layout.h3("Segment"),
+	layout.h1("Segment"),
 	controls.ControlCheckbox(variable_name="Checkbox"),
 	controls.ControlText(variable_name="Text"),
 	_boop,
