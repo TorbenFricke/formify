@@ -6,6 +6,7 @@ from formify.controls.ControlButton import ControlButton
 from formify.controls.ControlCombo import ControlCombo
 from formify.controls.ControlRadio import ControlRadio
 from formify.controls.ControlCheckbox import ControlCheckbox
+from formify.controls.ControlSlider import ControlSlider
 from formify.controls.ControlList import ControlList
 from formify.controls.ControlTable import ControlTable
 
@@ -16,4 +17,4 @@ from formify.controls.Form import Form
 from formify.controls.ConditionalForm import ConditionalForm
 from formify.controls.ListForm import ListForm
 
-from formify.controls.sidebar import Sidebar, SidebarLight
+from formify.controls.ControlSidebar import ControlSidebar, ControlSidebarLight

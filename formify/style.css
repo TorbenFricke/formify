@@ -53,10 +53,10 @@ FigureCanvasQTAgg {
 }
 
 /* ------------------------------------------------------------------------ */
-/* Sidebar ---------------------------------------------------------------- */
+/* ControlControlSidebar ---------------------------------------------------------------- */
 /* ------------------------------------------------------------------------ */
 
-Sidebar {
+ControlSidebar {
     background-color: #262e32;
    /* workaround, as setting width does not have the intended effect */
     min-width: 180px;
@@ -64,7 +64,7 @@ Sidebar {
 }
 
 
-Sidebar > QPushButton {
+ControlSidebar > QPushButton {
     background-color: #262e32;
     border: 0;
     border-radius: 0px;
@@ -75,39 +75,39 @@ Sidebar > QPushButton {
     min-width: 80px;
 }
 
-Sidebar > QPushButton:disabled {
+ControlSidebar > QPushButton:disabled {
   color: #787878;
 }
 
-Sidebar > QPushButton:checked, Sidebar > QPushButton:checked:hover {
+ControlSidebar > QPushButton:checked, ControlSidebar > QPushButton:checked:hover {
     background-color: #3b4e5c;
     color: #f6f6f6;
     border-top: 1px solid #456176;
     border-bottom: 1px solid #456176;
 }
 
-Sidebar > QPushButton:hover {
+ControlSidebar > QPushButton:hover {
   background-color: #303d44;
 }
 
-Sidebar > QPushButton:focus, Sidebar > QPushButton:checked:focus {
+ControlSidebar > QPushButton:focus, ControlSidebar > QPushButton:checked:focus {
     border: 1px solid #5882a1;
 }
 
-Sidebar > QPushButton:pressed {
+ControlSidebar > QPushButton:pressed {
     background-color: #1b2023;
 }
 
 
 /* ------------------------------------------------------------------------ */
-/* Sidebar - light -------------------------------------------------------- */
+/* ControlControlSidebar - light -------------------------------------------------------- */
 /* ------------------------------------------------------------------------ */
 
-SidebarLight {
+ControlSidebarLight {
     background-color: #dbdbdb;
 }
 
-SidebarLight > QPushButton {
+ControlSidebarLight > QPushButton {
     background-color: #dbdbdb;
     border: 0;
     border-radius: 0px;
@@ -120,25 +120,25 @@ SidebarLight > QPushButton {
     min-width: 80px;
 }
 
-SidebarLight > QPushButton:disabled {
+ControlSidebarLight > QPushButton:disabled {
     color: #959595;
 }
 
-SidebarLight > QPushButton:checked, SidebarLight > QPushButton:checked:hover {
+ControlSidebarLight > QPushButton:checked, ControlSidebarLight > QPushButton:checked:hover {
     background-color: #ececec;
     color: #0a0a0a;
     border: 0;
 }
 
-SidebarLight > QPushButton:hover {
+ControlSidebarLight > QPushButton:hover {
     background-color: #e5e5e5;
 }
 
-SidebarLight > QPushButton:focus, SidebarLight > QPushButton:checked:focus {
+ControlSidebarLight > QPushButton:focus, ControlSidebarLight > QPushButton:checked:focus {
     border: 1px solid #88b5e5;
     border-radius: 3px;
 }
 
-SidebarLight > QPushButton:pressed {
+ControlSidebarLight > QPushButton:pressed {
     background-color: #dbdbdb;
 }

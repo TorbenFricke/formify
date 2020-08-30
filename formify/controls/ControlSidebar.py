@@ -4,7 +4,7 @@ from formify.controls import ControlButton
 from formify.controls._mixins import ItemMixin, ValueMixin
 from formify.controls._events import EventDispatcher
 
-class Sidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
+class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 	def __init__(self, items:typing.List[str], variable_name:str=None,
 	             value:str=None, on_change:typing.Callable=None):
 		QtWidgets.QFrame.__init__(self)
@@ -95,5 +95,5 @@ class Sidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 
 
 
-class SidebarLight(Sidebar):
+class ControlSidebarLight(ControlSidebar):
 	pass
