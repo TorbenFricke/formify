@@ -6,8 +6,7 @@ import typing, io, csv
 
 from formify.controls._mixins import ItemMixin
 
-# TODO automatically add an empty row at the bottom
-# TODO events
+# TODO change item to model
 
 def table_item(text=""):
 	item = QtWidgets.QTableWidgetItem()
@@ -36,7 +35,7 @@ class ControlTable(ControlBase):
 			def add_row():
 				row = self.control.rowCount()
 				self.control.insertRow(row)
-				for column in range(self.control.colorCount()):
+				for column in range(self.control.columnCount()):
 					self.control.setItem(
 						row,
 						column,
@@ -44,10 +43,10 @@ class ControlTable(ControlBase):
 					)
 
 			def is_row_empty(row):
-				for column in range(self.control.colorCount()):
+				for column in range(self.control.columnCount()):
 					if self.control.item(row, column).text() != "":
 						return False
-					return True
+				return True
 
 			with self.change.suspend_updates():
 				# no rows?
