@@ -4,7 +4,7 @@ import typing
 import formify
 
 
-table = formify.controls.ControlTable(columns=["H", "B"])
+table = formify.controls.ControlTable(columns=["H", "B"], column_types=[int, float])
 
 
 window = formify.MainWindow(formify.layout.Col(

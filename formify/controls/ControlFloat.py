@@ -29,6 +29,8 @@ class ControlFloat(ControlText):
 
 	@value.setter
 	def value(self, value):
+		if type(value) != float:
+			value = _str2float(value)
 		self.control.setText(
 			str(value / self._factor)
 		)

@@ -71,4 +71,5 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 
 	@label.setter
 	def label(self, value):
+		self.label_widget.setVisible(value != "")
 		self.label_widget.setText(value)

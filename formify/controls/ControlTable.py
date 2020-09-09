@@ -1,6 +1,8 @@
 from formify.controls import ControlBase
 from PySide2 import QtWidgets, QtGui, QtCore
+from PySide2.QtCore import Qt
 import typing, io, csv
+from formify.controls import ControlText, ControlFloat, ControlInt
 
 
 
@@ -8,8 +10,42 @@ from formify.controls._mixins import ItemMixin
 
 # TODO change item to model
 
+
+class ValidatorDelegate(QtWidgets.QItemDelegate):
+	def __init__(self, parent, column_types:list=None):
+
+		self.column_types = column_types
+
+		self.current_value_mixin = None
+		super().__init__(parent)
+
+	def createEditor(self, parent, option, index):
+		if self.column_types is None:
+			cls = ControlText
+		elif self.column_types[index.column()] is float:
+			cls = ControlFloat
+		elif self.column_types[index.column()] is int:
+			cls = ControlInt
+		else:
+			cls = ControlText
+
+		editor = cls("", parent=parent)
+		editor.control.setParent(parent)
+		self.current_value_mixin = editor
+		return editor.control
+
+	def setEditorData(self, editor, index):
+		self.current_value_mixin.value = index.model().data(index, QtCore.Qt.EditRole)
+
+	def setModelData(self, editor, model, index):
+		model.setData(index, self.current_value_mixin.value, QtCore.Qt.EditRole)
+
+	def updateEditorGeometry(self, editor, option, index):
+		editor.setGeometry(option.rect)
+
+
 def table_item(text=""):
-	item = QtWidgets.QTableWidgetItem()
+	item = QtGui.QStandardItem()
 	item.setText(text)
 	return item
 
@@ -18,9 +54,11 @@ class ControlTable(ControlBase):
 	def __init__(self,
 	             columns:list,
 	             label:str=None,
-	             items:list=None,
+	             column_types:list=None,
 	             *args,
 	             **kwargs):
+
+		self.column_types = column_types
 
 		ControlBase.__init__(self,
 		                     label,
@@ -33,33 +71,33 @@ class ControlTable(ControlBase):
 
 		def ensure_empty_bottom_row():
 			def add_row():
-				row = self.control.rowCount()
-				self.control.insertRow(row)
-				for column in range(self.control.columnCount()):
-					self.control.setItem(
+				row = self.model.rowCount()
+				self.model.insertRow(row)
+				for column in range(self.model.columnCount()):
+					self.model.setItem(
 						row,
 						column,
 						table_item()
 					)
 
 			def is_row_empty(row):
-				for column in range(self.control.columnCount()):
-					if self.control.item(row, column).text() != "":
+				for column in range(self.model.columnCount()):
+					if self.data(row, column) != "":
 						return False
 				return True
 
 			with self.change.suspend_updates():
 				# no rows?
-				if self.control.rowCount() == 0:
+				if self.model.rowCount() == 0:
 					add_row()
 				# last row not empty?
-				elif not is_row_empty(self.control.rowCount() - 1):
+				elif not is_row_empty(self.model.rowCount() - 1):
 					add_row()
 				# last row is empty?
 				else:
 					# multiple empty rows?
-					while is_row_empty(self.control.rowCount() - 2):
-						self.control.removeRow(self.control.rowCount() - 2)
+					while is_row_empty(self.model.rowCount() - 2):
+						self.model.removeRow(self.model.rowCount() - 2)
 
 		self.change.subscribe(ensure_empty_bottom_row)
 		ensure_empty_bottom_row()
@@ -72,15 +110,23 @@ class ControlTable(ControlBase):
 			action.setShortcut(shortcut)
 			return action
 
-		self.control = QtWidgets.QTableWidget(parent=self)
+		self.control = QtWidgets.QTableView(parent=self)
+		self.model = QtGui.QStandardItemModel()
+		self.control.setModel(self.model)
+		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
+
 		self.control.addAction(make_action(lambda : self.copy_selection(), QtGui.QKeySequence.Copy))
 		self.control.addAction(make_action(lambda : self.paste_selection(), QtGui.QKeySequence.Paste))
 		self.control.addAction(make_action(lambda : self.delete_selection(), QtGui.QKeySequence.Delete))
 		self.control.addAction(make_action(lambda : self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace)))
 
-		self.control.itemChanged.connect(lambda : self.change())
+		self.model.itemChanged.connect(lambda : self.change())
 
 		return self.control
+
+
+	def data(self, row, column):
+		return self.model.data(self.model.index(row, column))
 
 
 	def copy_selection(self):
@@ -100,7 +146,7 @@ class ControlTable(ControlBase):
 
 			# convert
 			from formify import app
-			app.clipboard().setText("\n".join(["\t".join(row) for row in table]))
+			app.clipboard().setText("\n".join(["\t".join(map(str, row)) for row in table]))
 
 
 	def paste_selection(self):
@@ -151,14 +197,11 @@ class ControlTable(ControlBase):
 	@property
 	def value(self):
 		out = []
-		for row in range(self.control.rowCount() - 1):
+		for row in range(self.model.rowCount() - 1):
 			out.append([])
-			for column in range(self.control.columnCount()):
-				item = self.control.item(row, column)
-				if item is None:
-					out[-1].append(item)
-				else:
-					out[-1].append(item.text())
+			for column in range(self.model.columnCount()):
+				out[-1].append(self.data(row, column))
+
 		return out
 
 
@@ -166,14 +209,14 @@ class ControlTable(ControlBase):
 	def value(self, value):
 		n_rows = len(value)
 		n_column = len(value[0])
-		self.control.setColumnCount(n_column)
-		self.control.setRowCount(n_rows)
+		self.model.setColumnCount(n_column)
+		self.model.setRowCount(n_rows)
 
 		with self.change.suspend_updates():
 			for x in range(n_rows):
 				for y in range(n_column):
 
-					self.control.setItem(
+					self.model.setItem(
 						x,
 						y,
 						table_item(value[x][y])
@@ -188,8 +231,8 @@ class ControlTable(ControlBase):
 	@columns.setter
 	def columns(self, value):
 		self._columns = value
-		self.control.setColumnCount(len(value))
+		self.model.setColumnCount(len(value))
 		for i, name in enumerate(value):
-			item = QtWidgets.QTableWidgetItem()
+			item = QtGui.QStandardItem()
 			item.setText(name)
-			self.control.setHorizontalHeaderItem(i, item)
+			self.model.setHorizontalHeaderItem(i, item)
