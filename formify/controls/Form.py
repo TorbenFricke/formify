@@ -1,4 +1,5 @@
 from formify.controls._mixins import ValueMixin
+from formify.layout import ensure_layout
 from PySide2 import QtWidgets
 import typing
 
@@ -52,6 +53,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
+		layout = ensure_layout(layout)
 		self.setLayout(layout)
 		# Forms should not add any margin
 		layout.setMargin(0)
