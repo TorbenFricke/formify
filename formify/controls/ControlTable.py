@@ -8,8 +8,8 @@ from formify.controls import ControlText, ControlFloat, ControlInt
 
 from formify.controls._mixins import ItemMixin
 
-# TODO change item to model
-
+# TODO ensure correct type when pasting data
+# TODO fix . , issues
 
 class ValidatorDelegate(QtWidgets.QItemDelegate):
 	def __init__(self, parent, column_types:list=None):
@@ -154,26 +154,24 @@ class ControlTable(ControlBase):
 		# https://stackoverflow.com/questions/40225270/copy-paste-multiple-items-from-qtableview-in-pyqt4
 		selection = self.control.selectedIndexes()
 		if selection:
-			with self.change.suspend_updates():
-				model = self.control.model()
+			model = self.control.model()
 
-				from formify import app
-				buffer = app.clipboard().text()
-				rows = sorted(index.row() for index in selection)
-				columns = sorted(index.column() for index in selection)
-				reader = csv.reader(io.StringIO(buffer), delimiter='\t')
-				if len(rows) == 1 and len(columns) == 1:
-					for i, line in enumerate(reader):
-						for j, cell in enumerate(line):
-							model.setData(model.index(rows[0] + i, columns[0] + j), cell)
-				else:
-					arr = [[cell for cell in row] for row in reader]
-					for index in selection:
-						row = index.row() - rows[0]
-						column = index.column() - columns[0]
-						model.setData(model.index(index.row(), index.column()), arr[row][column])
+			from formify import app
+			buffer = app.clipboard().text()
+			rows = sorted(index.row() for index in selection)
+			columns = sorted(index.column() for index in selection)
+			reader = csv.reader(io.StringIO(buffer), delimiter='\t')
+			if len(rows) == 1 and len(columns) == 1:
+				for i, line in enumerate(reader):
+					for j, cell in enumerate(line):
+						model.setData(model.index(rows[0] + i, columns[0] + j), cell)
+			else:
+				arr = [[cell for cell in row] for row in reader]
+				for index in selection:
+					row = index.row() - rows[0]
+					column = index.column() - columns[0]
+					model.setData(model.index(index.row(), index.column()), arr[row][column])
 
-			self.change()
 
 	def delete_selection(self):
 		selection = self.control.selectedIndexes()
