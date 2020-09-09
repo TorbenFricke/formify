@@ -140,8 +140,6 @@ class ControlTable(ControlBase):
 				colcount = columns[-1] - columns[0] + 1
 				table = [[''] * colcount for _ in range(rowcount)]
 				for index in selection:
-					row = index.row() - rows[0]
-					column = index.column() - columns[0]
 					model.setData(index, "")
 
 				# convert
@@ -153,7 +151,7 @@ class ControlTable(ControlBase):
 	@property
 	def value(self):
 		out = []
-		for row in range(self.control.rowCount()):
+		for row in range(self.control.rowCount() - 1):
 			out.append([])
 			for column in range(self.control.columnCount()):
 				item = self.control.item(row, column)
@@ -171,13 +169,16 @@ class ControlTable(ControlBase):
 		self.control.setColumnCount(n_column)
 		self.control.setRowCount(n_rows)
 
-		for x in range(n_rows):
-			for y in range(n_column):
-				self.control.setItem(
-					x,
-					y,
-					table_item(value[x][y])
-				)
+		with self.change.suspend_updates():
+			for x in range(n_rows):
+				for y in range(n_column):
+
+					self.control.setItem(
+						x,
+						y,
+						table_item(value[x][y])
+					)
+		self.change(value)
 
 
 	@property
