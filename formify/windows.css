@@ -1,0 +1,32 @@
+
+QWidget {
+    font-size: 9pt;
+}
+
+QLabel[whatsThis="h1"] {
+    font-size: 18pt;
+}
+
+QLabel[whatsThis="h2"] {
+    font-size: 15pt;
+}
+
+QLabel[whatsThis="h3"] {
+    font-size: 13pt;
+}
+
+QLabel[whatsThis="h4"] {
+    font-size: 12pt;
+}
+
+
+ControlSidebar > SidebarButton {
+    font-size: 10pt;
+}
+
+
+ControlSidebar > SidebarButton:checked, ControlSidebar > SidebarButton:checked:hover {
+    background-color: #f0f0f0;
+    color: #0a0a0a;
+    border: 0;
+}

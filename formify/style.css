@@ -44,20 +44,21 @@ QLabel[whatsThis="h5"] {
     font-weight: bold;
 }
 
-QTableWidget, QTableView{
+QTableView{
     border: none;
 }
+
+ QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QTableCornerButton::section   {
+    background-color: transparent;
+}
+
 
 QTreeWidget, QTreeView{
     border: none;
 }
 
-FigureCanvasQTAgg {
-    background-color: red;
-}
-
 /* ------------------------------------------------------------------------ */
-/* ControlSidebar - light ------------------------------------------------- */
+/* ControlSidebar --------------------------------------------------------- */
 /* ------------------------------------------------------------------------ */
 
 ControlSidebar {
