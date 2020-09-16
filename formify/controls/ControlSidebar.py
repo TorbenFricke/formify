@@ -14,6 +14,7 @@ class SidebarButton(QtWidgets.QPushButton):
 		self.setCheckable(True)
 		if click is not None:
 			self.click.subscribe(click)
+		# for some reason, the css styling breakes clicked.connect so we have to catch the mouse event manually
 		self.mousePressEvent = lambda _ : self.click(self.checked)
 		self.clicked.connect(lambda : self.click(self.checked))
 
