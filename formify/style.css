@@ -44,16 +44,16 @@ QLabel[whatsThis="h5"] {
     font-weight: bold;
 }
 
-QTableView{
+QTableView {
     border: none;
 }
 
- QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QTableCornerButton::section   {
+QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QHeaderView::item, QTableCornerButton::section {
     background-color: transparent;
 }
 
 
-QTreeWidget, QTreeView{
+QTreeWidget, QTreeView {
     border: none;
 }
 
