@@ -73,8 +73,7 @@ ControlSidebar > SidebarButton {
     font-size: 13pt;
     text-align: left;
     font-weight: bold;
-    /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
-    min-width: 80px;
+    min-width: 100px;
 }
 
 ControlSidebar > SidebarButton:disabled {
