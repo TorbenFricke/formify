@@ -65,10 +65,10 @@ ControlSidebar {
     background-color: #dbdbdb;
 }
 
-ControlSidebar > SidebarButton {
+SidebarButton {
     background-color: #dbdbdb;
     border: 0;
-    border-radius: 0px;
+    border-radius: 0;
     color: #535353;
     padding: 8px;
     font-size: 13pt;
@@ -77,25 +77,25 @@ ControlSidebar > SidebarButton {
     min-width: 100px;
 }
 
-ControlSidebar > SidebarButton:disabled {
+SidebarButton:disabled {
     color: #959595;
 }
 
-ControlSidebar > SidebarButton:checked, ControlSidebar > SidebarButton:checked:hover {
+SidebarButton:checked, SidebarButton:checked:hover {
     background-color: #ececec;
     color: #0a0a0a;
     border: 0;
 }
 
-ControlSidebar > SidebarButton:hover {
+SidebarButton:hover {
     background-color: #e5e5e5;
 }
 
-ControlSidebar > SidebarButton:focus, ControlSidebar > SidebarButton:checked:focus {
+SidebarButton:focus, SidebarButton:checked:focus {
     border: 1px solid #88b5e5;
     border-radius: 3px;
 }
 
-ControlSidebar > SidebarButton:pressed {
+SidebarButton:pressed {
     background-color: #dbdbdb;
 }

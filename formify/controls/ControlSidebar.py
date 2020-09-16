@@ -121,8 +121,3 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		for i, item in enumerate(self.items):
 			if item[0] == value:
 				self.index = i
-
-
-
-class ControlSidebarLight(ControlSidebar):
-	pass
