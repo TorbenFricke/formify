@@ -10,8 +10,8 @@ class SidebarContentView(QtWidgets.QWidget):
 
 		if sidebar_class is None:
 			# import sidebar now to prevent circular imports
-			from formify.controls import ControlSidebarLight
-			sidebar_class = ControlSidebarLight
+			from formify.controls import ControlSidebar
+			sidebar_class = ControlSidebar
 		self.sidebar = sidebar_class(list(layouts.keys()))
 
 		self.setLayout(

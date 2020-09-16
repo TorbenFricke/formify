@@ -18,4 +18,4 @@ from formify.controls.Form import Form
 from formify.controls.ConditionalForm import ConditionalForm
 from formify.controls.ListForm import ListForm
 
-from formify.controls.ControlSidebar import ControlSidebar, ControlSidebarLight
+from formify.controls.ControlSidebar import ControlSidebar

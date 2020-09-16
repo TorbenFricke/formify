@@ -23,13 +23,14 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 
 		if label is None:
 			if variable_name is None:
-				label = self.__class__.__name__
+				label = ""
 			else:
 				label = variable_name
 
 		self._make_label_widget(label)
 		self.layout = self._formset()
 		self.setLayout(self.layout)
+		self.label = label
 
 		ValueMixin.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
 

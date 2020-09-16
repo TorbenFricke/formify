@@ -8,7 +8,6 @@ from formify.controls import ControlText, ControlFloat, ControlInt
 
 from formify.controls._mixins import ItemMixin
 
-# TODO ensure correct type when pasting data
 # TODO fix . , issues
 
 class ValidatorDelegate(QtWidgets.QItemDelegate):
@@ -52,8 +51,8 @@ def table_item(text=""):
 
 class ControlTable(ControlBase):
 	def __init__(self,
-	             columns:list,
-	             label:str=None,
+	             columns: list,
+	             label: str = None,
 	             column_types:list=None,
 	             *args,
 	             **kwargs):
@@ -164,13 +163,15 @@ class ControlTable(ControlBase):
 			if len(rows) == 1 and len(columns) == 1:
 				for i, line in enumerate(reader):
 					for j, cell in enumerate(line):
-						model.setData(model.index(rows[0] + i, columns[0] + j), cell)
+						cast = self.get_cast_function(columns[0] + j)
+						model.setData(model.index(rows[0] + i, columns[0] + j), cast(cell))
 			else:
 				arr = [[cell for cell in row] for row in reader]
 				for index in selection:
 					row = index.row() - rows[0]
 					column = index.column() - columns[0]
-					model.setData(model.index(index.row(), index.column()), arr[row][column])
+					cast = self.get_cast_function(index.column())
+					model.setData(model.index(index.row(), index.column()), cast(arr[row][column]))
 
 
 	def delete_selection(self):
@@ -178,19 +179,33 @@ class ControlTable(ControlBase):
 		model = self.control.model()
 		if selection:
 			with self.change.suspend_updates():
-				rows = sorted(index.row() for index in selection)
-				columns = sorted(index.column() for index in selection)
-				rowcount = rows[-1] - rows[0] + 1
-				colcount = columns[-1] - columns[0] + 1
-				table = [[''] * colcount for _ in range(rowcount)]
 				for index in selection:
 					model.setData(index, "")
 
-				# convert
-				from formify import app
-				app.clipboard().setText("\n".join(["\t".join(row) for row in table]))
-
 			self.change()
+
+	def get_cast_function(self, column: int):
+		def _int(s) -> int:
+			if s == "":
+				return 0
+			return int(s)
+
+		def _float(s) -> float:
+			if s == "":
+				return 0
+			if type(s) == str:
+				return float(s.replace(",", "."))
+			return float(s)
+
+		known = {int: _int, float: _float}
+		cast = str
+		try:
+			cast = self.column_types[column]
+			if cast in known:
+				cast = known[cast]
+		finally:
+			return cast
+
 
 	@property
 	def value(self):
@@ -198,7 +213,8 @@ class ControlTable(ControlBase):
 		for row in range(self.model.rowCount() - 1):
 			out.append([])
 			for column in range(self.model.columnCount()):
-				out[-1].append(self.data(row, column))
+				cast = self.get_cast_function(column)
+				out[-1].append(cast(self.data(row, column)))
 
 		return out
 
@@ -213,11 +229,11 @@ class ControlTable(ControlBase):
 		with self.change.suspend_updates():
 			for x in range(n_rows):
 				for y in range(n_column):
-
+					cast = self.get_cast_function(y)
 					self.model.setItem(
 						x,
 						y,
-						table_item(value[x][y])
+						table_item(cast(value[x][y]))
 					)
 		self.change(value)
 

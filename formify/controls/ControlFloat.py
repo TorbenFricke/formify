@@ -1,18 +1,12 @@
 from formify.controls import ControlText
 from PySide2.QtGui import QDoubleValidator
 
-def _str2float(s:str) -> float:
+def _str2float(s) -> float:
 	if s == "":
 		return 0
-	return float(s.replace(",", "."))
-
-def _float_validator(s:str) -> bool:
-	try:
-		_str2float(s)
-	except:
-		return False
-	else:
-		return True
+	if type(s) == str:
+		return float(s.replace(",", "."))
+	return float(s)
 
 
 class ControlFloat(ControlText):
@@ -29,10 +23,8 @@ class ControlFloat(ControlText):
 
 	@value.setter
 	def value(self, value):
-		if type(value) != float:
-			value = _str2float(value)
 		self.control.setText(
-			str(value / self._factor)
+			str(_str2float(value) / self._factor)
 		)
 
 

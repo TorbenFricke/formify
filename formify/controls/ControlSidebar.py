@@ -4,11 +4,41 @@ from formify.controls import ControlButton
 from formify.controls._mixins import ItemMixin, ValueMixin
 from formify.controls._events import EventDispatcher
 
+
+class SidebarButton(QtWidgets.QPushButton):
+	def __init__(self, label, checked=False, click=None):
+		super().__init__()
+		self.label = label
+		self.checked = checked
+		self.click = EventDispatcher(self)
+		self.setCheckable(True)
+		if click is not None:
+			self.click.subscribe(click)
+		self.mousePressEvent = lambda _ : self.click(self.checked)
+		self.clicked.connect(lambda : self.click(self.checked))
+
+	@property
+	def label(self):
+		return self.text()
+
+	@label.setter
+	def label(self, value):
+		self.setText(value)
+
+	@property
+	def checked(self):
+		return self.isChecked()
+
+	@checked.setter
+	def checked(self, value):
+		self.setChecked(value)
+
+
 class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 	def __init__(self, items:typing.List[str], variable_name:str=None,
 	             value:str=None, on_change:typing.Callable=None):
 		QtWidgets.QFrame.__init__(self)
-		self.buttons: typing.List[QtWidgets.QPushButton] = []
+		self.buttons: typing.List[SidebarButton] = []
 		self._make_layout()
 
 		# index change events
@@ -30,10 +60,8 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 				self.index = idx
 			return wrapped
 
-		btn = ControlButton(text)
+		btn = SidebarButton(text, click=make_set_checked(len(self.buttons)))
 		self.buttons.append(btn)
-		btn.setCheckable(True)
-		btn.on_click = make_set_checked(len(self.buttons) - 1)
 		self.layout().addWidget(btn)
 		return btn
 
@@ -49,7 +77,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 	def _update_checked_states(self):
 		# set checked state on Push Buttons
 		for i, btn in enumerate(self.buttons):
-			btn.setChecked(i == self._index)
+			btn.checked = i == self._index
 
 
 	@property
@@ -80,7 +108,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 
 		ensure_number_buttons(len(display_names))
 		for i, name in enumerate(display_names):
-			self.buttons[i].setText(name)
+			self.buttons[i].label = name
 
 
 	@property
