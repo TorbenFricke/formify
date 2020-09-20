@@ -116,8 +116,13 @@ class ItemMixin:
 
 	@selected_item.setter
 	def selected_item(self, value):
-		self._items[self.index] = value
-		self.items = self._items
+		if len(self._items) == 0:
+			self._items = [value]
+			self.items = self._items
+			self.index = 0
+		else:
+			self._items[self.index] = value
+			self.items = self._items
 
 
 	@property

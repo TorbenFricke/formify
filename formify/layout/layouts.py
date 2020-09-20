@@ -110,7 +110,7 @@ def Segment(layout_or_control, *args) -> QtWidgets.QWidget:
 	widget.setWhatsThis("segment")
 	widget.setContentsMargins(7, 7, 7, 7)
 
-	if isinstance(layout_or_control, QtWidgets.QLayout):
+	if isinstance(layout_or_control, QtWidgets.QLayout) and len(args) == 0:
 		widget.setLayout(layout_or_control)
 	else:
 		widget.setLayout(Col(
@@ -118,3 +118,12 @@ def Segment(layout_or_control, *args) -> QtWidgets.QWidget:
 			*args
 		))
 	return widget
+
+def Grid(*controls, columns=3):
+	buckets = [[] for _ in range(columns)]
+	for i, control in enumerate(controls):
+		buckets[i % columns].append(control)
+
+	return Row(
+		*[Col(*bucket) for bucket in buckets]
+	)

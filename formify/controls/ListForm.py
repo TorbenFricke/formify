@@ -93,3 +93,11 @@ class ListForm(Form):
 	@value.setter
 	def value(self, value):
 		self.control.items = [(val, self._repr(val)) for val in value]
+
+	@property
+	def all_values(self):
+		return self.value
+
+	@all_values.setter
+	def all_values(self, value):
+		self.value = value

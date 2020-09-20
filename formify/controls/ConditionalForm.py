@@ -34,6 +34,8 @@ class ConditionalForm(Form):
 		# only show relevant the form
 		self._update_show_hide()
 		self.change.subscribe(self._update_show_hide)
+		if not self._update_show_hide in self.condition_control.change.subscriptions:
+			self.condition_control.change.subscribe(self._update_show_hide)
 
 
 	def _generate(self):
@@ -73,6 +75,7 @@ class ConditionalForm(Form):
 		for key, controls in self._controls_by_condition.items():
 			if key == conditional:
 				continue
-			out.update(extract_values_dict(controls))
-		out.update(extract_values_dict(self._controls_by_condition[conditional]))
+			out.update(extract_values_dict(controls, all_values=True))
+		out.update(extract_values_dict(self._controls_by_condition[conditional], all_values=True))
+		out[self.condition_control.variable_name] = self.condition_control.value
 		return out

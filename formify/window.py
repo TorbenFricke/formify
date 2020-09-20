@@ -91,7 +91,7 @@ class MainWindow(QtWidgets.QMainWindow):
 			return
 		with open(self.file_name, "w+") as f:
 			f.write(
-				json.dumps(self.form.all_values, sort_keys=True, indent=4)
+				json.dumps(self.form.all_values, indent=4)
 			)
 
 

@@ -15,16 +15,48 @@ def walk(widget) -> typing.List[ValueMixin]:
 	return controls
 
 
-def extract_values_dict(controls):
+def extract_values_dict(controls, all_values=False):
 	out = {}
 	for control in controls:
-		value = control.value
+		if all_values:
+			value = control.all_values
+		else:
+			value = control.value
 		variable = control.variable_name
 		if variable == __FLATTEN__ and isinstance(value, dict):
 			out.update(value)
 		else:
 			out[variable] = value
 	return out
+
+
+def set_values(controls, data, relevant_values, all_values=False):
+	for control in controls:
+		variable = control.variable_name
+
+		# keep track of relevant values
+		if variable in data:
+			relevant_values[variable] = data[variable]
+
+		# update flattened forms
+		if variable == __FLATTEN__ and isinstance(control, Form):
+			# set child values
+			if all_values:
+				control.all_value = data
+			else:
+				control.value = data
+			# remember, which values were set
+			child_variables = [c.variable_name for c in control.controls]
+			relevant_values.update({
+				key: val for key, val in data.items() if key in child_variables
+			})
+		else:
+			# set all other controls
+			if variable in relevant_values:
+				if all_values:
+					control.all_value = relevant_values[variable]
+				else:
+					control.value = relevant_values[variable]
 
 
 __FLATTEN__ = "__flatten__"
@@ -85,9 +117,11 @@ class Form(QtWidgets.QWidget, ValueMixin):
 	def value(self):
 		return extract_values_dict(self.controls)
 
-
 	@value.setter
 	def value(self, value):
+		self.set_values(value)
+
+	def set_values(self, data, all_values=False):
 		relevant_values = {}
 
 		# set child values
@@ -96,22 +130,39 @@ class Form(QtWidgets.QWidget, ValueMixin):
 				variable = control.variable_name
 
 				# keep track of relevant values
-				if variable in value:
-					relevant_values[variable] = value[variable]
+				if variable in data:
+					relevant_values[variable] = data[variable]
 
 				# update flattened forms
 				if variable == __FLATTEN__ and isinstance(control, Form):
 					# set child values
-					control.value = value
+					if all_values:
+						control.all_values = data
+					else:
+						control.value = data
 					# remember, which values were set
 					child_variables = [c.variable_name for c in control.controls]
 					relevant_values.update({
-						key: val for key, val in value.items() if key in child_variables
+						key: val for key, val in data.items() if key in child_variables
 					})
 				else:
 					# set all other controls
 					if variable in relevant_values:
-						control.value = relevant_values[variable]
+						if all_values:
+							control.all_values = relevant_values[variable]
+						else:
+							control.value = relevant_values[variable]
 
 		# trigger the event manually
 		self.change(relevant_values)
+
+
+	@property
+	def all_values(self):
+		return extract_values_dict(self.controls, all_values=True)
+
+
+	@all_values.setter
+	def all_values(self, value):
+		self.set_values(value, all_values=True)
+

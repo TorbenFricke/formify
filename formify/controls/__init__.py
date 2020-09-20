@@ -10,6 +10,7 @@ from formify.controls.ControlSlider import ControlSlider
 from formify.controls.ControlList import ControlList
 from formify.controls.ControlTable import ControlTable
 from formify.controls.ControlTree import ControlTree
+from formify.controls.ControlFile import ControlFile
 
 # TODO check if matplotlib is installed
 from formify.controls.ControlMatplotlib import ControlMatplotlib

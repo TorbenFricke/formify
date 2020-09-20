@@ -45,7 +45,7 @@ class ValidatorDelegate(QtWidgets.QItemDelegate):
 
 def table_item(text=""):
 	item = QtGui.QStandardItem()
-	item.setText(text)
+	item.setText(str(text))
 	return item
 
 

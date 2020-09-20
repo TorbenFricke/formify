@@ -51,6 +51,8 @@ class ControlCombo(ControlBase, ItemMixin):
 
 	@property
 	def value(self):
+		if self.index < 0:
+			return None
 		return self._items[self.index][0]
 
 
