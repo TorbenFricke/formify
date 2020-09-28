@@ -8,12 +8,6 @@ QListWidget {
     border-radius: 3px;
 }
 
-QWidget[whatsThis="segment"] {
-    background-color: #e3e3e3;
-    border: 1px solid #e1e1e1;
-    border-radius: 4px;
-}
-
 
 QLabel[whatsThis="h1"] {
     color: #494949;
@@ -44,6 +38,33 @@ QLabel[whatsThis="h5"] {
     font-weight: bold;
 }
 
+Segment {
+    background-color: #e3e3e3;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+SegmentAlt {
+    background-color: #efefef;
+    border: 1px solid #d7d7d7;
+}
+
+SegmentRed {
+    background-color: rgba(255, 0, 0, 0.07);
+    border: 1px solid rgba(255, 41, 41, 0.48);
+}
+
+SegmentYellow {
+    background-color: rgba(255, 251, 0, 0.07);
+    border: 1px solid rgba(205, 205, 33, 0.78);
+}
+
+SegmentBlue {
+    background-color: rgba(0, 115, 255, 0.07);
+    border: 1px solid rgba(96, 167, 255, 0.36);
+}
+
+
 QTableView, QScrollArea {
     border: none;
 }
@@ -51,7 +72,6 @@ QTableView, QScrollArea {
 QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QHeaderView::item, QTableCornerButton::section {
     background-color: transparent;
 }
-
 
 QTreeWidget, QTreeView {
     border: none;
