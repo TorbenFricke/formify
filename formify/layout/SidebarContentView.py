@@ -14,8 +14,9 @@ class SidebarContentView(QtWidgets.QWidget):
 			sidebar_class = ControlSidebar
 		self.sidebar = sidebar_class(list(layouts.keys()))
 
+		from formify.layout import ScrollArea
 		self.setLayout(
-			Row(self.sidebar, self.content)
+			Row(self.sidebar, ScrollArea(self.content))
 		)
 
 		def set_visible(index):

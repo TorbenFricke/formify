@@ -57,7 +57,7 @@ formify.tools.Relationship(
 )
 
 sidebar = SidebarContentView({
-	"General": Row(voltage, voltage_str),
+	"General": SplitterCol(voltage, voltage_str),
 	"Material": material_form,
 })
 

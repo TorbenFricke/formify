@@ -44,7 +44,7 @@ QLabel[whatsThis="h5"] {
     font-weight: bold;
 }
 
-QTableView {
+QTableView, QScrollArea {
     border: none;
 }
 

@@ -127,3 +127,27 @@ def Grid(*controls, columns=3):
 	return Row(
 		*[Col(*bucket) for bucket in buckets]
 	)
+
+
+def SplitterRow(*args, collapsible=False, **kwargs):
+	splitter = QtWidgets.QSplitter()
+	splitter.setChildrenCollapsible(collapsible)
+	for widget in args:
+		splitter.addWidget(
+			ensure_widget(widget)
+		)
+
+	return splitter
+
+
+def SplitterCol(*args, **kwargs):
+	splitter = SplitterRow(*args, **kwargs)
+	splitter.setOrientation(QtCore.Qt.Orientation.Vertical)
+	return splitter
+
+
+def ScrollArea(widget):
+	area = QtWidgets.QScrollArea()
+	area.setWidgetResizable(True)
+	area.setWidget(widget)
+	return area

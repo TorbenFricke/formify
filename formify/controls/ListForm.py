@@ -1,5 +1,5 @@
 from formify.controls import Form
-from formify.layout import Row, ensure_widget
+from formify.layout import SplitterRow
 from formify.controls import ControlList
 from formify.controls._events import suspend_updates
 import typing
@@ -14,7 +14,7 @@ class ListForm(Form):
 
 		# generate the master layout containing all widgets and sub layouts
 		self.control = ControlList(label=label, add_click=self.new_item)
-		layout = Row(
+		layout = SplitterRow(
 			self.control,
 			self.model_form
 		)
