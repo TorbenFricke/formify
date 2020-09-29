@@ -14,6 +14,11 @@ def extract_file_name(dialog_return: tuple):
 	# clean file name
 	if file_name[:7] == "file://":
 		file_name = file_name[7:]
+
+	# strip slashes on windows
+	import os
+	if os.name == "nt":
+		file_name.strip("/")
 	return file_name
 
 
