@@ -1,25 +1,13 @@
 from PySide2 import QtWidgets, QtGui
 import formify, typing, json
 from formify.controls import Form
+from formify.tools.file_dialogs import extract_file_name
 import warnings
 
 def ensure_form(thing: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form]) -> Form:
 	if isinstance(thing, Form):
 		return thing
 	return Form(formify.layout.ensure_layout(thing))
-
-
-def extract_file_name(dialog_return: tuple):
-	file_name = dialog_return[0].url()
-	# clean file name
-	if file_name[:7] == "file://":
-		file_name = file_name[7:]
-
-	# strip slashes on windows
-	import os
-	if os.name == "nt":
-		file_name = file_name.strip("/")
-	return file_name
 
 
 class MainWindow(QtWidgets.QMainWindow):
