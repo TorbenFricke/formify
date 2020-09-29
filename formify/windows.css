@@ -19,6 +19,9 @@ QLabel[whatsThis="h4"] {
     font-size: 12pt;
 }
 
+ QLineEdit {
+    border: 1px solid #bbb;
+}
 
 ControlSidebar > SidebarButton {
     font-size: 10pt;
