@@ -18,7 +18,7 @@ def extract_file_name(dialog_return: tuple):
 	# strip slashes on windows
 	import os
 	if os.name == "nt":
-		file_name.strip("/")
+		file_name = file_name.strip("/")
 	return file_name
 
 
