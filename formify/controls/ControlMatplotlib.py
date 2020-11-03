@@ -21,6 +21,7 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
 		self._fig = Figure((5.0, 4.0), dpi=100)
+		self._fig.patch.set_alpha(0)
 		self.canvas = FigureCanvas(self.fig)
 		self.canvas.setParent(self)
 
