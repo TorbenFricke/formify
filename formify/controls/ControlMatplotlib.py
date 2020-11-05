@@ -1,10 +1,6 @@
 from PySide2 import QtWidgets, QtCore
 import typing, warnings
 from formify.controls._events import EventDispatcher
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.pyplot import style
 
 class Signaller(QtCore.QObject):
 	signal = QtCore.Signal(str)
@@ -19,6 +15,11 @@ class ControlMatplotlib(QtWidgets.QWidget):
 	             parent: QtWidgets.QWidget = None):
 
 		QtWidgets.QWidget.__init__(self, parent=parent)
+
+		# importing matplotlib takes a while, so we only do it if required
+		from matplotlib.figure import Figure
+		from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+		from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 		self._fig = Figure((5.0, 4.0), dpi=100)
 		self._fig.patch.set_alpha(0)
@@ -39,7 +40,7 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		self._repaint_signal.signal.connect(self._actually_draw)
 
 	@property
-	def fig(self) -> Figure:
+	def fig(self):
 		return self._fig
 
 	@property

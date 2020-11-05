@@ -3,6 +3,12 @@ QLineEdit {
     padding: 2px;
 }
 
+QTextEdit {
+    border-radius: 3px;
+    border: 1px solid #fefefe;
+    padding: 0;
+}
+
 QListWidget {
     border: 1px solid #fefefe;
     border-radius: 3px;

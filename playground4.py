@@ -24,6 +24,16 @@ def _draw_bh():
 draw_bh = formify.tools.BackgroundMethod(_draw_bh)
 table_bh.change.subscribe(draw_bh)
 
+a = """
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor 
+invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
+et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam 
+nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At 
+vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea 
+takimata sanctus est Lorem ipsum dolor sit amet.
+"""
+
 material_form = Form(Row(
 	Col(
 		Segment(
@@ -35,6 +45,7 @@ material_form = Form(Row(
 			),
 
 			h3("Magnetization"),
+			ControlDiff("Diff", value=(a.split("\n"), a.replace("nonumy", "nonasy").split("\n"))),
 			ConditionalForm({
 				"linear": ControlFloat("Relative permeability", variable_name="mur"),
 				"non-linear": Row(

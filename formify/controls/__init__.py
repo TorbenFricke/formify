@@ -9,8 +9,11 @@ from formify.controls.ControlCheckbox import ControlCheckbox
 from formify.controls.ControlSlider import ControlSlider
 from formify.controls.ControlList import ControlList
 from formify.controls.ControlTable import ControlTable
+from formify.controls.ControlTextarea import ControlTextarea
 from formify.controls.ControlTree import ControlTree
 from formify.controls.ControlFile import ControlFile
+from formify.controls.ControlHtml import ControlHtml
+from formify.controls.ControlDiff import ControlDiff
 
 # TODO check if matplotlib is installed
 from formify.controls.ControlMatplotlib import ControlMatplotlib
