@@ -15,8 +15,10 @@ class MainWindow(QtWidgets.QMainWindow):
 	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
 	             title: str="",
 	             margin=0,
+	             width:int=None,
+	             height:int=None,
 	             menu:dict=None,
-	             auto_run=True, ):
+	             auto_run=True,):
 		super().__init__()
 
 		self.setWindowTitle(title)
@@ -24,6 +26,12 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.form = ensure_form(layout_widget_form)
 		self.form.layout().setMargin(margin)
 		self.setCentralWidget(self.form)
+
+		if width is None:
+			width = self.width()
+		if height is None:
+			height = self.height()
+		self.resize(width, height)
 
 		self.file_name: str = ""
 		# make menu

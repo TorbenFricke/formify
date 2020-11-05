@@ -9,6 +9,7 @@ class ControlCombo(ControlBase, ItemMixin):
 	def __init__(self,
 	             label:str=None,
 	             items:list=None,
+	             value=None,
 	             *args,
 	             **kwargs):
 
@@ -20,6 +21,9 @@ class ControlCombo(ControlBase, ItemMixin):
 
 		# normalize items array
 		ItemMixin.__init__(self, items)
+
+		if value is not None:
+			self.value = value
 
 
 	@property
