@@ -22,8 +22,6 @@ class MainWindow(QtWidgets.QMainWindow):
 	             auto_run=True,):
 		super().__init__()
 
-		self.title = title
-
 		self.allowed_file_extensions = allowed_file_extensions
 
 		self.form = ensure_form(layout_widget_form)
@@ -36,9 +34,13 @@ class MainWindow(QtWidgets.QMainWindow):
 			height = self.height()
 		self.resize(width, height)
 
-		self.file_name: str = ""
+		self._file_name: str = ""
 		# make menu
 		self.make_menu(menu)
+
+		# set window title after file name
+		self._title = ""
+		self.title = title
 
 		if auto_run:
 			self.show()
@@ -47,12 +49,31 @@ class MainWindow(QtWidgets.QMainWindow):
 
 	@property
 	def title(self):
-		return self.windowTitle()
+		return self._title
 
 
 	@title.setter
 	def title(self, value):
-		self.setWindowTitle(value)
+		self._title = value
+		self.update_window_title()
+
+
+	@property
+	def file_name(self):
+		return self._file_name
+
+
+	@file_name.setter
+	def file_name(self, value):
+		self._file_name = value
+		self.update_window_title()
+
+
+	def update_window_title(self):
+		if self.title == "":
+			self.setWindowTitle(f"{self.file_name}")
+		else:
+			self.setWindowTitle(f"{self.title} - {self.file_name}")
 
 
 	def make_menu(self, menu_items: dict=None):
