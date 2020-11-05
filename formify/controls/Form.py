@@ -113,6 +113,17 @@ class Form(QtWidgets.QWidget, ValueMixin):
 			control.change.subscribe(self._on_child_change)
 
 
+	def __getitem__(self, key) -> ValueMixin:
+		for control in self.controls:
+			variable = control.variable_name
+
+			if variable == key:
+				return control
+
+			# update flattened forms
+			if variable == __FLATTEN__ and isinstance(control, Form):
+				return control[key]
+			
 	@property
 	def value(self):
 		return extract_values_dict(self.controls)
