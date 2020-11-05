@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets, QtGui
 import formify, typing, json
 from formify.controls import Form
-from formify.tools.file_dialogs import extract_file_name
+from formify.tools.file_dialogs import extract_file_name, save_dialog, open_dialog
 import warnings
 
 def ensure_form(thing: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form]) -> Form:
@@ -18,10 +18,13 @@ class MainWindow(QtWidgets.QMainWindow):
 	             width:int=None,
 	             height:int=None,
 	             menu:dict=None,
+	             allowed_file_extensions=None,
 	             auto_run=True,):
 		super().__init__()
 
-		self.setWindowTitle(title)
+		self.title = title
+
+		self.allowed_file_extensions = allowed_file_extensions
 
 		self.form = ensure_form(layout_widget_form)
 		self.form.layout().setMargin(margin)
@@ -40,6 +43,17 @@ class MainWindow(QtWidgets.QMainWindow):
 		if auto_run:
 			self.show()
 			formify.run()
+
+
+	@property
+	def title(self):
+		return self.windowTitle()
+
+
+	@title.setter
+	def title(self, value):
+		self.setWindowTitle(value)
+
 
 	def make_menu(self, menu_items: dict=None):
 		def make_action(text, func, shortcut="") -> QtWidgets.QAction:
@@ -85,39 +99,43 @@ class MainWindow(QtWidgets.QMainWindow):
 		add_menus(menu, menu_items.pop(key, {}))
 		add_menus(menubar, menu_items)
 
+	def file_extension_filter(self):
+		if self.allowed_file_extensions is not None:
+			return " ".join([f"*.{ext}" for ext in self.allowed_file_extensions])
+		else:
+			return "*"
+
+	def _save(self, file_name):
+		with open(file_name, "w+") as f:
+			f.write(
+				json.dumps(self.form.all_values, indent=4)
+			)
 
 	def save(self):
 		if self.file_name == "":
 			self.save_as()
 			return
-		with open(self.file_name, "w+") as f:
-			f.write(
-				json.dumps(self.form.all_values, indent=4)
-			)
+		self._save(self.file_name)
 
 
 	def save_as(self):
-		self.file_name = extract_file_name(
-			QtWidgets.QFileDialog(self).getSaveFileUrl(
-				caption="Save as...",
-			)
-		)
+		self.file_name = save_dialog(title="Open...", filter=self.file_extension_filter())
 		if self.file_name == "":
 			return
 		self.save()
 
 
-	def open(self):
-		self.file_name = extract_file_name(
-			QtWidgets.QFileDialog(self).getOpenFileUrl(
-				caption="Open...",
-			)
-		)
-		if self.file_name == "":
-			return
-		with open(self.file_name) as f:
+	def _open(self, file_name):
+		with open(file_name) as f:
 			s = f.read()
 		try:
 			self.form.all_values = json.loads(s)
 		except Exception as e:
 			warnings.warn(e)
+
+
+	def open(self):
+		self.file_name = open_dialog(title="Open...", filter=self.file_extension_filter())
+		if self.file_name == "":
+			return
+		self._open(self.file_name)

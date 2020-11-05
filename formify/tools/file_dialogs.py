@@ -14,16 +14,18 @@ def extract_file_name(dialog_return: tuple):
 	return file_name
 
 
-def save_dialog(title="Save as..."):
+def save_dialog(title="Save as...", **kwargs):
 	return extract_file_name(
 		QtWidgets.QFileDialog().getSaveFileUrl(
 			caption=title,
+			**kwargs,
 		)
 	)
 
-def open_dialog(path=None, title="Open..."):
+def open_dialog(path=None, title="Open...", **kwargs):
 	return extract_file_name(
 		QtWidgets.QFileDialog().getOpenFileUrl(
 			caption=title,
+			**kwargs
 		)
 	)

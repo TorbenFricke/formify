@@ -72,4 +72,4 @@ sidebar = SidebarContentView({
 	"Material": material_form,
 })
 
-formify.MainWindow(sidebar)
+formify.MainWindow(sidebar, allowed_file_extensions=["txt", "json"])
