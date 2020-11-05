@@ -67,7 +67,7 @@ template= """
         	text-decoration: none;
         }
 
-		colgroup {border: none;}​
+		colgroup {border: none;}
     </style>
 </head>
 
