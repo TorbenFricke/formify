@@ -122,7 +122,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 	def file_extension_filter(self):
 		if self.allowed_file_extensions is not None:
-			return " ".join([f"*.{ext}" for ext in self.allowed_file_extensions])
+			return ";;".join([f"*.{ext}" for ext in self.allowed_file_extensions])
 		else:
 			return "*"
 
