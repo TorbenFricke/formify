@@ -7,6 +7,7 @@ from formify.controls.ControlCombo import ControlCombo
 from formify.controls.ControlRadio import ControlRadio
 from formify.controls.ControlCheckbox import ControlCheckbox
 from formify.controls.ControlSlider import ControlSlider
+from formify.controls.ControlProgress import ControlProgress
 from formify.controls.ControlList import ControlList
 from formify.controls.ControlTable import ControlTable
 from formify.controls.ControlTextarea import ControlTextarea
