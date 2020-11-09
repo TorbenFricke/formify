@@ -19,7 +19,7 @@ QLabel[whatsThis="h4"] {
     font-size: 12pt;
 }
 
-QLineEdit {
+QLineEdit, QTextEdit {
     border: 1px solid #ccc;
 }
 
