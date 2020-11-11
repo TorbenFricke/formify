@@ -43,8 +43,19 @@ def Row(*controls) -> QtWidgets.QLayout:
 
 def Col(*controls) -> QtWidgets.QLayout:
 	layout = QtWidgets.QVBoxLayout()
-	layout.setAlignment(QtCore.Qt.AlignTop)
 	_formset_layout(layout, controls)
+	layout.setAlignment(QtCore.Qt.AlignTop)
+	return layout
+
+
+def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
+	layout = QtWidgets.QVBoxLayout()
+	layout.setMargin(0)
+	n = len(controls)
+	for i, control in enumerate(controls):
+		layout.addWidget(ensure_widget(control))
+		if i != n - 1:
+			layout.addStretch(stretch)
 	return layout
 
 
