@@ -22,8 +22,7 @@ class ValueMixin:
 
 		# set tooltip
 		try:
-			if variable_name is not None:
-				self.setToolTip(f"Variable: {variable_name}")
+			self.setToolTip(f"Variable: {variable_name}")
 		except:
 			pass
 
@@ -94,7 +93,6 @@ class ItemMixin:
 	@items.setter
 	def items(self, value):
 		self._items = list(self.key_value(value))
-		self.items_change(self._items)
 		index = self.index
 
 		display_names = [
@@ -106,15 +104,22 @@ class ItemMixin:
 		# set the items in actual widget
 		self.set_display_names(display_names)
 
-		# set the correct index
+		## set the correct index
+		# index was -1 but and item was added
 		if index == -1 and len(self._items) > 0:
 			index = 0
+		# no items remaining
 		if len(self._items) == 0:
 			index = -1
+		# index is fine and does not need to be adjusted
 		if len(self._items) > index:
 			self.index = index
+		# not enough items - reduce index by
 		elif len(self._items) > 0:
 			self.index = len(self._items) - 1
+
+		# trigger event
+		self.items_change(self._items)
 
 	@property
 	def selected_item(self):
