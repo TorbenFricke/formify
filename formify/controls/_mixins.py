@@ -22,7 +22,8 @@ class ValueMixin:
 
 		# set tooltip
 		try:
-			self.setToolTip(f"Variable: {variable_name}")
+			if variable_name is not None:
+				self.setToolTip(f"Variable: {variable_name}")
 		except:
 			pass
 
