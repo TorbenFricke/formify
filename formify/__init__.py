@@ -1,7 +1,8 @@
 from formify import controls, layout, tools
 from formify.window import MainWindow
+from PySide2 import QtGui
 
-import pathlib
+import pathlib, os
 
 stylesheet_root = pathlib.Path(__file__).parent
 
@@ -13,8 +14,6 @@ def stylesheet() -> str:
 	css = read("style.css")
 	css += "\n"
 
-	# platform specific css
-	import os
 	# windows
 	if os.name == "nt":
 		css += read("windows.css")
@@ -33,6 +32,16 @@ class App(QtWidgets.QApplication):
 	def run(self):
 		# Run the main Qt loop
 		sys.exit(self.exec_())
+
+	def setIcon(self, icon: str, window):
+		_icon = QtGui.QIcon(icon)
+		self.setWindowIcon(_icon)
+		# windows
+		if os.name == "nt":
+			import ctypes
+			myappid = icon  # arbitrary string
+			ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 
 app = App()
 

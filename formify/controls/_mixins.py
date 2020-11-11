@@ -1,5 +1,6 @@
 import typing
 from formify.controls._events import EventDispatcher
+from PySide2 import QtWidgets
 
 class ValueMixin:
 	def __init__(self,
@@ -18,6 +19,12 @@ class ValueMixin:
 		self._value = value
 		if not value is None:
 			self.value = value
+
+		# set tooltip
+		try:
+			self.setToolTip(f"Variable: {variable_name}")
+		except:
+			pass
 
 	@property
 	def value(self):

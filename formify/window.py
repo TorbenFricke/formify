@@ -16,6 +16,7 @@ class MainWindow(QtWidgets.QMainWindow):
 	             title: str="",
 	             margin=0,
 	             width:int=None,
+	             icon_path:str=None,
 	             height:int=None,
 	             menu:dict=None,
 	             allowed_file_extensions=None,
@@ -41,6 +42,10 @@ class MainWindow(QtWidgets.QMainWindow):
 		# set window title after file name
 		self._title = ""
 		self.title = title
+
+		# icon
+		if icon_path is not None:
+			formify.app.setIcon(icon_path, self)
 
 		if auto_run:
 			self.show()

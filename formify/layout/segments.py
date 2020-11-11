@@ -27,5 +27,11 @@ class SegmentRed(Segment):
 class SegmentYellow(Segment):
 	pass
 
+class SegmentGreen(Segment):
+	pass
+
 class SegmentBlue(Segment):
+	pass
+
+class SegmentSidebar(Segment):
 	pass

@@ -82,8 +82,8 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		:param parent:
 		"""
 
-		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 		QtWidgets.QWidget.__init__(self, parent=parent)
+		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 
 		layout = ensure_layout(layout)
 		self.setLayout(layout)

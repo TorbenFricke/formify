@@ -37,11 +37,17 @@ takimata sanctus est Lorem ipsum dolor sit amet.
 def set_title(sender, value):
 	window.title = value
 
+
+def maybe_boop():
+	if formify.tools.ok_dialog():
+		print("Boop")
+
 material_form = Form(Row(
 	Col(
 		Segment(
 			h3("General Properties"),
 			ControlText("Name", variable_name="name", on_change=set_title),
+			ControlButton("Boop?", on_click=maybe_boop),
 			Row(
 				ControlFloatMega("Conductivity in MS", variable_name="conductivity"),
 				ControlFloat("Temperature in °C", variable_name="temperature"),
