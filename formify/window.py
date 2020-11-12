@@ -28,11 +28,17 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.form.layout().setMargin(margin)
 		self.setCentralWidget(self.form)
 
+		# load save stuff
 		if load_save_handler is None:
 			load_save_handler = LoadSaveHandler(self.form)
 		self.load_save_handler = load_save_handler
 		if allowed_file_extensions is not None:
 			self.load_save_handler.allowed_file_extensions = allowed_file_extensions
+
+		# close event handler
+		self.on_close = formify.controls.EventDispatcher(self)
+		self.closeEvent = self.on_close
+		self.on_close.subscribe(self.load_save_handler.autosave) # do an autosave if required
 
 		if width is None:
 			width = self.width()

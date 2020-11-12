@@ -25,3 +25,7 @@ from formify.controls.ConditionalForm import ConditionalForm
 from formify.controls.ListForm import ListForm
 
 from formify.controls.ControlSidebar import ControlSidebar
+
+# internal concepts that might be useful elsewhere
+from formify.controls._mixins import ItemMixin, ValueMixin
+from formify.controls._events import EventDispatcher
