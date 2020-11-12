@@ -1,4 +1,4 @@
-import json, warnings, threading, time, pathlib, os
+import json, warnings, threading, time, pathlib, os, traceback
 from formify.controls import Form
 from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
@@ -12,8 +12,13 @@ def default_save(form, file_name):
 
 
 def default_open(form, file_name):
-	with open(file_name) as f:
-		s = f.read()
+	try:
+		with open(file_name) as f:
+			s = f.read()
+	except FileNotFoundError:
+		traceback.print_exc()
+		return
+
 	try:
 		form.all_values = json.loads(s)
 	except Exception as e:
@@ -140,7 +145,7 @@ class LoadSaveHandler:
 	def menu(self):
 		lines = self.read_recently_used_files()
 		def make_open_handler(filename):
-			return lambda : self.open_handler(self.form, filename)
+			return lambda : self.open(filename)
 
 		return {
 			"Open...": (self.open, "ctrl+o"),
@@ -175,14 +180,24 @@ class LoadSaveHandler:
 		self.save()
 
 
-	def open(self):
+	def open(self, filename=None):
 		if self.no_changes > 0 and not yes_no_dialog(
 				"Are you sure?",
 				"All current changes will be lost. Are you sure you want to open another file?"):
 			return
-		self.file_name = open_dialog(title="Open...", filter=self.file_extension_filter())
+
+		if not filename:
+			self.file_name = open_dialog(title="Open...", filter=self.file_extension_filter())
+		else:
+			self.file_name = filename
+
 		if self.file_name == "":
 			return
+
+		if not os.path.isfile(self.file_name):
+			ok_dialog("File not found", f"'{self.file_name}' does not seem to exist.")
+			return
+
 		self.open_handler(self.form, self.file_name)
 		self.no_changes = 0
 
