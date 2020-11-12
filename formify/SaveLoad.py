@@ -139,8 +139,8 @@ class LoadSaveHandler:
 
 	def menu(self):
 		lines = self.read_recently_used_files()
-		def make_open_handler(line):
-			return lambda : print(line)
+		def make_open_handler(filename):
+			return lambda : self.open_handler(self.form, filename)
 
 		return {
 			"Open...": (self.open, "ctrl+o"),
