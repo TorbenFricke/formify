@@ -12,18 +12,10 @@ def default_save(form, file_name):
 
 
 def default_open(form, file_name):
-	try:
-		with open(file_name) as f:
-			s = f.read()
-	except FileNotFoundError:
-		traceback.print_exc()
-		return
+	with open(file_name) as f:
+		s = f.read()
 
-	try:
-		form.all_values = json.loads(s)
-	except Exception as e:
-		warnings.warn(str(e))
-
+	form.all_values = json.loads(s)
 
 
 class Timer(threading.Thread):
@@ -168,9 +160,13 @@ class LoadSaveHandler:
 		if self.file_name == "":
 			self.save_as()
 			return
-		self.save_handler(self.form, self.file_name)
-		self.no_autosave_changes = 0
-		self.no_changes = 0
+		try:
+			self.save_handler(self.form, self.file_name)
+		except:
+			traceback.print_exc()
+		else:
+			self.purge_autosave()
+			self.no_changes = 0
 
 
 	def save_as(self):
@@ -198,8 +194,13 @@ class LoadSaveHandler:
 			ok_dialog("File not found", f"'{self.file_name}' does not seem to exist.")
 			return
 
-		self.open_handler(self.form, self.file_name)
-		self.no_changes = 0
+		try:
+			self.open_handler(self.form, self.file_name)
+		except:
+			traceback.print_exc()
+		else:
+			self.no_changes = 0
+			self.purge_autosave()
 
 
 	def autosave(self):
@@ -212,7 +213,11 @@ class LoadSaveHandler:
 
 
 	def purge_autosave(self):
-		os.remove(self.autosave_filename)
+		self.no_autosave_changes = 0
+		try:
+			os.remove(self.autosave_filename)
+		except FileNotFoundError:
+			pass
 
 
 	def restore(self):
@@ -221,7 +226,7 @@ class LoadSaveHandler:
 
 		default_open(self.form, self.autosave_filename)
 		self.no_autosave_changes = 0
-		self.restored_label = "(restored)"
+		self.restored_label = " (restored)"
 		# trigger event to update titlebar
 		self.file_name_changed(self.file_name)
 		return True
