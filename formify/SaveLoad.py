@@ -219,7 +219,7 @@ class LoadSaveHandler:
 			f.write(self.file_name + "\n")
 
 
-	def read_recently_used_files(self, n=3):
+	def read_recently_used_files(self, n=10):
 		if not os.path.isfile(self.recent_filename):
 			return []
 		with open(self.recent_filename) as f:
