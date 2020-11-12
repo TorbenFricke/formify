@@ -17,7 +17,8 @@ def _draw_bh():
 
 	import numpy as np
 	bh = np.array(table_bh.value).T
-	ax.plot(bh[0], bh[1])
+	if len(bh) > 1:
+		ax.plot(bh[0], bh[1])
 
 	plot.draw()
 

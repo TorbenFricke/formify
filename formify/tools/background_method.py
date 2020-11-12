@@ -1,4 +1,4 @@
-import typing, warnings
+import typing, warnings, traceback
 from queue import Queue
 from threading import Thread, get_ident, Lock
 from inspect import signature
@@ -37,8 +37,8 @@ class BackgroundMethod(Thread):
 				task.target()
 				if self.cleanup:
 					self.cleanup()
-			except Exception as e:
-				warnings.warn(str(e))
+			except:
+				traceback.print_exc()
 
 	def __call__(self, *args, **kwargs):
 		"""
