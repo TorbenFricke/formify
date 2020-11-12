@@ -77,6 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
 			if title != "":
 				title += " - "
 			title += f"{self.load_save_handler.file_name}{'*' if self.load_save_handler.no_changes > 0 else ''}"
+		title += self.load_save_handler.restored_label
 		self.setWindowTitle(title)
 
 

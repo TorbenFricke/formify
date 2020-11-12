@@ -42,6 +42,7 @@ def ensure_appdata_dir():
 	path.mkdir(parents=True, exist_ok=True)
 	return path
 
+_restored = "(restored)"
 
 class LoadSaveHandler:
 	def __init__(self,
@@ -70,9 +71,9 @@ class LoadSaveHandler:
 
 		# restore
 		self.no_autosave_changes = 0
+		self.restored_label = ""
 		self.autosave_filename = ensure_appdata_dir() / "autosave.json"
-		if self.restore():
-			ok_dialog("Data Restored", "Data was restored from autosave")
+		self.restore()
 
 		# start autosave timer
 		self.autosave_timer = Timer(5, self.autosave)
@@ -86,6 +87,9 @@ class LoadSaveHandler:
 	@file_name.setter
 	def file_name(self, value):
 		self._file_name = value
+		# opened or saved to a preopper file, remove restored label
+		if value != "":
+			self.restored_label = ""
 		self.file_name_changed(value)
 
 
@@ -162,4 +166,7 @@ class LoadSaveHandler:
 
 		default_open(self.form, self.autosave_filename)
 		self.no_autosave_changes = 0
+		self.restored_label = "(restored)"
+		# trigger event to update titlebar
+		self.file_name_changed(self.file_name)
 		return True
