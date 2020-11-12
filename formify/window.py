@@ -72,10 +72,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 	def update_window_title(self):
-		title = ""
-		if self.title != "":
-			title += f"{self.title} - "
-		title += f"{self.load_save_handler.file_name}{'*' if self.load_save_handler.no_changes > 0 else ''}"
+		title = self._title
+		if self.load_save_handler.file_name != "":
+			if title != "":
+				title += " - "
+			title += f"{self.load_save_handler.file_name}{'*' if self.load_save_handler.no_changes > 0 else ''}"
 		self.setWindowTitle(title)
 
 
