@@ -24,11 +24,20 @@ def stylesheet() -> str:
 from PySide2 import QtWidgets
 import sys
 
+def _generate_appname():
+	name = "formify"
+	try:
+		import __main__
+		name += "-" + os.path.basename(__main__.__file__)
+	except:
+		pass
+	return name
 
 class App(QtWidgets.QApplication):
 	def __init__(self, css=""):
 		super().__init__(sys.argv)
 		self.setStyleSheet(f"{stylesheet()}\n{css}")
+		self.name = _generate_appname()
 
 	def run(self):
 		# Run the main Qt loop

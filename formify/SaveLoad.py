@@ -1,7 +1,8 @@
-import json, warnings
+import json, warnings, threading, time, pathlib, os
 from formify.controls import Form
-from formify.tools import save_dialog, open_dialog, yes_no_dialog
+from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
+
 
 def default_save(form, file_name):
 	with open(file_name, "w+") as f:
@@ -13,10 +14,29 @@ def default_save(form, file_name):
 def default_open(form, file_name):
 	with open(file_name) as f:
 		s = f.read()
-	try:
-		form.all_values = json.loads(s)
-	except Exception as e:
-		warnings.warn(str(e))
+	form.all_values = json.loads(s)
+
+
+class Timer(threading.Thread):
+	def __init__(self, interval, target):
+		threading.Thread.__init__(self)
+		self.daemon = True
+		self.interval = interval
+		self.target = target
+		self.start()
+
+	def run(self):
+		while True:
+			time.sleep(self.interval)
+			self.target()
+
+
+def ensure_appdata_dir():
+	# import here to prevent circular imports
+	from formify import app
+	path = pathlib.Path(os.getenv('APPDATA')) / app.name
+	path.mkdir(parents=True, exist_ok=True)
+	return path
 
 
 class LoadSaveHandler:
@@ -40,8 +60,19 @@ class LoadSaveHandler:
 		self._no_changes = 0
 		def inc_changes():
 			self.no_changes += 1
+			self.no_autosave_changes += 1
 		self.form.change.subscribe(inc_changes)
 		self.no_changes_changed = EventDispatcher(self)
+
+		# restore
+		self.autosave_filename = ensure_appdata_dir() / "autosave.json"
+		if self.restore():
+			ok_dialog("Data Restored", "Data was restored from autosave")
+
+		# start autosave timer
+		self.autosave_timer = Timer(5, self.autosave)
+		self.no_autosave_changes = 0
+
 
 	@property
 	def file_name(self):
@@ -85,6 +116,7 @@ class LoadSaveHandler:
 			self.save_as()
 			return
 		self.save_handler(self.form, self.file_name)
+		self.no_autosave_changes = 0
 		self.no_changes = 0
 
 
@@ -105,3 +137,27 @@ class LoadSaveHandler:
 			return
 		self.open_handler(self.form, self.file_name)
 		self.no_changes = 0
+
+
+	def autosave(self):
+		if self.no_autosave_changes > 0:
+			try:
+				default_save(self.form, self.autosave_filename)
+				self.no_autosave_changes = 0
+			except:
+				pass
+
+
+	def purge_autosave(self):
+		os.remove(self.autosave_filename)
+
+
+	def restore(self):
+		if not os.path.exists(self.autosave_filename):
+			return False
+		try:
+			default_open(self.form, self.autosave_filename)
+		except:
+			return False
+		else:
+			return True
