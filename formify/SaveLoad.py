@@ -42,14 +42,43 @@ def ensure_appdata_dir():
 	path.mkdir(parents=True, exist_ok=True)
 	return path
 
-_restored = "(restored)"
+
+def tail(f, lines=20):
+	# soruce https://stackoverflow.com/questions/136168/get-last-n-lines-of-a-file-similar-to-tail
+	total_lines_wanted = lines
+
+	BLOCK_SIZE = 1024
+	f.seek(0, 2)
+	block_end_byte = f.tell()
+	lines_to_go = total_lines_wanted
+	block_number = -1
+	# blocks of size BLOCK_SIZE, in reverse order starting from the end of the file
+	blocks = []
+
+	while lines_to_go > 0 and block_end_byte > 0:
+		if (block_end_byte - BLOCK_SIZE > 0):
+			# read the last block we haven't yet read
+			f.seek(block_number*BLOCK_SIZE, 2)
+			blocks.append(f.read(BLOCK_SIZE))
+		else:
+			# file too small, start from begining
+			f.seek(0,0)
+			# only read what was not read
+			blocks.append(f.read(block_end_byte))
+		lines_found = blocks[-1].count('\n')
+		lines_to_go -= lines_found
+		block_end_byte -= BLOCK_SIZE
+		block_number -= 1
+	all_read_text = ''.join(reversed(blocks))
+	return all_read_text.splitlines()[-total_lines_wanted:]
+
 
 class LoadSaveHandler:
 	def __init__(self,
-	             main_form: Form,
-	             allowed_file_extensions:list=None,
-	             save_handler=default_save,
-	             open_handler=default_open):
+				 main_form: Form,
+				 allowed_file_extensions:list=None,
+				 save_handler=default_save,
+				 open_handler=default_open):
 
 		self.form = main_form
 		self.allowed_file_extensions = allowed_file_extensions
@@ -78,6 +107,10 @@ class LoadSaveHandler:
 		# start autosave timer
 		self.autosave_timer = Timer(5, self.autosave)
 
+		# recently used
+		self.recent_filename = ensure_appdata_dir() / "recent.txt"
+		self.file_name_changed.subscribe(self.append_recently_used_list)
+
 
 	@property
 	def file_name(self):
@@ -105,8 +138,15 @@ class LoadSaveHandler:
 
 
 	def menu(self):
+		lines = self.read_recently_used_files()
+		def make_open_handler(line):
+			return lambda : print(line)
+
 		return {
 			"Open...": (self.open, "ctrl+o"),
+			"Open Recent": {
+				line: make_open_handler(line) for line in lines
+			},
 			"Save": (self.save, "ctrl+s"),
 			"Save as...": (self.save_as, "ctrl+shift+s")
 		}
@@ -170,3 +210,26 @@ class LoadSaveHandler:
 		# trigger event to update titlebar
 		self.file_name_changed(self.file_name)
 		return True
+
+
+	def append_recently_used_list(self):
+		if self.file_name == "":
+			return
+		with open(self.recent_filename, "a+") as f:
+			f.write(self.file_name + "\n")
+
+
+	def read_recently_used_files(self, n=3):
+		if not os.path.isfile(self.recent_filename):
+			return []
+		with open(self.recent_filename) as f:
+			lines = tail(f, lines=n*2)
+
+		# remove duplicates and reverse
+		lines = list(set(reversed(lines)))
+
+		# return only requested number of lines
+		if len(lines) > n:
+			lines = lines[:n]
+
+		return reversed(lines)
