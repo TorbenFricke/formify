@@ -109,7 +109,7 @@ SidebarButton {
     font-size: 13pt;
     text-align: left;
     font-weight: bold;
-    min-width: 160px;
+    min-width: 180px;
 }
 
 SidebarButton:disabled {
