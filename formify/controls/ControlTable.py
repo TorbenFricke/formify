@@ -222,7 +222,7 @@ class ControlTable(ControlBase):
 	@value.setter
 	def value(self, value):
 		n_rows = len(value)
-		n_column = len(value[0])
+		n_column = len(value[0]) if len(value) > 0 else 0
 		self.model.setColumnCount(n_column)
 		self.model.setRowCount(n_rows)
 

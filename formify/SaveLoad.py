@@ -14,7 +14,11 @@ def default_save(form, file_name):
 def default_open(form, file_name):
 	with open(file_name) as f:
 		s = f.read()
-	form.all_values = json.loads(s)
+	try:
+		form.all_values = json.loads(s)
+	except Exception as e:
+		warnings.warn(str(e))
+
 
 
 class Timer(threading.Thread):
@@ -65,13 +69,13 @@ class LoadSaveHandler:
 		self.no_changes_changed = EventDispatcher(self)
 
 		# restore
+		self.no_autosave_changes = 0
 		self.autosave_filename = ensure_appdata_dir() / "autosave.json"
 		if self.restore():
 			ok_dialog("Data Restored", "Data was restored from autosave")
 
 		# start autosave timer
 		self.autosave_timer = Timer(5, self.autosave)
-		self.no_autosave_changes = 0
 
 
 	@property
@@ -155,9 +159,7 @@ class LoadSaveHandler:
 	def restore(self):
 		if not os.path.exists(self.autosave_filename):
 			return False
-		try:
-			default_open(self.form, self.autosave_filename)
-		except:
-			return False
-		else:
-			return True
+
+		default_open(self.form, self.autosave_filename)
+		self.no_autosave_changes = 0
+		return True
