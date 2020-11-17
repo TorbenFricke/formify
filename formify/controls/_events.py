@@ -2,22 +2,22 @@ import typing
 
 
 class suspend_updates:
-	def __init__(self, form):
-		self.form = form
+	def __init__(self, event):
+		self.event = event
 
 	def __enter__(self):
-		self.form._suspend_update_events = True
+		self.event._suspend_update_count += 1
 		return self
 
 	def __exit__(self, exc_type, exc_value, exc_traceback):
-		self.form._suspend_update_events = False
+		self.event._suspend_update_count -= 1
 
 
 class EventDispatcher:
 	def __init__(self, parent):
 		self.parent = parent
 		self.subscriptions = []
-		self._suspend_update_events = False
+		self._suspend_update_count = 0
 
 	def subscribe(self, handler):
 		self.subscriptions.append(handler)
@@ -29,11 +29,11 @@ class EventDispatcher:
 			return False
 		return True
 
-	def trigger(self, value: typing.Any = None):
+	def _trigger(self, value: typing.Any = None):
 		# to be called by subclass, when value changes
 		if len(self.subscriptions) == 0:
 			return
-		if self._suspend_update_events:
+		if self._suspend_update_count > 0:
 			return
 		if value is None:
 			value = self.parent.value
@@ -46,7 +46,7 @@ class EventDispatcher:
 				handler()
 
 	def __call__(self, value: typing.Any = None):
-		self.trigger(value)
+		self._trigger(value)
 
 
 	def suspend_updates(self):
