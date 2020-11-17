@@ -1,5 +1,8 @@
 from formify.layout import ensure_widget
 from PySide2 import QtWidgets
+import os
+import platform
+import subprocess
 
 
 def maximize(widget) -> QtWidgets.QWidget:
@@ -29,3 +32,12 @@ def disable_all_variables(widget):
 			child.control.remove_button.hide()
 
 		disable_all_variables(child)
+
+
+def open_file(path):
+	if platform.system() == "Windows":
+		os.startfile(path)
+	elif platform.system() == "Darwin":
+		subprocess.Popen(["open", path])
+	else:
+		subprocess.Popen(["xdg-open", path])
