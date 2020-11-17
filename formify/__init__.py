@@ -33,11 +33,13 @@ def _generate_appname():
 		pass
 	return name
 
+
 class App(QtWidgets.QApplication):
 	def __init__(self, css=""):
 		super().__init__(sys.argv)
 		self.setStyleSheet(f"{stylesheet()}\n{css}")
 		self.name = _generate_appname()
+		self.singe_instance = None
 
 	def run(self):
 		# Run the main Qt loop
@@ -51,6 +53,22 @@ class App(QtWidgets.QApplication):
 			import ctypes
 			myappid = icon  # arbitrary string
 			ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+	@property
+	def allow_multiple_instances(self):
+		return self.singe_instance is not None
+
+	@allow_multiple_instances.setter
+	def allow_multiple_instances(self, value):
+		if value is True:
+			del self.singe_instance
+		else:
+			if self.singe_instance is not None:
+				return
+			self.singe_instance = tools.SingleInstance(lambda : tools.ok_dialog(
+				"Another Instance is Already Running",
+				f"Another instance of {self.name} is already running. Exiting..."
+			))
 
 
 app = App()

@@ -82,6 +82,8 @@ sidebar = SidebarContentView({
 	"Material": material_form,
 })
 
+formify.app.allow_multiple_instances = False
+
 window = formify.MainWindow(sidebar, allowed_file_extensions=["txt", "json"], auto_run=False)
 window.show()
 formify.run()
