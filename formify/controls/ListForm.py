@@ -1,7 +1,6 @@
 from formify.controls import Form
 from formify.layout import SplitterRow
 from formify.controls import ControlList
-from formify.controls._events import suspend_updates
 import typing
 
 
@@ -46,9 +45,6 @@ class ListForm(Form):
 
 
 	def _update_form(self, *args):
-		if self._suspend_update_events:
-			return
-
 		if self.control.index == -1:
 			# nothing is selected? hide the Form and return early.
 			self.model_form.setVisible(False)
@@ -78,7 +74,7 @@ class ListForm(Form):
 	def _update_list(self):
 		if self._suspend_update_events:
 			return
-		with suspend_updates(self):
+		with self.control.index_change.suspend_updates():
 			#print("_update_list")
 			form_data = self.model_form.value
 			self.control.selected_item = (
