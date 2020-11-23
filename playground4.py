@@ -63,7 +63,7 @@ material_form = Form(Row(
 					plot,
 				),
 			}, variable_name="__flatten__"),
-		)
+		),
 	)
 ), variable_name="material")
 
@@ -78,7 +78,14 @@ formify.tools.Relationship(
 )
 
 sidebar = SidebarContentView({
-	"General": SplitterCol(voltage, voltage_str),
+	"General": SplitterCol(
+		voltage,
+		voltage_str,
+		Row(
+			ControlList("Drag'n drop", items=["A", "B", "C", "D", "E", "F", "G"]),
+			ControlList("2nd List", items=["A", "B"]),
+		),
+	),
 	"Material": material_form,
 })
 

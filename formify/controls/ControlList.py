@@ -1,10 +1,16 @@
 from formify.controls import ControlBase, ControlButton
 from formify.layout import Row, ensure_widget
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtCore, QtGui
+from PySide2.QtCore import Qt
 import typing
 
 from formify.controls._mixins import ItemMixin
 from formify.controls._events import EventDispatcher
+
+def rearrange(some_list, r_from, r_to):
+	#print(f"from {r_from} to {r_to}")
+	some_list.insert(r_to, some_list.pop(r_from))
+	return some_list
 
 class ControlList(ControlBase, ItemMixin):
 	def __init__(self,
@@ -15,7 +21,8 @@ class ControlList(ControlBase, ItemMixin):
 	             remove_click: typing.Callable = None,
 	             items: list=None,
 	             parent: QtWidgets.QWidget = None,
-	             on_change: typing.Callable = None):
+	             on_change: typing.Callable = None,
+	             rearrangeable:bool = True):
 
 		# events
 		self.add_click = add_click
@@ -37,11 +44,15 @@ class ControlList(ControlBase, ItemMixin):
 		self.change = EventDispatcher(self)
 		self.items_change.subscribe(lambda: self.change())
 
+		self.rearrangeable = rearrangeable
+
+
 	def removeCurrentItem(self):
 		if len(self._items) == 0:
 			return
 		del self._items[self.index]
 		self.items = self._items
+
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
@@ -49,6 +60,45 @@ class ControlList(ControlBase, ItemMixin):
 		self.control.itemSelectionChanged.connect(
 			lambda: self.index_change(self.index)
 		)
+
+		# set drag and drop stuff
+		self.control.supportedDropActions = lambda : Qt.MoveAction
+		self.control.setDragDropMode(self.control.InternalMove)
+		self.control.setAcceptDrops(True)
+		self.control.setDropIndicatorShown(True)
+
+		def drop(event):
+			if len(self.items) < 1:
+				return False
+
+			def find_row_from(bytearray):
+				ds = QtCore.QDataStream(bytearray)
+				return ds.readInt32()
+
+			data = event.mimeData()
+			x_abstract_list = 'application/x-qabstractitemmodeldatalist'
+			if data.hasFormat(x_abstract_list):
+				indices = find_row_from(data.data(x_abstract_list))
+				row_from = indices
+
+				row_to = self.control.indexFromItem(self.control.itemAt(event.pos())).row()
+				if self.control.dropIndicatorPosition().name == b"BelowItem":
+					row_to += 1
+
+				if row_from < row_to:
+					row_to -= 1
+
+				if row_to == -1:
+					return False
+
+				with self.index_change.suspend_updates():
+					self.items = rearrange(self.items, row_from, row_to)
+				self.index = row_to
+				self.control.repaint()
+
+			return False
+
+		self.control.dropEvent = drop
 
 		yield self.control
 
@@ -69,9 +119,11 @@ class ControlList(ControlBase, ItemMixin):
 		self.remove_button = ControlButton("- Remove", on_click=make_handler("remove_click"))
 		yield ensure_widget(Row(self.add_button, self.remove_button))
 
+
 	@property
 	def index(self) -> int:
 		return self.control.currentRow()
+
 
 	@index.setter
 	def index(self, value: int):
@@ -80,6 +132,7 @@ class ControlList(ControlBase, ItemMixin):
 		if value == -1:
 			self.index_change(value)
 
+
 	def set_display_names(self, display_names):
 		with self.index_change.suspend_updates():
 			self.control.clear()
@@ -87,10 +140,21 @@ class ControlList(ControlBase, ItemMixin):
 				self.control.addItems(display_names)
 			self.control.repaint()
 
+
 	@property
 	def value(self):
 		return [value for value, _ in self.items]
 
+
 	@value.setter
 	def value(self, value):
 		self.items = value
+
+
+	@property
+	def rearrangeable(self):
+		self.control.dragEnabled()
+
+	@rearrangeable.setter
+	def rearrangeable(self, value):
+		self.control.setDragEnabled(value)
