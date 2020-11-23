@@ -1,5 +1,6 @@
 import typing
 from formify.controls._events import EventDispatcher
+from collections import Iterable
 from PySide2 import QtWidgets
 
 class ValueMixin:
@@ -99,11 +100,9 @@ class ItemMixin:
 		display_names = [
 			name for _, name in self._items
 		]
-		if not self.display_names_change_detector(display_names):
-			return
-
-		# set the items in actual widget
-		self.set_display_names(display_names)
+		if self.display_names_change_detector(display_names):
+			# set the items in actual widget
+			self.set_display_names(display_names)
 
 		## set the correct index
 		# index was -1 but and item was added
@@ -114,7 +113,9 @@ class ItemMixin:
 			index = -1
 		# index is fine and does not need to be adjusted
 		if len(self._items) > index:
-			self.index = index
+			# only change the index if required
+			if self.index != index:
+				self.index = index
 		# not enough items - reduce index by
 		elif len(self._items) > 0:
 			self.index = len(self._items) - 1
