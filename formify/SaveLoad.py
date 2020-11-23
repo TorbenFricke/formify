@@ -1,4 +1,4 @@
-import json, warnings, threading, time, pathlib, os, traceback
+import json, warnings, threading, time, pathlib, os, traceback, io
 from formify.controls import Form
 from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
@@ -242,8 +242,14 @@ class LoadSaveHandler:
 	def read_recently_used_files(self, n=10):
 		if not os.path.isfile(self.recent_filename):
 			return []
-		with open(self.recent_filename) as f:
-			lines = tail(f, lines=n*2)
+		try:
+			with open(self.recent_filename) as f:
+				lines = tail(f, lines=n*2)
+		except io.UnsupportedOperation:
+			with open(self.recent_filename) as f:
+				lines = f.readlines()
+
+		lines = [clean for line in lines if (clean := line.strip(" \n")) != ""]
 
 		# remove duplicates and reverse
 		lines = list(set(reversed(lines)))
