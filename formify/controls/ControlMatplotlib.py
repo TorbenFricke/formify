@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtCore
-import typing, warnings
-from formify.controls._events import EventDispatcher
+import warnings
+
 
 class Signaller(QtCore.QObject):
 	signal = QtCore.Signal(str)
