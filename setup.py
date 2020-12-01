@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="formify",
-    version="0.6.0dev1",
+    version="0.6.0",
     packages=find_packages(),
 	package_data={
         "": ["*.css"],
