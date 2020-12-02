@@ -1,7 +1,5 @@
-from formify import controls, layout, tools
-from formify.SaveLoad import LoadSaveHandler
-from formify.window import MainWindow
-from PySide2 import QtGui
+from formify import controls, layout
+from formify import tools
 
 import pathlib, os
 
@@ -33,13 +31,13 @@ def _generate_appname():
 		pass
 	return name
 
-
 class App(QtWidgets.QApplication):
 	def __init__(self, css=""):
 		super().__init__(sys.argv)
 		self.setStyleSheet(f"{stylesheet()}\n{css}")
 		self.name = _generate_appname()
 		self.singe_instance = None
+		self.translator = tools.load_save_translator()
 
 	def run(self):
 		# Run the main Qt loop
@@ -75,3 +73,10 @@ app = App()
 
 def run():
 	app.run()
+
+
+# import some stuff here to prevent circular imports
+from formify.SaveLoad import LoadSaveHandler
+from formify.window import MainWindow
+from PySide2 import QtGui
+

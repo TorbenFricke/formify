@@ -1,7 +1,8 @@
-import json, warnings, threading, time, pathlib, os, traceback, io
+import json, threading, time, pathlib, os, traceback, io
 from formify.controls import Form
 from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
+from formify import app
 
 
 def default_save(form, file_name):
@@ -139,13 +140,15 @@ class LoadSaveHandler:
 		def make_open_handler(filename):
 			return lambda : self.open(filename)
 
+		t = app.translator
+
 		return {
-			"Open...": (self.open, "ctrl+o"),
-			"Open Recent": {
+			t("Open..."): (self.open, "ctrl+o"),
+			t("Open Recent"): {
 				line: make_open_handler(line) for line in lines
 			},
-			"Save": (self.save, "ctrl+s"),
-			"Save as...": (self.save_as, "ctrl+shift+s")
+			t("Save"): (self.save, "ctrl+s"),
+			t("Save As..."): (self.save_as, "ctrl+shift+s")
 		}
 
 
@@ -170,20 +173,22 @@ class LoadSaveHandler:
 
 
 	def save_as(self):
-		self.file_name = save_dialog(title="Save as...", filter=self.file_extension_filter())
+		self.file_name = save_dialog(title=app.translator("Save As..."), filter=self.file_extension_filter())
 		if self.file_name == "":
 			return
 		self.save()
 
 
 	def open(self, filename=None):
+		t = app.translator
+
 		if self.no_changes > 0 and not yes_no_dialog(
-				"Are you sure?",
-				"All current changes will be lost. Are you sure you want to open another file?"):
+				t("Are you sure?"),
+				t("All current changes will be lost. Are you sure you want to open another file?")):
 			return
 
 		if not filename:
-			self.file_name = open_dialog(title="Open...", filter=self.file_extension_filter())
+			self.file_name = open_dialog(title=t("Open..."), filter=self.file_extension_filter())
 		else:
 			self.file_name = filename
 
@@ -191,7 +196,7 @@ class LoadSaveHandler:
 			return
 
 		if not os.path.isfile(self.file_name):
-			ok_dialog("File not found", f"'{self.file_name}' does not seem to exist.")
+			ok_dialog(t("File not found"), f"'{self.file_name}' {t('does not seem to exist.')}")
 			return
 
 		try:
@@ -226,7 +231,7 @@ class LoadSaveHandler:
 
 		default_open(self.form, self.autosave_filename)
 		self.no_autosave_changes = 0
-		self.restored_label = " (restored)"
+		self.restored_label = f" ({app.translator('restored')})"
 		# trigger event to update titlebar
 		self.file_name_changed(self.file_name)
 		return True

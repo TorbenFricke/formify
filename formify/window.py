@@ -21,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
 	             menu:dict=None,
 	             load_save_handler: LoadSaveHandler=None,
 	             allowed_file_extensions:list=None,
-	             auto_run=True,):
+	             auto_run=True):
 		super().__init__()
 
 		self.form = ensure_form(layout_widget_form)
@@ -122,7 +122,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		menubar = self.menuBar()
 
-		key = "File"
+		key = formify.app.translator("File")
 		menu = menubar.addMenu(key)
 
 		# load save menu
