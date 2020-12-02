@@ -2,7 +2,11 @@ import json
 
 
 class Translator:
-	def __init__(self, language="en"):
+	def __init__(self, language:str=None):
+		# get the systems default language
+		if language is None:
+			import locale
+			language = locale.getdefaultlocale()[0].split("_")[0]
 		self.language = language
 		self.translations = {}
 
@@ -18,14 +22,14 @@ class Translator:
 
 	def load(self, file_name):
 		with open(file_name) as f:
-			self.__dict__.update(json.load(f))
+			self.translations.update(json.load(f))
 
 	def save(self, file_name):
 		with open(file_name, "w+") as f:
-			json.dump(self.__dict__, f, indent=4, sort_keys=True)
+			json.dump(self.translations, f, indent=2, sort_keys=True)
 
 
-def load_save_translator(*args, **kwargs) -> Translator:
+def default_translator(*args, **kwargs) -> Translator:
 	translator = Translator(*args, **kwargs)
 	translator.translations.update({
 		"Open...": {"de": "Öffnen..."},
@@ -39,14 +43,18 @@ def load_save_translator(*args, **kwargs) -> Translator:
 		"does not seem to exist.": {"de": "scheint nicht zu existieren."},
 		"restored": {"de": "wiederhergestellt"},
 		"File": {"de": "Datei"},
+		"+ Add": {"de": "+ Hinzufügen"},
+		"- Remove": {"de": "+ Löschen"},
 	})
 	return translator
 
 
-def simple_language_switch(language_index):
-	def translate(*args):
-		if len(args) <= language_index:
-			return args[0]
-		return args[language_index]
+def language_switch(translator: Translator, language_order: list) -> callable:
+	def switch(*args):
+		try:
+			index = language_order.index(translator.language)
+		except:
+			index = 0
+		return args[index]
 
-	return translate
+	return switch

@@ -1,5 +1,6 @@
 from formify.controls import ControlBase, ControlButton
 from formify.layout import Row, ensure_widget
+from formify import app
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtCore import Qt
 import typing
@@ -115,8 +116,8 @@ class ControlList(ControlBase, ItemMixin):
 				except TypeError:
 					func()
 			return wrapped
-		self.add_button = ControlButton("+ Add", on_click=make_handler("add_click"))
-		self.remove_button = ControlButton("- Remove", on_click=make_handler("remove_click"))
+		self.add_button = ControlButton(app.translator("+ Add"), on_click=make_handler("add_click"))
+		self.remove_button = ControlButton(app.translator("- Remove"), on_click=make_handler("remove_click"))
 		yield ensure_widget(Row(self.add_button, self.remove_button))
 
 

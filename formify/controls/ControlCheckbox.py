@@ -1,4 +1,5 @@
 from formify.controls._mixins import ValueMixin
+from formify import app
 from PySide2 import QtWidgets
 import typing
 
@@ -15,7 +16,7 @@ class ControlCheckbox(ValueMixin, QtWidgets.QCheckBox):
 			if variable_name is None:
 				label = self.__class__.__name__
 			else:
-				label = variable_name
+				label = app.translator(variable_name)
 
 		QtWidgets.QCheckBox.__init__(self, parent=parent, text=label)
 

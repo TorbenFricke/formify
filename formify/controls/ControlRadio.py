@@ -1,6 +1,6 @@
-from formify.controls import ControlBase
+from formify import app
 from formify.controls._mixins import ValueMixin
-from PySide2 import QtWidgets, QtCore
+from PySide2 import QtWidgets
 import typing
 
 
@@ -16,7 +16,7 @@ class ControlRadio(ValueMixin, QtWidgets.QRadioButton):
 			if variable_name is None:
 				label = self.__class__.__name__
 			else:
-				label = variable_name
+				label = app.translator(variable_name)
 
 		QtWidgets.QRadioButton.__init__(self, parent=parent, text=label)
 

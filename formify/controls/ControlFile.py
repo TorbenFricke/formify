@@ -1,8 +1,9 @@
 from formify.controls import ControlBase
-from PySide2 import QtWidgets, QtGui
+from PySide2 import QtWidgets
 from formify.layout import ensure_widget, Row
 from formify.controls import ControlButton
 from formify.tools import open_dialog
+from formify import app
 import typing
 
 class ControlFile(ControlBase):
@@ -24,7 +25,7 @@ class ControlFile(ControlBase):
 		self.control = QtWidgets.QLineEdit(parent=self)
 		self.control.textChanged.connect(on_change)
 
-		self.button = ControlButton("Open...", on_click=self.show_dialog)
+		self.button = ControlButton(app.translator("Open..."), on_click=self.show_dialog)
 
 		return ensure_widget(
 			Row(self.control, self.button)

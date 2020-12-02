@@ -1,5 +1,6 @@
 from PySide2 import QtWidgets, QtCore
 import typing
+from formify import app
 
 from formify.controls._mixins import ValueMixin
 
@@ -25,7 +26,7 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 			if variable_name is None:
 				label = ""
 			else:
-				label = variable_name
+				label = app.translator(variable_name)
 
 		self._make_label_widget(label)
 		self.layout = self._formset()
@@ -38,6 +39,7 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 	def _make_label_widget(self, label):
 		self.label_widget = QtWidgets.QLabel(text=label, parent=self)
 		self.label_widget.setMargin(0)
+		self.label_widget.setWordWrap(True)
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		# to be implemented by subclass

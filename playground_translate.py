@@ -2,15 +2,12 @@ from formify.layout import *
 from formify.controls import *
 import formify
 
-formify.app.translator.language = "de"
+def change_langauge(sender, language):
+	formify.app.translator.language = language
 
 ui = Form(Col(
-	ControlCombo("Mode", items=[("German", "de"), ("English", "en")], variable_name="language"),
-	ControlText("To be translated:", variable_name="translate"),
-	ControlButton("Print Translation", on_click=lambda : print(translator(ui.value["translate"]))),
+	ControlCombo("Mode", items=[("de", "Deutsch"), ("en", "English")], variable_name="language", on_change=change_langauge),
+	ControlFile(),
 ))
 
-main_window = formify.MainWindow(ui, margin=8, auto_run=False)
-
-main_window.show()
-formify.app.run()
+main_window = formify.MainWindow(ui, margin=8)
