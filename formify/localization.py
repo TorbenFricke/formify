@@ -44,7 +44,7 @@ def default_translator(*args, **kwargs) -> Translator:
 		"restored": {"de": "wiederhergestellt"},
 		"File": {"de": "Datei"},
 		"+ Add": {"de": "+ Hinzufügen"},
-		"- Remove": {"de": "+ Löschen"},
+		"- Remove": {"de": "- Löschen"},
 	})
 	return translator
 
