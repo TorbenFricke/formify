@@ -77,10 +77,16 @@ formify.tools.Relationship(
 	(voltage_str, lambda : voltage.value / math.sqrt(3))
 )
 
+image = ControlImage("nyan_cat.png")
+def set_image_width(w):
+	image.width = w
+
 sidebar = SidebarContentView({
 	"General": SplitterCol(
 		voltage,
 		voltage_str,
+		ControlFloat("Image Width", on_change=lambda _, w: set_image_width(w)),
+		image,
 		Row(
 			ControlList("Drag'n drop", items=["A", "B", "C", "D", "E", "F", "G"]),
 			ControlList("2nd List", items=["A", "B"]),

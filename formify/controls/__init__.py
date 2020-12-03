@@ -16,6 +16,7 @@ from formify.controls.ControlTree import ControlTree
 from formify.controls.ControlFile import ControlFile
 from formify.controls.ControlHtml import ControlHtml
 from formify.controls.ControlDiff import ControlDiff
+from formify.controls.ControlImage import ControlImage
 
 # TODO check if matplotlib is installed
 from formify.controls.ControlMatplotlib import ControlMatplotlib
