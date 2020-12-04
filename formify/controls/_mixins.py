@@ -83,15 +83,18 @@ class ItemMixin:
 		## set the correct index
 		# index was -1 but and item was added
 		if index == -1 and len(self._items) > 0:
-			index = 0
+			self.index = 0
+
 		# no items remaining
-		if len(self._items) == 0:
-			index = -1
+		elif len(self._items) == 0:
+			if index != -1:
+				self.index = -1
+
 		# index is fine and does not need to be adjusted
-		if len(self._items) > index:
-			# only change the index if required
-			if self.index != index:
-				self.index = index
+		elif len(self._items) > index:
+			# do noting
+			pass
+
 		# not enough items - reduce index by
 		elif len(self._items) > 0:
 			self.index = len(self._items) - 1

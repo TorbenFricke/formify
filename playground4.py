@@ -93,6 +93,7 @@ sidebar = SidebarContentView({
 		),
 	),
 	"Material": material_form,
+	"List": ListForm(Form(ControlText(variable_name="blaa")))
 })
 
 formify.app.allow_multiple_instances = False

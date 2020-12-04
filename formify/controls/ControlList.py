@@ -139,7 +139,6 @@ class ControlList(ControlBase, ItemMixin):
 			self.control.clear()
 			if len(display_names) > 0:
 				self.control.addItems(display_names)
-			self.control.repaint()
 
 
 	@property
@@ -154,7 +153,7 @@ class ControlList(ControlBase, ItemMixin):
 
 	@property
 	def rearrangeable(self):
-		self.control.dragEnabled()
+		return self.control.dragEnabled()
 
 	@rearrangeable.setter
 	def rearrangeable(self, value):
