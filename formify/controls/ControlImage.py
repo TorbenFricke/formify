@@ -1,13 +1,15 @@
 from PySide2 import QtWidgets, QtGui
 
 class ControlImage(QtWidgets.QLabel):
-	def __init__(self, file_name:str=None):
+	def __init__(self, file_name:str=None, width=None, height=None):
 
 		QtWidgets.QLabel.__init__(self)
 
 		self._file_name = file_name
 		self._pixelmap = None
 		self.set_image()
+		self.width = width
+		self.height = height
 
 
 	def set_image(self):
@@ -38,6 +40,8 @@ class ControlImage(QtWidgets.QLabel):
 
 	@width.setter
 	def width(self, value):
+		if value is None:
+			return
 		self.scale(value, 100000)
 
 
@@ -47,4 +51,6 @@ class ControlImage(QtWidgets.QLabel):
 
 	@height.setter
 	def height(self, value):
+		if value is None:
+			return
 		self.scale(100000, value)
