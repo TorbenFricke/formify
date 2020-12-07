@@ -54,10 +54,10 @@ class ListForm(Form):
 
 		with self.model_form.change.suspend_updates():
 			#print("_update_form")
-			form_data = self.control.selected_item[0]
+			form_data = self.control.selected_item
 			if form_data is None:
 				return
-			self.model_form.value = self.control.selected_item[0]
+			self.model_form.value = self.control.selected_item
 
 		self.repaint()
 
@@ -72,7 +72,7 @@ class ListForm(Form):
 
 	@property
 	def value(self):
-		return [value for value, _ in self.control.items]
+		return self.control.items
 
 	@value.setter
 	def value(self, value):

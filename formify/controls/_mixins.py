@@ -76,6 +76,15 @@ class ItemMixin:
 		return str(item)
 
 
+	@staticmethod
+	def strip_display_names(items):
+		def strip_display_name(item):
+			if isinstance(item, tuple) and isinstance(item[1], str):
+				return item[0]
+			return item
+		return list(map(strip_display_name, items))
+
+
 	@property
 	def items(self):
 		return self._items
@@ -85,10 +94,14 @@ class ItemMixin:
 		if value is None:
 			value = []
 
-		self._items = value
+		# seperate actual items and display names
+		display_names = self.display_names(value)
+		items = self.strip_display_names(value)
+
+		self._items = items
 		index = self.index
 
-		self.set_display_names(self.display_names(value))
+		self.set_display_names(display_names)
 
 		## set the correct index
 		# index was -1 but and item was added
@@ -115,7 +128,7 @@ class ItemMixin:
 	@property
 	def selected_item(self):
 		if len(self._items) == 0:
-			return None, None
+			return None
 		return self._items[self.index]
 
 	@selected_item.setter
@@ -123,7 +136,6 @@ class ItemMixin:
 		if len(self._items) == 0:
 			self._items = [value]
 			self.items = self._items
-			self.index = 0
 		else:
 			self._items[self.index] = value
 			self.items = self._items

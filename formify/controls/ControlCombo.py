@@ -55,14 +55,18 @@ class ControlCombo(ControlBase, ItemMixin):
 
 	@property
 	def value(self):
-		if self.index < 0:
-			return None
-		return self._items[self.index][0]
+		item = self.selected_item
+		if isinstance(item, tuple) and isinstance(item[1], str):
+			try:
+				item = item[1]
+			except:
+				pass
+		return item
 
 
 	@value.setter
 	def value(self, value):
 		for i, item in enumerate(self._items):
-			if item[0] == value:
+			if item == value:
 				self.index = i
 

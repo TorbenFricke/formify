@@ -23,6 +23,7 @@ class ControlList(ControlBase, ItemMixin):
 	             items: list=None,
 	             parent: QtWidgets.QWidget = None,
 	             on_change: typing.Callable = None,
+				 display_name_callback: callable = str,
 	             rearrangeable:bool = True):
 
 		# events
@@ -41,7 +42,7 @@ class ControlList(ControlBase, ItemMixin):
 		                     parent=parent,
 		                     on_change=on_change)
 
-		ItemMixin.__init__(self, items)
+		ItemMixin.__init__(self, items, display_name_callback=display_name_callback)
 		self.change = EventDispatcher(self)
 		self.items_change.subscribe(lambda: self.change())
 
@@ -162,7 +163,7 @@ class ControlList(ControlBase, ItemMixin):
 
 	@property
 	def value(self):
-		return [value for value, _ in self.items]
+		return self.items
 
 
 	@value.setter
