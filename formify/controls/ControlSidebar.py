@@ -36,8 +36,12 @@ class SidebarButton(QtWidgets.QPushButton):
 
 
 class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
-	def __init__(self, items:typing.List[str], variable_name:str=None,
-	             value:str=None, on_change:typing.Callable=None):
+	def __init__(self,
+				 items:typing.List[str],
+				 variable_name:str=None,
+	             value:str=None,
+				 on_change:typing.Callable=None,
+				 display_name_callback=str):
 		QtWidgets.QFrame.__init__(self)
 		self.buttons: typing.List[SidebarButton] = []
 		self._make_layout()
@@ -47,7 +51,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		self.index_change.subscribe(self._update_checked_states)
 
 		self._index = -1
-		ItemMixin.__init__(self, items)
+		ItemMixin.__init__(self, items, display_name_callback)
 		self.index = 0
 
 		ValueMixin.__init__(self, variable_name, value, on_change)

@@ -10,6 +10,7 @@ class ControlCombo(ControlBase, ItemMixin):
 	             label:str=None,
 	             items:list=None,
 	             value=None,
+				 display_name_callback=str,
 	             *args,
 	             **kwargs):
 
@@ -20,7 +21,7 @@ class ControlCombo(ControlBase, ItemMixin):
 		                     **kwargs)
 
 		# normalize items array
-		ItemMixin.__init__(self, items)
+		ItemMixin.__init__(self, items, display_name_callback)
 
 		if value is not None:
 			self.value = value
