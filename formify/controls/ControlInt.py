@@ -4,7 +4,10 @@ from PySide2.QtGui import QIntValidator
 def _str2int(s:str) -> int:
 	if s == "":
 		return 0
-	return int(s)
+	try:
+		return int(s)
+	except:
+		return int(float(s))
 
 
 class ControlInt(ControlText):
