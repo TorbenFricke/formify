@@ -56,11 +56,11 @@ def tail(f, lines=20):
 	while lines_to_go > 0 and block_end_byte > 0:
 		if (block_end_byte - BLOCK_SIZE > 0):
 			# read the last block we haven't yet read
-			f.seek(block_number*BLOCK_SIZE, 2)
+			f.seek(block_number * BLOCK_SIZE, 2)
 			blocks.append(f.read(BLOCK_SIZE))
 		else:
 			# file too small, start from begining
-			f.seek(0,0)
+			f.seek(0, 0)
 			# only read what was not read
 			blocks.append(f.read(block_end_byte))
 		lines_found = blocks[-1].count('\n')
@@ -74,7 +74,7 @@ def tail(f, lines=20):
 class LoadSaveHandler:
 	def __init__(self,
 				 main_form: Form,
-				 allowed_file_extensions:list=None,
+				 allowed_file_extensions: list = None,
 				 save_handler=default_save,
 				 open_handler=default_open):
 
@@ -90,9 +90,11 @@ class LoadSaveHandler:
 
 		# keep track of number of changes
 		self._no_changes = 0
+
 		def inc_changes():
 			self.no_changes += 1
 			self.no_autosave_changes += 1
+
 		self.form.change.subscribe(inc_changes)
 		self.no_changes_changed = EventDispatcher(self)
 
@@ -109,11 +111,9 @@ class LoadSaveHandler:
 		self.recent_filename = ensure_appdata_dir() / "recent.txt"
 		self.file_name_changed.subscribe(self.append_recently_used_list)
 
-
 	@property
 	def file_name(self):
 		return self._file_name
-
 
 	@file_name.setter
 	def file_name(self, value):
@@ -123,22 +123,20 @@ class LoadSaveHandler:
 			self.restored_label = ""
 		self.file_name_changed(value)
 
-
 	@property
 	def no_changes(self):
 		return self._no_changes
-
 
 	@no_changes.setter
 	def no_changes(self, value):
 		self._no_changes = value
 		self.no_changes_changed(value)
 
-
 	def menu(self):
 		lines = self.read_recently_used_files()
+
 		def make_open_handler(filename):
-			return lambda : self.open(filename)
+			return lambda: self.open(filename)
 
 		t = app.translator
 
@@ -151,13 +149,11 @@ class LoadSaveHandler:
 			t("Save As..."): (self.save_as, "ctrl+shift+s")
 		}
 
-
 	def file_extension_filter(self):
 		if self.allowed_file_extensions is not None:
 			return ";;".join([f"*.{ext}" for ext in self.allowed_file_extensions])
 		else:
 			return "*"
-
 
 	def save(self):
 		if self.file_name == "":
@@ -171,13 +167,11 @@ class LoadSaveHandler:
 			self.purge_autosave()
 			self.no_changes = 0
 
-
 	def save_as(self):
 		self.file_name = save_dialog(title=app.translator("Save As..."), filter=self.file_extension_filter())
 		if self.file_name == "":
 			return
 		self.save()
-
 
 	def open(self, filename=None):
 		t = app.translator
@@ -207,7 +201,6 @@ class LoadSaveHandler:
 			self.no_changes = 0
 			self.purge_autosave()
 
-
 	def autosave(self):
 		if self.no_autosave_changes > 0:
 			try:
@@ -216,7 +209,6 @@ class LoadSaveHandler:
 			except:
 				pass
 
-
 	def purge_autosave(self):
 		self.no_autosave_changes = 0
 		try:
@@ -224,18 +216,20 @@ class LoadSaveHandler:
 		except FileNotFoundError:
 			pass
 
-
 	def restore(self):
 		if not os.path.exists(self.autosave_filename):
 			return False
 
-		default_open(self.form, self.autosave_filename)
+		try:
+			default_open(self.form, self.autosave_filename)
+		except json.decoder.JSONDecodeError:
+			os.rename(self.autosave_filename, f"{self.autosave_filename}-broken")
+
 		self.no_autosave_changes = 0
 		self.restored_label = f" ({app.translator('restored')})"
 		# trigger event to update titlebar
 		self.file_name_changed(self.file_name)
 		return True
-
 
 	def append_recently_used_list(self):
 		if self.file_name == "":
@@ -243,13 +237,12 @@ class LoadSaveHandler:
 		with open(self.recent_filename, "a+") as f:
 			f.write(self.file_name + "\n")
 
-
 	def read_recently_used_files(self, n=10):
 		if not os.path.isfile(self.recent_filename):
 			return []
 		try:
 			with open(self.recent_filename) as f:
-				lines = tail(f, lines=n*2)
+				lines = tail(f, lines=n * 2)
 		except io.UnsupportedOperation:
 			with open(self.recent_filename) as f:
 				lines = f.readlines()

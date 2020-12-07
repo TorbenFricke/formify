@@ -47,24 +47,34 @@ class ValueMixin:
 
 
 class ItemMixin:
-	def __init__(self, items):
+	def __init__(self, items, display_name_callback=str):
 		self.items_change = EventDispatcher(self)
+		self.display_name_callback = display_name_callback
 		self._items = []
 		self.items = items
 
-	@staticmethod
-	def key_value(_items):
+
+	def display_names(self, _items):
 		if _items is None:
 			return []
-		for item in _items:
-			yield ItemMixin.key_value_single(item)
+		return list(map(self.display_name, _items))
 
-	@staticmethod
-	def key_value_single(item):
+
+	def display_name(self, item):
+		# item is a string -> just use it
 		if type(item) == str:
-			return item, item
+			return item
+		# provided a label -> use that
+		elif isinstance(item, tuple) and isinstance(item[1], str):
+			return item[1]
+		# use the display name callback
 		else:
-			return item[0], item[1]
+			try:
+				return self.display_name_callback(item)
+			except:
+				pass
+		return str(item)
+
 
 	@property
 	def items(self):
@@ -72,13 +82,13 @@ class ItemMixin:
 
 	@items.setter
 	def items(self, value):
-		self._items = list(self.key_value(value))
+		if value is None:
+			value = []
+
+		self._items = value
 		index = self.index
 
-		display_names = [
-			name for _, name in self._items
-		]
-		self.set_display_names(display_names)
+		self.set_display_names(self.display_names(value))
 
 		## set the correct index
 		# index was -1 but and item was added

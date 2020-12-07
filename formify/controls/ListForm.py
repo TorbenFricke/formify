@@ -9,7 +9,6 @@ class ListForm(Form):
 	             display_name_callback:typing.Callable=str, *args, **kwargs):
 		self.model_form = model_form
 		self._suspend_update_events = False
-		self.repr = display_name_callback
 
 		# generate the master layout containing all widgets and sub layouts
 		self.control = ControlList(label=label, add_click=self.new_item)
@@ -17,6 +16,8 @@ class ListForm(Form):
 			self.control,
 			self.model_form
 		)
+
+		self.control.display_name_callback = display_name_callback
 
 		# initialize superclass
 		Form.__init__(self, layout=layout, *args, **kwargs)
@@ -39,8 +40,7 @@ class ListForm(Form):
 
 
 	def new_item(self):
-		value = self.model_form.value
-		self.control.items += [(value, self._repr(value))]
+		self.control.items += [self.model_form.value]
 		self.control.index = len(self.control.items) - 1
 
 
@@ -61,26 +61,14 @@ class ListForm(Form):
 
 		self.repaint()
 
-	def _repr(self, x):
-		try:
-			out = self.repr(x)
-		except Exception as e:
-			out = str(x)
-			print(f"Error while generating string representation "
-			      f"for ListForm {self.variable_name}: \n{e}")
-		return out
-
-
 	def _update_list(self):
 		if self._suspend_update_events:
 			return
 		with self.control.index_change.suspend_updates():
 			#print("_update_list")
 			form_data = self.model_form.value
-			self.control.selected_item = (
-				form_data,
-				self._repr(form_data)
-			)
+			self.control.selected_item = form_data
+
 
 	@property
 	def value(self):
@@ -88,7 +76,7 @@ class ListForm(Form):
 
 	@value.setter
 	def value(self, value):
-		self.control.items = [(val, self._repr(val)) for val in value]
+		self.control.items = value
 
 	@property
 	def all_values(self):

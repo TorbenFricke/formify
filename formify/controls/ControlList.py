@@ -135,11 +135,30 @@ class ControlList(ControlBase, ItemMixin):
 
 
 	def set_display_names(self, display_names):
+		def name_changed():
+			if self.control.count() != len(display_names):
+				return True
+			# check if item changed
+			for i, new_name in enumerate(display_names):
+				current_name = self.control.item(i)
+				if current_name != new_name:
+					return True
+			return False
+
+		if not name_changed():
+			return
+
 		with self.index_change.suspend_updates():
+			# remember index
+			index = self.index
+
+			# set new values
 			self.control.clear()
 			if len(display_names) > 0:
 				self.control.addItems(display_names)
 
+			# reset index
+			self.index = index
 
 	@property
 	def value(self):

@@ -20,7 +20,7 @@ class SidebarContentView(QtWidgets.QWidget):
 		)
 
 		def set_visible(index):
-			self.content.visible = self.sidebar.items[index][0]
+			self.content.visible = self.sidebar.items[index]
 
 		self.sidebar.index_change.subscribe(
 			lambda sender, index: set_visible(index)

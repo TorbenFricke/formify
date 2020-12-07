@@ -52,8 +52,6 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 
 		ValueMixin.__init__(self, variable_name, value, on_change)
 
-		self.index_change.subscribe(self._update_checked_states)
-
 
 	def _make_button(self, text):
 		def make_set_checked(idx):
@@ -98,12 +96,15 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 
 	def set_display_names(self, display_names):
 		def ensure_number_buttons(n):
+			# correct number of buttons
 			if n == len(self.buttons):
 				return
+			# remove buttons
 			while n < len(self.buttons):
 				btn = self.layout().takeAt(n)
 				self.buttons.pop(n)
 				btn.widget().deleteLater()
+			# add buttons
 			while n > len(self.buttons):
 				self._make_button("")
 
@@ -114,10 +115,10 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 
 	@property
 	def value(self):
-		return self.items[self.index][0]
+		return self.items[self.index]
 
 	@value.setter
 	def value(self, value):
 		for i, item in enumerate(self.items):
-			if item[0] == value:
+			if item == value:
 				self.index = i
