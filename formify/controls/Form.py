@@ -3,14 +3,15 @@ from formify.layout import ensure_layout
 from PySide2 import QtWidgets
 import typing
 
+
 def walk(widget) -> typing.List[ValueMixin]:
 	controls = []
 	for child in widget.children():
 		if isinstance(child, ValueMixin):
 			# print(f"{child} is a control with variable {child.variable_name}")
 			controls.append(child)
-		elif isinstance(child,QtWidgets.QWidget):
-			#print(f"{child} is not a control")
+		elif isinstance(child, QtWidgets.QWidget):
+			# print(f"{child} is not a control")
 			controls += walk(child)
 	return controls
 
@@ -61,13 +62,14 @@ def set_values(controls, data, relevant_values, all_values=False):
 
 __FLATTEN__ = "__flatten__"
 
+
 class Form(QtWidgets.QWidget, ValueMixin):
 	def __init__(self,
-	             layout:QtWidgets.QLayout,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             on_change: typing.Callable = None,
-	             parent:QtWidgets.QWidget=None,):
+				 layout: QtWidgets.QLayout,
+				 variable_name: str = None,
+				 value: typing.Any = None,
+				 on_change: typing.Callable = None,
+				 parent: QtWidgets.QWidget = None, ):
 		"""
 		Acts as a master control for all controls inside the "layout" that include a variable name.
 
@@ -92,12 +94,10 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		self.controls = self.get_controls()
 		self._subscribe_to_controls()
 
-
 	def get_controls(self):
 		controls = walk(self)
 		controls = [control for control in controls if control.variable_name is not None]
 		return controls
-
 
 	def _on_child_change(self, sender, value):
 		# this method is passed as a handler to all child controls
@@ -112,7 +112,6 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		for control in self.controls:
 			control.change.subscribe(self._on_child_change)
 
-
 	def __getitem__(self, key) -> ValueMixin:
 		for control in self.controls:
 			variable = control.variable_name
@@ -122,8 +121,10 @@ class Form(QtWidgets.QWidget, ValueMixin):
 
 			# update flattened forms
 			if variable == __FLATTEN__ and isinstance(control, Form):
-				return control[key]
-			
+				flattened_control = control[key]
+				if flattened_control is not None:
+					return flattened_control
+
 	@property
 	def value(self):
 		return extract_values_dict(self.controls)
@@ -167,11 +168,9 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		# trigger the event manually
 		self.change(relevant_values)
 
-
 	@property
 	def all_values(self):
 		return extract_values_dict(self.controls, all_values=True)
-
 
 	@all_values.setter
 	def all_values(self, value):

@@ -98,6 +98,7 @@ FigureCanvasQTAgg {
 
 ControlSidebar, SegmentSidebar {
     background-color: #dbdbdb;
+    border-radius: 0;
 }
 
 SidebarButton {
@@ -105,7 +106,8 @@ SidebarButton {
     border: 0;
     border-radius: 0;
     color: #535353;
-    padding: 8px;
+    padding: 12px;
+    margin: 0;
     font-size: 13pt;
     text-align: left;
     font-weight: bold;
@@ -126,10 +128,6 @@ SidebarButton:hover {
     background-color: #e5e5e5;
 }
 
-SidebarButton:focus, SidebarButton:checked:focus {
-    border: 1px solid #88b5e5;
-    border-radius: 3px;
-}
 
 SidebarButton:pressed {
     background-color: #dbdbdb;

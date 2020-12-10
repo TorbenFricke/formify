@@ -74,6 +74,8 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		layout = QtWidgets.QVBoxLayout()
 		layout.setAlignment(QtCore.Qt.AlignTop)
 		layout.setMargin(0)
+		layout.setSpacing(0)
+		layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(layout)
 
 

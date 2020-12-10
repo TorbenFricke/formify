@@ -87,7 +87,7 @@ class ItemMixin:
 
 	@property
 	def items(self):
-		return self._items
+		return self._items if self._items is not None else []
 
 	@items.setter
 	def items(self, value):
