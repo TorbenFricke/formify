@@ -224,6 +224,8 @@ class LoadSaveHandler:
 			default_open(self.form, self.autosave_filename)
 		except json.decoder.JSONDecodeError:
 			os.rename(self.autosave_filename, f"{self.autosave_filename}-broken")
+		except Exception as e:
+			traceback.print_exc()
 
 		self.no_autosave_changes = 0
 		self.restored_label = f" ({app.translator('restored')})"
