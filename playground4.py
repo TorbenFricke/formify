@@ -100,7 +100,7 @@ sidebar = SidebarContentView({
 	"Material": material_form,
 	"List": ListForm(Form(ControlText(variable_name="blaa")))
 }, bottom_widget=logo)
-sidebar.sidebar.bottom_widget.setContentsMargins(7, 7, 7, 7)
+sidebar.sidebar.bottom_layout.setContentsMargins(7, 7, 7, 7)
 
 
 formify.app.allow_multiple_instances = False
