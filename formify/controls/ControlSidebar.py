@@ -47,7 +47,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 				 bottom_widget: QtWidgets.QWidget=None):
 		QtWidgets.QFrame.__init__(self)
 		self._buttons: typing.List[SidebarButton] = []
-		self.top_layout, self.btn_layout, self.bottom_widget = self._make_layout()
+		self.top_layout, self.btn_layout, self.bottom_layout = self._make_layout()
 
 		if top_widget is not None:
 			self.top_layout.addWidget(top_widget)
@@ -85,6 +85,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 			_layout.setContentsMargins(margin, margin, margin, margin)
 			return _layout
 
+		bottom_layout
 		# make the main layout
 		layout = tight_col()
 		self.setLayout(layout)
