@@ -3,16 +3,13 @@ from PySide2 import QtWidgets
 import typing
 
 class SidebarContentView(QtWidgets.QWidget):
-	def __init__(self, layouts: dict, value:str = None, sidebar_class=None):
+	def __init__(self, layouts: dict, value:str = None, **kwargs):
 		QtWidgets.QWidget.__init__(self)
 		self.content = ConditionalLayout(layouts, visible=value)
 		self.content.layout().setMargin(8)
 
-		if sidebar_class is None:
-			# import sidebar now to prevent circular imports
-			from formify.controls import ControlSidebar
-			sidebar_class = ControlSidebar
-		self.sidebar = sidebar_class(list(layouts.keys()))
+		from formify.controls import ControlSidebar
+		self.sidebar = ControlSidebar(list(layouts.keys()), **kwargs)
 
 		from formify.layout import ScrollArea
 		self.setLayout(

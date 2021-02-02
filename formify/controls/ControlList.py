@@ -104,7 +104,7 @@ class ControlList(ControlBase, ItemMixin):
 
 		yield self.control
 
-		# make the buttons
+		# make the _buttons
 		def make_handler(func_name):
 			def wrapped():
 				# we have to get the function this way, as otherwise you

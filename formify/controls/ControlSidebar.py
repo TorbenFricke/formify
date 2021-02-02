@@ -1,5 +1,6 @@
 from PySide2 import QtWidgets, QtCore
 import typing
+from formify.layout import Col, text, ensure_widget
 from formify.controls import ControlButton
 from formify.controls._mixins import ItemMixin, ValueMixin
 from formify.controls._events import EventDispatcher
@@ -41,10 +42,17 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 				 variable_name:str=None,
 	             value:str=None,
 				 on_change:typing.Callable=None,
-				 display_name_callback=str):
+				 display_name_callback=str,
+				 top_widget: QtWidgets.QWidget=None,
+				 bottom_widget: QtWidgets.QWidget=None):
 		QtWidgets.QFrame.__init__(self)
-		self.buttons: typing.List[SidebarButton] = []
-		self._make_layout()
+		self._buttons: typing.List[SidebarButton] = []
+		self.top_layout, self.btn_layout, self.bottom_widget = self._make_layout()
+
+		if top_widget is not None:
+			self.top_layout.addWidget(top_widget)
+		if bottom_widget is not None:
+			self.bottom_widget.addWidget(bottom_widget)
 
 		# index change events
 		self.index_change = EventDispatcher(self)
@@ -63,32 +71,46 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 				self.index = idx
 			return wrapped
 
-		btn = SidebarButton(text, click=make_set_checked(len(self.buttons)))
-		self.buttons.append(btn)
-		self.layout().addWidget(btn)
+		btn = SidebarButton(text, click=make_set_checked(len(self._buttons)))
+		self._buttons.append(btn)
+		self.btn_layout.addWidget(btn)
 		return btn
 
-
 	def _make_layout(self):
-		# make layout
-		layout = QtWidgets.QVBoxLayout()
-		layout.setAlignment(QtCore.Qt.AlignTop)
-		layout.setMargin(0)
-		layout.setSpacing(0)
-		layout.setContentsMargins(0, 0, 0, 0)
+		def tight_col(margin=0):
+			_layout = QtWidgets.QVBoxLayout()
+			_layout.setAlignment(QtCore.Qt.AlignTop)
+			_layout.setMargin(0)
+			_layout.setSpacing(0)
+			_layout.setContentsMargins(margin, margin, margin, margin)
+			return _layout
+
+		# make the main layout
+		layout = tight_col()
 		self.setLayout(layout)
 
+		# top layout
+		top_layout = tight_col(margin=0)
+		layout.addLayout(top_layout, 0)
+
+		# button layout (with stretch)
+		btn_layout = tight_col()
+		layout.addLayout(btn_layout, 1)
+
+		# bottom layout - add some stretch
+		bottom_layout = tight_col(margin=0)
+		layout.addLayout(bottom_layout, 0)
+
+		return top_layout, btn_layout, bottom_layout
 
 	def _update_checked_states(self):
 		# set checked state on Push Buttons
-		for i, btn in enumerate(self.buttons):
+		for i, btn in enumerate(self._buttons):
 			btn.checked = i == self._index
-
 
 	@property
 	def index(self) -> int:
 		return self._index
-
 
 	@index.setter
 	def index(self, value: int):
@@ -99,25 +121,23 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		# cause event
 		self.index_change(value)
 
+	def ensure_number_buttons(self, n):
+		# correct number of _buttons
+		if n == len(self._buttons):
+			return
+		# remove _buttons
+		while n < len(self._buttons):
+			btn = self.btn_layout.takeAt(n)
+			self._buttons.pop(n)
+			btn.widget().deleteLater()
+		# add _buttons
+		while n > len(self._buttons):
+			self._make_button("")
 
 	def set_display_names(self, display_names):
-		def ensure_number_buttons(n):
-			# correct number of buttons
-			if n == len(self.buttons):
-				return
-			# remove buttons
-			while n < len(self.buttons):
-				btn = self.layout().takeAt(n)
-				self.buttons.pop(n)
-				btn.widget().deleteLater()
-			# add buttons
-			while n > len(self.buttons):
-				self._make_button("")
-
-		ensure_number_buttons(len(display_names))
+		self.ensure_number_buttons(len(display_names))
 		for i, name in enumerate(display_names):
-			self.buttons[i].label = name
-
+			self._buttons[i].label = name
 
 	@property
 	def value(self):

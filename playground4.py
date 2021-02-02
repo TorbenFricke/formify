@@ -81,6 +81,11 @@ image = ControlImage("nyan_cat.png")
 def set_image_width(w):
 	image.width = w
 
+logo = SegmentAlt(Col(
+	h2("Formify Playground"),
+	text("version: 4")
+))
+
 sidebar = SidebarContentView({
 	"General": SplitterCol(
 		voltage,
@@ -94,7 +99,9 @@ sidebar = SidebarContentView({
 	),
 	"Material": material_form,
 	"List": ListForm(Form(ControlText(variable_name="blaa")))
-})
+}, bottom_widget=logo)
+sidebar.sidebar.bottom_widget.setContentsMargins(7, 7, 7, 7)
+
 
 formify.app.allow_multiple_instances = False
 

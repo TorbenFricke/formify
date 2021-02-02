@@ -26,7 +26,7 @@ def disable_all_variables(widget):
 			if child.variable_name:
 				child.setEnabled(False)
 
-		# hide add and remove buttons on list control
+		# hide add and remove _buttons on list control
 		if isinstance(child, ListForm):
 			child.control.add_button.hide()
 			child.control.remove_button.hide()
