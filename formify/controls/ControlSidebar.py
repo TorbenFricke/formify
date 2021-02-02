@@ -52,7 +52,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		if top_widget is not None:
 			self.top_layout.addWidget(top_widget)
 		if bottom_widget is not None:
-			self.bottom_widget.addWidget(bottom_widget)
+			self.bottom_layout.addWidget(bottom_widget)
 
 		# index change events
 		self.index_change = EventDispatcher(self)
