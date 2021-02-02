@@ -85,7 +85,6 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 			_layout.setContentsMargins(margin, margin, margin, margin)
 			return _layout
 
-		bottom_layout
 		# make the main layout
 		layout = tight_col()
 		self.setLayout(layout)
