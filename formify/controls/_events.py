@@ -41,9 +41,11 @@ class EventDispatcher:
 			try:
 				# Try to provide the handler with the sender and the new value....
 				handler(self.parent, value)
+				continue
 			except TypeError:
-				# ... if that fails, try just to call it
-				handler()
+				pass
+			# ... if that fails, try just to call it
+			handler()
 
 	def __call__(self, value: typing.Any = None):
 		self._trigger(value)

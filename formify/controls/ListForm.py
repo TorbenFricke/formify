@@ -5,14 +5,21 @@ import typing
 
 
 class ListForm(Form):
-	def __init__(self, model_form: Form, value:typing.List=None, label:str="",
-	             display_name_callback:typing.Callable=str, *args, **kwargs):
+	def __init__(
+			self,
+			model_form: Form,
+			value:typing.List=None,
+			label:str="",
+	        display_name_callback:typing.Callable=str,
+			layout_class=SplitterRow,
+			*args,
+			**kwargs):
 		self.model_form = model_form
 		self._suspend_update_events = False
 
 		# generate the master layout containing all widgets and sub layouts
 		self.control = ControlList(label=label, add_click=self.new_item)
-		layout = SplitterRow(
+		layout = layout_class(
 			self.control,
 			self.model_form
 		)
@@ -44,7 +51,7 @@ class ListForm(Form):
 		self.control.index = len(self.control.items) - 1
 
 
-	def _update_form(self, *args):
+	def _update_form(self, *_):
 		if self.control.index == -1:
 			# nothing is selected? hide the Form and return early.
 			self.model_form.setVisible(False)
@@ -66,6 +73,8 @@ class ListForm(Form):
 			return
 		with self.control.index_change.suspend_updates():
 			#print("_update_list")
+			if self.control.items is None or len(self.control.items) == 0:
+				return
 			form_data = self.model_form.value
 			self.control.selected_item = form_data
 

@@ -33,11 +33,6 @@ form = Form(
 	)
 )
 
-list_form = ListForm(
-	form,
-	display_name_callback=lambda x: f'{x["type"]} ({x["color"]})',
-	variable_name="list_form"
-)
 
 def _draw():
 	# setup
@@ -46,9 +41,9 @@ def _draw():
 	ax.set_aspect('equal')
 
 	# plotting
-	for data in copy.deepcopy(list_form.value):
-		func = getattr(shapes, data.pop("type"))
-		func(ax, **data)
+	data = form.value
+	func = getattr(shapes, data.pop("type"))
+	func(ax, **data)
 
 	# show
 	ax.plot()
@@ -61,7 +56,7 @@ formify.MainWindow(
 	Row(
 		Segment(
 			h2("Shapes"),
-			list_form,
+			form,
 		),
 		plot
 	),

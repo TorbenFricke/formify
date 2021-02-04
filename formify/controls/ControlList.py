@@ -113,9 +113,10 @@ class ControlList(ControlBase, ItemMixin):
 				if func is None:
 					return
 				try:
-					func(self)
+					return func(self)
 				except TypeError:
-					func()
+					pass
+				return func()
 			return wrapped
 		self.add_button = ControlButton(app.translator("+ Add"), on_click=make_handler("add_click"))
 		self.remove_button = ControlButton(app.translator("- Remove"), on_click=make_handler("remove_click"))

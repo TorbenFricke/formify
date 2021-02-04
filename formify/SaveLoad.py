@@ -1,4 +1,4 @@
-import json, threading, time, pathlib, os, traceback, io
+import json, threading, time, pathlib, os, traceback, io, gzip
 from formify.controls import Form
 from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
@@ -6,15 +6,24 @@ from formify import app
 
 
 def default_save(form, file_name):
-	with open(file_name, "w+") as f:
+	with gzip.open(file_name, "wt") as f:
 		f.write(
-			json.dumps(form.all_values, indent=4)
+			json.dumps(form.all_values)
 		)
 
 
 def default_open(form, file_name):
-	with open(file_name) as f:
-		s = f.read()
+	try:
+		with gzip.open(file_name, "rt") as f:
+			s = f.read()
+	except FileNotFoundError:
+		return
+	except gzip.BadGzipFile:
+		try:
+			with open(file_name) as f:
+				s = f.read()
+		except:
+			return
 
 	form.all_values = json.loads(s)
 

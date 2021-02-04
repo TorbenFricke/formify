@@ -3,11 +3,12 @@ from formify.controls._events import EventDispatcher
 from collections import Iterable
 from PySide2 import QtWidgets
 
+
 class ValueMixin:
 	def __init__(self,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             on_change: typing.Callable = None):
+				 variable_name: str = None,
+				 value: typing.Any = None,
+				 on_change: typing.Callable = None):
 
 		self.variable_name = variable_name
 
@@ -45,36 +46,49 @@ class ValueMixin:
 		self.value = value
 
 
-
 class ItemMixin:
-	def __init__(self, items, display_name_callback=str):
+	def __init__(self, items, display_name_callback: typing.Union[dict, callable] = str):
 		self.items_change = EventDispatcher(self)
+
+		# display nam callback is a dict?
+		if isinstance(display_name_callback, dict):
+			# put it into known filenames...
+			self._known_display_names = display_name_callback
+			# ... and set display_name_callback to default value
+			display_name_callback = str
+		else:
+			self._known_display_names = {}
+
 		self.display_name_callback = display_name_callback
 		self._items = []
 		self.items = items
-
 
 	def display_names(self, _items):
 		if _items is None:
 			return []
 		return list(map(self.display_name, _items))
 
-
 	def display_name(self, item):
-		# item is a string -> just use it
-		if type(item) == str:
-			return item
 		# provided a label -> use that
-		elif isinstance(item, tuple) and isinstance(item[1], str):
-			return item[1]
-		# use the display name callback
+		if isinstance(item, tuple) and isinstance(item[1], str):
+			value, name = item
+			self._known_display_names[value] = name
+			return name
+
 		else:
+			# file name is known
+			try:
+				return self._known_display_names[item]
+			except:
+				pass
+			# use the display name callback
 			try:
 				return self.display_name_callback(item)
 			except:
 				pass
-		return str(item)
 
+		# last resort
+		return str(item)
 
 	@staticmethod
 	def strip_display_names(items):
@@ -82,8 +96,8 @@ class ItemMixin:
 			if isinstance(item, tuple) and isinstance(item[1], str):
 				return item[0]
 			return item
-		return list(map(strip_display_name, items))
 
+		return list(map(strip_display_name, items))
 
 	@property
 	def items(self):
@@ -139,7 +153,6 @@ class ItemMixin:
 		else:
 			self._items[self.index] = value
 			self.items = self._items
-
 
 	@property
 	def index(self) -> int:
