@@ -44,36 +44,6 @@ def ensure_appdata_dir():
 	return path
 
 
-def tail(f, lines=20):
-	# soruce https://stackoverflow.com/questions/136168/get-last-n-lines-of-a-file-similar-to-tail
-	total_lines_wanted = lines
-
-	BLOCK_SIZE = 1024
-	f.seek(0, 2)
-	block_end_byte = f.tell()
-	lines_to_go = total_lines_wanted
-	block_number = -1
-	# blocks of size BLOCK_SIZE, in reverse order starting from the end of the file
-	blocks = []
-
-	while lines_to_go > 0 and block_end_byte > 0:
-		if (block_end_byte - BLOCK_SIZE > 0):
-			# read the last block we haven't yet read
-			f.seek(block_number * BLOCK_SIZE, 2)
-			blocks.append(f.read(BLOCK_SIZE))
-		else:
-			# file too small, start from begining
-			f.seek(0, 0)
-			# only read what was not read
-			blocks.append(f.read(block_end_byte))
-		lines_found = blocks[-1].count('\n')
-		lines_to_go -= lines_found
-		block_end_byte -= BLOCK_SIZE
-		block_number -= 1
-	all_read_text = ''.join(reversed(blocks))
-	return all_read_text.splitlines()[-total_lines_wanted:]
-
-
 class LoadSaveHandler:
 	def __init__(self,
 				 main_form: Form,
@@ -248,18 +218,28 @@ class LoadSaveHandler:
 			return []
 		try:
 			with open(self.recent_filename) as f:
-				lines = tail(f, lines=n * 2)
-		except io.UnsupportedOperation:
-			with open(self.recent_filename) as f:
 				lines = f.readlines()
+		except:
+			return
 
 		lines = [clean for line in lines if (clean := line.strip(" \n")) != ""]
 
 		# remove duplicates and reverse
-		lines = list(set(reversed(lines)))
+		return remove_duplicates_from_list(reversed(lines), max_length=n)
 
-		# return only requested number of lines
-		if len(lines) > n:
-			lines = lines[:n]
 
-		return reversed(lines)
+def remove_duplicates_from_list(some_list, max_length=None):
+	if max_length == None:
+		max_length = len(some_list)
+
+	de_duplicated = []
+	for item in some_list:
+		if item in de_duplicated:
+			continue
+
+		de_duplicated.append(item)
+
+		if len(de_duplicated) == max_length:
+			break
+
+	return de_duplicated
