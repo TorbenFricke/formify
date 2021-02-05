@@ -32,6 +32,7 @@ class ListForm(Form):
 		# update the form when list selection changes
 		self._update_form()
 		self.control.index_change.subscribe(self._update_form)
+		self.control.items_change.subscribe(self._update_form)
 
 		# set own event handler to the event handler of the child ControlList.
 		# Its important to bring the subscriptions with it
