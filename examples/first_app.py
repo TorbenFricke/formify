@@ -12,7 +12,7 @@ def print_text():
 
 
 def set_value():
-	ui.value  = {'text': 'Moin GUI Runde ', 'print_mode': 'Dialog'}
+	ui.value = {'text': 'Moin GUI Runde ', 'print_mode': 'Dialog'}
 
 
 ui = Form(Col(
