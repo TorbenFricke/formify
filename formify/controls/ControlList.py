@@ -35,16 +35,18 @@ class ControlList(ControlBase, ItemMixin):
 		# repaint on every index change. Otherwise, the selection somtimes does not show on macOs Catalina
 		self.index_change.subscribe(self.repaint)
 
-		ControlBase.__init__(self,
-					    	 label=label,
-		                     variable_name=variable_name,
-		                     value=value,
-		                     parent=parent,
-		                     on_change=on_change)
+		ControlBase.__init__(
+			self,
+			label=label,
+			variable_name=variable_name,
+			value=value,
+			parent=parent
+		)
 
 		ItemMixin.__init__(self, items, display_name_callback=display_name_callback)
-		self.change = EventDispatcher(self)
-		self.items_change.subscribe(lambda: self.change())
+		self.change = self.items_change
+		if on_change is not None:
+			self.change.subscribe(on_change)
 
 		self.rearrangeable = rearrangeable
 
