@@ -8,7 +8,7 @@ def _make_condition_control(layouts):
 	return ControlCombo(
 		variable_name="type",
 		label="Type",
-		items=[(key, key) for key in layouts.keys()]
+		items=[key for key in layouts.keys()]
 	)
 
 

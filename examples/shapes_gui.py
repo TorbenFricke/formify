@@ -56,6 +56,7 @@ def _draw():
 
 draw = formify.tools.BackgroundMethod(_draw, lazy=True)
 list_form.change.subscribe(draw)
+formify.tools.maximize(list_form)
 
 formify.MainWindow(
 	Row(

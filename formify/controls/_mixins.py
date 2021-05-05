@@ -110,6 +110,7 @@ class ItemMixin:
 
 		# seperate actual items and display names
 		display_names = self.display_names(value)
+		# TODO some tuples might get through
 		items = self.strip_display_names(value)
 
 		self._items = items
