@@ -2,20 +2,23 @@ from PySide6 import QtWidgets, QtCore
 import typing
 from formify import app
 
-from formify.controls._mixins import ValueMixin
+from formify.controls._value_base import ValueBase
 
-class ControlBase(QtWidgets.QWidget, ValueMixin):
+
+class ControlBase(QtWidgets.QWidget, ValueBase):
 	alignment_flag = QtCore.Qt.AlignTop
 	_layout_class = QtWidgets.QVBoxLayout
 
-	def __init__(self,
-	             label:str=None,
-	             variable_name:str=None,
-	             value:typing.Any=None,
-	             parent:QtWidgets.QWidget=None,
-	             on_change:typing.Callable=None):
+	def __init__(
+		self,
+		label: str = None,
+		variable_name: str = None,
+		value: typing.Any = None,
+		parent: QtWidgets.QWidget = None,
+		on_change: typing.Callable = None
+	):
 		"""
-		Base Class for all controls. On its own, this is just a Label in a BoxLayout.
+		Base Class for most controls. On its own, this is just a Label in a BoxLayout.
 
 		:param label: Text for the label.
 		:param variable_name: Variable name, if this control is inside a ControlledForm.
@@ -33,8 +36,7 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 		self.setLayout(self.layout)
 		self.label = label
 
-		ValueMixin.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
-
+		ValueBase.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
 
 	def _make_label_widget(self, label):
 		self.label_widget = QtWidgets.QLabel(text=label, parent=self)
@@ -43,16 +45,16 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		# to be implemented by subclass
-		pass
+		raise NotImplemented
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		# to be implemented by subclass if multiple widgets shall be created
-		return []
+		raise NotImplemented
 
 	def make_layout(self):
 		layout = self._layout_class()
 		layout.setAlignment(self.alignment_flag)
-		layout.setContentsMargins(0,0,0,0)
+		layout.setContentsMargins(0, 0, 0, 0)
 		layout.setSpacing(3)
 		return layout
 
@@ -60,11 +62,15 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 		layout = self.make_layout()
 		layout.addWidget(self.label_widget)
 
-		control = self._make_control_widget()
-		if not control is None:
+		try:
+			control = self._make_control_widget()
 			layout.addWidget(control)
-		for control in self._make_control_widgets():
-			layout.addWidget(control)
+		except NotImplemented:
+			try:
+				for control in self._make_control_widgets():
+					layout.addWidget(control)
+			except NotImplemented:
+				pass
 
 		return layout
 

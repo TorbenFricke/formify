@@ -13,7 +13,7 @@ def maximize(widget) -> QtWidgets.QWidget:
 
 def disable_all_variables(widget):
 	# import here to prevent circular imports
-	from formify.controls import ValueMixin, Form, ListForm
+	from formify.controls import ValueBase, Form, ListForm
 
 	for child in widget.children():
 
@@ -22,7 +22,7 @@ def disable_all_variables(widget):
 			continue
 
 		# all normal controls
-		if isinstance(child, ValueMixin) and not isinstance(child, Form):
+		if isinstance(child, ValueBase) and not isinstance(child, Form):
 			if child.variable_name:
 				child.setEnabled(False)
 

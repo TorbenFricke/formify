@@ -1,5 +1,5 @@
 import warnings
-from formify.controls._mixins import ValueMixin
+from formify.controls._value_base import ValueBase
 from formify.controls._events import EventDispatcher
 
 class Relationship:
@@ -31,7 +31,7 @@ class Relationship:
 
 		for control, method in control_and_calculation:
 			# validate correct types
-			assert isinstance(control, ValueMixin)
+			assert isinstance(control, ValueBase)
 			assert callable(method)
 
 			# set event listeners
@@ -55,7 +55,7 @@ class Relationship:
 			if self.validate_every_change:
 				self.validate(fixed_control)
 
-	def validate(self, control:ValueMixin):
+	def validate(self, control:ValueBase):
 		def almost_equal(a, b, tolerance=1e-5):
 			if type(a) == float:
 				err = (abs(a) + abs(b)) / 2 * tolerance

@@ -2,7 +2,8 @@ from PySide6 import QtWidgets, QtCore
 import typing
 from formify.layout import Col, text, ensure_widget
 from formify.controls import ControlButton
-from formify.controls._mixins import ItemMixin, ValueMixin
+from formify.controls._value_base import ValueBase
+from formify.controls._list_base import ItemBase
 from formify.controls._events import EventDispatcher
 
 
@@ -36,7 +37,7 @@ class SidebarButton(QtWidgets.QPushButton):
 		self.setChecked(value)
 
 
-class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
+class ControlSidebar(QtWidgets.QFrame, ItemBase, ValueBase):
 	def __init__(
 		self,
 		items:typing.List[str],
@@ -61,8 +62,8 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		self.index_change.subscribe(self._update_checked_states)
 
 		self._index = -1
-		ValueMixin.__init__(self, variable_name, value=None, on_change=on_change)
-		ItemMixin.__init__(self, items, display_name_callback)
+		ValueBase.__init__(self, variable_name, value=None, on_change=on_change)
+		ItemBase.__init__(self, items, display_name_callback)
 
 		self.value = value
 

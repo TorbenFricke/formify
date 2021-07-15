@@ -1,10 +1,10 @@
-from formify.controls._mixins import ValueMixin
+from formify.controls._value_base import ValueBase
 from formify import app
 from PySide6 import QtWidgets
 import typing
 
 
-class ControlCheckbox(ValueMixin, QtWidgets.QCheckBox):
+class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
 	def __init__(self,
 	             label: str = None,
 	             variable_name: str = None,
@@ -20,7 +20,7 @@ class ControlCheckbox(ValueMixin, QtWidgets.QCheckBox):
 
 		QtWidgets.QCheckBox.__init__(self, parent=parent, text=label)
 
-		ValueMixin.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
+		ValueBase.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
 
 		# set the on change handler
 		self.stateChanged.connect(

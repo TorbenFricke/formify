@@ -18,7 +18,6 @@ from formify.controls.ControlHtml import ControlHtml
 from formify.controls.ControlDiff import ControlDiff
 from formify.controls.ControlImage import ControlImage
 
-# TODO check if matplotlib is installed
 from formify.controls.ControlMatplotlib import ControlMatplotlib
 
 from formify.controls.Form import Form
@@ -28,5 +27,6 @@ from formify.controls.ListForm import ListForm
 from formify.controls.ControlSidebar import ControlSidebar
 
 # internal concepts that might be useful elsewhere
-from formify.controls._mixins import ItemMixin, ValueMixin
+from formify.controls._value_base import ValueBase
+from formify.controls._list_base import ItemBase
 from formify.controls._events import EventDispatcher

@@ -1,13 +1,13 @@
-from formify.controls._mixins import ValueMixin
+from formify.controls._value_base import ValueBase
 from formify.layout import ensure_layout
 from PySide6 import QtWidgets
 import typing
 
 
-def walk(widget) -> typing.List[ValueMixin]:
+def walk(widget) -> typing.List[ValueBase]:
 	controls = []
 	for child in widget.children():
-		if isinstance(child, ValueMixin):
+		if isinstance(child, ValueBase):
 			# print(f"{child} is a control with variable {child.variable_name}")
 			controls.append(child)
 		elif isinstance(child, QtWidgets.QWidget):
@@ -63,7 +63,7 @@ def set_values(controls, data, relevant_values, all_values=False):
 __FLATTEN__ = "__flatten__"
 
 
-class Form(QtWidgets.QWidget, ValueMixin):
+class Form(QtWidgets.QWidget, ValueBase):
 	def __init__(self,
 				 layout: QtWidgets.QLayout,
 				 variable_name: str = None,
@@ -85,7 +85,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		"""
 
 		QtWidgets.QWidget.__init__(self, parent=parent)
-		ValueMixin.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
+		ValueBase.__init__(self, variable_name=variable_name, value=value, on_change=on_change)
 
 		layout = ensure_layout(layout)
 		self.setLayout(layout)
@@ -112,7 +112,7 @@ class Form(QtWidgets.QWidget, ValueMixin):
 		for control in self.controls:
 			control.change.subscribe(self._on_child_change)
 
-	def __getitem__(self, key) -> ValueMixin:
+	def __getitem__(self, key) -> ValueBase:
 		for control in self.controls:
 			variable = control.variable_name
 

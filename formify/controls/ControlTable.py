@@ -5,9 +5,6 @@ import typing, io, csv
 from formify.controls import ControlText, ControlFloat, ControlInt
 
 
-
-from formify.controls._mixins import ItemMixin
-
 # TODO fix . , issues
 
 class ValidatorDelegate(QtWidgets.QItemDelegate):

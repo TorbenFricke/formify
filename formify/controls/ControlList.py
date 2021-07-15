@@ -1,11 +1,10 @@
 from formify.controls import ControlBase, ControlButton
+from formify.controls._list_base import ItemBase
 from formify.layout import Row, ensure_widget
-from formify import app
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import Qt
 import typing
 
-from formify.controls._mixins import ItemMixin
 from formify.controls._events import EventDispatcher
 
 def rearrange(some_list, r_from, r_to):
@@ -13,7 +12,7 @@ def rearrange(some_list, r_from, r_to):
 	some_list.insert(r_to, some_list.pop(r_from))
 	return some_list
 
-class ControlList(ControlBase, ItemMixin):
+class ControlList(ControlBase, ItemBase):
 	def __init__(self,
 	             label: str = None,
 	             variable_name: str = None,
@@ -43,7 +42,7 @@ class ControlList(ControlBase, ItemMixin):
 			parent=parent
 		)
 
-		ItemMixin.__init__(self, items, display_name_callback=display_name_callback)
+		ItemBase.__init__(self, items, display_name_callback=display_name_callback)
 		self.change = self.items_change
 		if on_change is not None:
 			self.change.subscribe(on_change)
@@ -56,7 +55,6 @@ class ControlList(ControlBase, ItemMixin):
 			return
 		del self._items[self.index]
 		self.items = self._items
-
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
