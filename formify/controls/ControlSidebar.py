@@ -37,14 +37,16 @@ class SidebarButton(QtWidgets.QPushButton):
 
 
 class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
-	def __init__(self,
-				 items:typing.List[str],
-				 variable_name:str=None,
-	             value:str=None,
-				 on_change:typing.Callable=None,
-				 display_name_callback=str,
-				 top_widget: QtWidgets.QWidget=None,
-				 bottom_widget: QtWidgets.QWidget=None):
+	def __init__(
+		self,
+		items:typing.List[str],
+		variable_name:str=None,
+		value:str=None,
+		on_change:typing.Callable=None,
+		display_name_callback=str,
+		top_widget: QtWidgets.QWidget=None,
+		bottom_widget: QtWidgets.QWidget=None
+	):
 		QtWidgets.QFrame.__init__(self)
 		self._buttons: typing.List[SidebarButton] = []
 		self.top_layout, self.btn_layout, self.bottom_layout = self._make_layout()
@@ -79,7 +81,6 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		def tight_col(margin=0):
 			_layout = QtWidgets.QVBoxLayout()
 			_layout.setAlignment(QtCore.Qt.AlignTop)
-			_layout.setSpacing(0)
 			_layout.setContentsMargins(margin, margin, margin, margin)
 			return _layout
 
@@ -92,7 +93,7 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		layout.addLayout(top_layout, 0)
 
 		# button layout (with stretch)
-		btn_layout = tight_col()
+		btn_layout = tight_col(margin=6)
 		layout.addLayout(btn_layout, 1)
 
 		# bottom layout - add some stretch

@@ -97,17 +97,17 @@ FigureCanvasQTAgg {
 /* ------------------------------------------------------------------------ */
 
 ControlSidebar, SegmentSidebar {
-    background-color: #dbdbdb;
+    background-color: #e3e3e3;
     border-radius: 0;
+    padding: 0;
 }
 
 SidebarButton {
-    background-color: #dbdbdb;
-    border: 0;
-    border-radius: 0;
+    background-color: transparent;
+    border-radius: 6px;
     color: #535353;
-    padding: 12px;
-    margin: 0;
+    padding: 11px;
+    margin: 3px 0 0 0;
     font-size: 13pt;
     text-align: left;
     font-weight: bold;
@@ -119,16 +119,12 @@ SidebarButton:disabled {
 }
 
 SidebarButton:checked, SidebarButton:checked:hover {
-    background-color: #ececec;
-    color: #0a0a0a;
+    background-color: #4c86ef;
+    color: #ffffff;
     border: 0;
 }
 
 SidebarButton:hover {
-    background-color: #e5e5e5;
+    background-color: #ececec;
 }
 
-
-SidebarButton:pressed {
-    background-color: #dbdbdb;
-}
