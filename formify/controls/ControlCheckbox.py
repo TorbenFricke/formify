@@ -1,6 +1,6 @@
 from formify.controls._mixins import ValueMixin
 from formify import app
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 import typing
 
 

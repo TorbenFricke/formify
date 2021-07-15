@@ -2,7 +2,7 @@ import typing, warnings, traceback
 from queue import Queue
 from threading import Thread, get_ident, Lock
 from inspect import signature
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 
 
 class Task:

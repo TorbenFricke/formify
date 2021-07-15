@@ -1,9 +1,12 @@
 import pathlib, os
-from PySide2 import QtGui
-
+from PySide6 import QtGui
+from PySide6 import QtWidgets
+import sys
 from formify import localization
 
+
 stylesheet_root = pathlib.Path(__file__).parent
+
 
 def stylesheet() -> str:
 	def read(css_file):
@@ -19,8 +22,6 @@ def stylesheet() -> str:
 
 	return css
 
-from PySide2 import QtWidgets
-import sys
 
 def _generate_appname():
 	name = "formify"
@@ -30,6 +31,7 @@ def _generate_appname():
 	except:
 		pass
 	return name
+
 
 class App(QtWidgets.QApplication):
 	def __init__(self, css=""):
@@ -72,6 +74,7 @@ class App(QtWidgets.QApplication):
 
 
 app = App()
+
 
 def run():
 	app.run()

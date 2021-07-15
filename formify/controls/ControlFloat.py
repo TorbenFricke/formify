@@ -1,5 +1,5 @@
 from formify.controls import ControlText
-from PySide2.QtGui import QDoubleValidator
+from PySide6.QtGui import QDoubleValidator
 
 def _str2float(s) -> float:
 	if s == "":

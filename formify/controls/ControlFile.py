@@ -1,5 +1,5 @@
 from formify.controls import ControlBase
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 from formify.layout import ensure_widget, Row
 from formify.controls import ControlButton
 from formify.tools import open_dialog

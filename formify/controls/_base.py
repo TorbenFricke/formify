@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import typing
 from formify import app
 
@@ -52,7 +52,7 @@ class ControlBase(QtWidgets.QWidget, ValueMixin):
 	def make_layout(self):
 		layout = self._layout_class()
 		layout.setAlignment(self.alignment_flag)
-		layout.setMargin(0)
+		layout.setContentsMargins(0,0,0,0)
 		layout.setSpacing(3)
 		return layout
 

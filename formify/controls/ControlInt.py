@@ -1,5 +1,5 @@
 from formify.controls import ControlText
-from PySide2.QtGui import QIntValidator
+from PySide6.QtGui import QIntValidator
 
 def _str2int(s:str) -> int:
 	if s == "":

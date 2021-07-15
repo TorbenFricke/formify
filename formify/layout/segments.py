@@ -1,6 +1,6 @@
 import typing
 from formify.layout import Col
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 
 class _SegmentBase(QtWidgets.QFrame):
 	def __init__(self, layout_or_control, *args):

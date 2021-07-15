@@ -1,5 +1,5 @@
 import typing
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from formify.controls import ControlBase
 
 
@@ -30,7 +30,7 @@ def add_layout_or_widget(parent, child):
 
 
 def _formset_layout(layout, controls):
-	layout.setMargin(0)
+	layout.setContentsMargins(0,0,0,0)
 	for control in controls:
 		layout.addWidget(ensure_widget(control))
 	return layout
@@ -50,7 +50,7 @@ def Col(*controls) -> QtWidgets.QLayout:
 
 def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
 	layout = QtWidgets.QVBoxLayout()
-	layout.setMargin(0)
+	layout.setContentsMargins(0,0,0,0)
 	n = len(controls)
 	for i, control in enumerate(controls):
 		layout.addWidget(ensure_widget(control))

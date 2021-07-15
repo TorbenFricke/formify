@@ -1,5 +1,5 @@
 from formify.layout import ensure_widget
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 import os
 import platform
 import subprocess

@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import typing
 from formify.layout import Col, text, ensure_widget
 from formify.controls import ControlButton
@@ -79,7 +79,6 @@ class ControlSidebar(QtWidgets.QFrame, ItemMixin, ValueMixin):
 		def tight_col(margin=0):
 			_layout = QtWidgets.QVBoxLayout()
 			_layout.setAlignment(QtCore.Qt.AlignTop)
-			_layout.setMargin(0)
 			_layout.setSpacing(0)
 			_layout.setContentsMargins(margin, margin, margin, margin)
 			return _layout

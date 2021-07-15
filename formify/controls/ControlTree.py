@@ -1,5 +1,5 @@
 from formify.controls import ControlBase
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import typing
 
 def parents(tree_item):

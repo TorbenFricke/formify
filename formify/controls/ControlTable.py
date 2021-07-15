@@ -1,6 +1,6 @@
 from formify.controls import ControlBase
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtCore import Qt
+from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtCore import Qt
 import typing, io, csv
 from formify.controls import ControlText, ControlFloat, ControlInt
 
@@ -103,14 +103,14 @@ class ControlTable(ControlBase):
 
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
-		def make_action(func, shortcut) -> QtWidgets.QAction:
-			action = QtWidgets.QAction("", self.control)
+		def make_action(func, shortcut) -> QtGui.QAction:
+			action = QtGui.QAction("", self.control, self)
 			action.triggered.connect(func)
 			action.setShortcut(shortcut)
 			return action
 
 		self.control = QtWidgets.QTableView(parent=self)
-		self.model = QtGui.QStandardItemModel()
+		self.model = QtGui.QStandardItemModel(parent=self)
 		self.control.setModel(self.model)
 		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
 

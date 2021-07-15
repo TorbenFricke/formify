@@ -1,12 +1,12 @@
 from formify.layout import ConditionalLayout, Row
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 import typing
 
 class SidebarContentView(QtWidgets.QWidget):
 	def __init__(self, layouts: dict, value:str = None, **kwargs):
 		QtWidgets.QWidget.__init__(self)
 		self.content = ConditionalLayout(layouts, visible=value)
-		self.content.layout().setMargin(8)
+		self.content.layout().setContentsMargins(8,8,8,8)
 
 		from formify.controls import ControlSidebar
 		self.sidebar = ControlSidebar(list(layouts.keys()), **kwargs)

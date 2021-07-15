@@ -39,7 +39,15 @@ class Timer(threading.Thread):
 def ensure_appdata_dir():
 	# import here to prevent circular imports
 	from formify import app
-	path = pathlib.Path(os.getenv('APPDATA')) / app.name
+	if os.getenv('APPDATA') is not None:
+		# windows
+		path = pathlib.Path(os.getenv('APPDATA'))
+	else:
+		# macos
+		path = pathlib.Path().home()
+		path = path / "Library" / "Application Support"
+		path /= app.name
+	# TODO Linux
 	path.mkdir(parents=True, exist_ok=True)
 	return path
 

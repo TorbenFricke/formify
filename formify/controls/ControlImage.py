@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 class ControlImage(QtWidgets.QLabel):
 	def __init__(self, file_name:str=None, width=None, height=None):

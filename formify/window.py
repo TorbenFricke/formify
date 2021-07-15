@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 import formify, typing
 from formify.controls import Form
 from formify import LoadSaveHandler
@@ -11,21 +11,23 @@ def ensure_form(thing: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form])
 
 
 class MainWindow(QtWidgets.QMainWindow):
-	def __init__(self,
-	             layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
-	             title: str="",
-	             margin=0,
-	             width:int=None,
-	             icon_path:str=None,
-	             height:int=None,
-	             menu:dict=None,
-	             load_save_handler: LoadSaveHandler=None,
-	             allowed_file_extensions:list=None,
-	             auto_run=True):
+	def __init__(
+		self,
+		layout_widget_form: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout, Form],
+		title: str = "",
+		margin=0,
+		width: int = None,
+		icon_path: str = None,
+		height: int = None,
+		menu: dict = None,
+		load_save_handler: LoadSaveHandler = None,
+		allowed_file_extensions: list = None,
+		auto_run=True
+	):
 		super().__init__()
 
 		self.form = ensure_form(layout_widget_form)
-		self.form.layout().setMargin(margin)
+		self.form.layout().setContentsMargins(margin,margin,margin,margin)
 		self.setCentralWidget(self.form)
 
 		# load save stuff
@@ -88,8 +90,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 	def make_menu(self, menu_items: dict=None):
-		def make_action(text, func, shortcut="") -> QtWidgets.QAction:
-			action = QtWidgets.QAction(text, self)
+		def make_action(text, func, shortcut="") -> QtGui.QAction:
+			action = QtGui.QAction(text)
 			action.triggered.connect(func)
 			if shortcut != "":
 				action.setShortcut(
@@ -129,6 +131,6 @@ class MainWindow(QtWidgets.QMainWindow):
 		add_menus(menu, self.load_save_handler.menu())
 		menu.addSeparator()
 
-		# user definde menus
+		# user defined menus
 		add_menus(menu, menu_items.pop(key, {}))
 		add_menus(menubar, menu_items)

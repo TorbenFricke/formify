@@ -1,6 +1,6 @@
 from formify.controls import ControlBase
 from formify.controls._events import EventDispatcher
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 import typing
 
 from formify.controls._mixins import ItemMixin

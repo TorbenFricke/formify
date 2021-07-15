@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 
 def extract_file_name(dialog_return: tuple):

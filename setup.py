@@ -6,5 +6,5 @@ setup(
 	package_data={
         "": ["*.css"],
     },
-	install_requires=["pyside2", "matplotlib"]
+	install_requires=["pyside6", "matplotlib"]
 )

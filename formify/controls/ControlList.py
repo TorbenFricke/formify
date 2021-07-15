@@ -1,8 +1,8 @@
 from formify.controls import ControlBase, ControlButton
 from formify.layout import Row, ensure_widget
 from formify import app
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtCore import Qt
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import Qt
 import typing
 
 from formify.controls._mixins import ItemMixin

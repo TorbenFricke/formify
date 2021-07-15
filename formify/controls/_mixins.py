@@ -1,7 +1,7 @@
 import typing, copy
 from formify.controls._events import EventDispatcher
 from collections import Iterable
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 
 class ValueMixin:

@@ -1,5 +1,5 @@
 from formify.layout import Col, ensure_widget
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 class ConditionalLayout(QtWidgets.QWidget):
 	def __init__(self, layouts:dict, visible:str=None):
