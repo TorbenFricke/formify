@@ -3,6 +3,29 @@ from formify.controls._events import EventDispatcher
 from formify.controls._base import ControlBase
 
 
+class NamesChangeDetector:
+	def __init__(self):
+		self._prev_names = None
+
+	def changed(self, new_names):
+		try:
+			if self._prev_names is None:
+				return True
+
+			if len(self._prev_names) != len(new_names):
+				return True
+
+			# check if item changed
+			for i, new_name in enumerate(new_names):
+				current_name = self._prev_names[i]
+				if current_name != new_name:
+					return True
+			return False
+
+		finally:
+			self._prev_names = new_names
+
+
 class ItemBase:
 	def __init__(
 			self,
@@ -16,6 +39,8 @@ class ItemBase:
 		self.index_change.subscribe(
 			lambda: self.selected_item_change(self.get_selected_item())
 		)
+
+		self._display_names_change_detector = NamesChangeDetector()
 
 		# display name callback is a dict?
 		if isinstance(display_name_callback, dict):
@@ -75,7 +100,8 @@ class ItemBase:
 		self._items = items
 		index = self.index
 
-		self.set_display_names(display_names)
+		if self._display_names_change_detector.changed(display_names):
+			self.set_display_names(display_names)
 
 		## set the correct index
 		# index was -1 but and item was added
