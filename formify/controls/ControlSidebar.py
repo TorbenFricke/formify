@@ -3,7 +3,7 @@ import typing
 from formify.layout import Col, text, ensure_widget
 from formify.controls import ControlButton
 from formify.controls._value_base import ValueBase
-from formify.controls._list_base import ItemBase
+from formify.controls._item_base import ItemBase
 from formify.controls._events import EventDispatcher
 
 

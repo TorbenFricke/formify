@@ -1,5 +1,5 @@
 from formify.controls import ControlBase, ControlButton
-from formify.controls._list_base import ItemBase
+from formify.controls._item_base import ItemBase
 from formify.layout import Row, ensure_widget
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import Qt
@@ -11,6 +11,7 @@ def rearrange(some_list, r_from, r_to):
 	#print(f"from {r_from} to {r_to}")
 	some_list.insert(r_to, some_list.pop(r_from))
 	return some_list
+
 
 class ControlList(ControlBase, ItemBase):
 	def __init__(self,

@@ -1,5 +1,6 @@
 import typing
 from formify.controls._events import EventDispatcher
+from formify.controls._base import ControlBase
 
 
 class ItemBase:
@@ -150,3 +151,56 @@ class ItemBase:
 				return True
 
 		return False
+
+
+class SelectBase(ItemBase, ControlBase):
+	def __init__(
+			self,
+			label: str = None,
+			items: typing.Union[list, dict] = None,
+			value=None,
+			display_name_callback=str,
+			*args,
+			**kwargs
+	):
+		ControlBase.__init__(
+			self,
+			label,
+			*args,
+			creat_change_event=False,
+			**kwargs
+		)
+
+		ItemBase.__init__(self, items, display_name_callback)
+		self.change = self.selected_item_change
+
+		if value is not None:
+			self.value = value
+
+	def set_items(self, items):
+		value_before = self.selected_item
+
+		# change the actual items and display names
+		with \
+				self.index_change.suspend_updates(), \
+				self.items_change.suspend_updates(), \
+				self.selected_item_change.suspend_updates():
+			super().set_items(items)
+
+		# set previous value - if value before not in list -> index remains unchanged
+		if not self.set_index_by_item(value_before):
+			# index unchanged, but selected item changed
+			self.selected_item_change(self.selected_item)
+
+		# finally trigger items change event
+		self.items_change(self._items)
+
+	def get_value(self):
+		return self.get_selected_item()
+
+	def set_value(self, value):
+		if value not in self.items:
+			self.items += [value]
+
+		self.set_index_by_item(value)
+
