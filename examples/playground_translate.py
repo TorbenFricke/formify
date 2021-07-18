@@ -6,7 +6,7 @@ def change_langauge(sender, language):
 	formify.app.translator.language = language
 
 ui = Form(Col(
-	ControlSelect("Mode", items=[("de", "Deutsch"), ("en", "English")], variable_name="language", on_change=change_langauge),
+	ControlSelectControl("Mode", items=[("de", "Deutsch"), ("en", "English")], variable_name="language", on_change=change_langauge),
 	ControlFile(),
 ))
 

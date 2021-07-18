@@ -3,7 +3,7 @@ from formify import *
 items_dict = {"a": "a", "B": "b", "c": "c"}
 items = ["a", "b", "c"]
 
-combo = ControlSelectList("ControlSelect", items=items)
+combo = ControlSelectControlList("ControlSelectControl", items=items)
 combo.items_change.subscribe(print)
 combo.change.subscribe(print)
 combo.index_change.subscribe(print)

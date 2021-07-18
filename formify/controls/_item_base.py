@@ -179,29 +179,7 @@ class ItemBase:
 		return False
 
 
-class SelectBase(ItemBase, ControlBase):
-	def __init__(
-			self,
-			label: str = None,
-			items: typing.Union[list, dict] = None,
-			value=None,
-			display_name_callback=str,
-			*args,
-			**kwargs
-	):
-		ControlBase.__init__(
-			self,
-			label,
-			*args,
-			creat_change_event=False,
-			**kwargs
-		)
-
-		ItemBase.__init__(self, items, display_name_callback)
-		self.change = self.selected_item_change
-
-		if value is not None:
-			self.value = value
+class SelectBase(ItemBase):
 
 	def set_items(self, items):
 		value_before = self.selected_item
@@ -230,3 +208,32 @@ class SelectBase(ItemBase, ControlBase):
 
 		self.set_index_by_item(value)
 
+
+class SelectControlBase(ControlBase, SelectBase):
+	def __init__(
+			self,
+			label: str = None,
+			items: typing.Union[list, dict] = None,
+			value=None,
+			display_name_callback=str,
+			*args,
+			**kwargs
+	):
+		ControlBase.__init__(
+			self,
+			label,
+			*args,
+			creat_change_event=False,
+			**kwargs
+		)
+
+		SelectBase.__init__(self, items, display_name_callback)
+		self.change = self.selected_item_change
+
+		if value is not None:
+			self.value = value
+
+
+
+class ListBase(ItemBase):
+	pass

@@ -3,7 +3,7 @@ from formify.controls.ControlText import ControlText
 from formify.controls.ControlFloat import *
 from formify.controls.ControlInt import ControlInt
 from formify.controls.ControlButton import ControlButton
-from formify.controls.ControlSelect import ControlSelect, ControlSelectList
+from formify.controls.ControlSelect import ControlSelectControl, ControlSelectControlList
 from formify.controls.ControlRadio import ControlRadio
 from formify.controls.ControlCheckbox import ControlCheckbox
 from formify.controls.ControlSlider import ControlSlider

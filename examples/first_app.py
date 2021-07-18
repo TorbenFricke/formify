@@ -18,7 +18,7 @@ def set_value():
 ui = Form(Col(
 	Row(
 		ControlText(variable_name="text", value="Print this text"),
-		ControlSelect("Mode", items=["Dialog", "Print"], variable_name="print_mode"),
+		ControlSelectControl("Mode", items=["Dialog", "Print"], variable_name="print_mode"),
 	),
 	ControlButton("print or show dialog", on_click=print_text),
 ))
