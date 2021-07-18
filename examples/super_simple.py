@@ -8,9 +8,13 @@ combo.items_change.subscribe(print)
 combo.change.subscribe(print)
 combo.index_change.subscribe(print)
 
+radio = ControlRadio(on_change=print)
+
 def do_something():
-    combo.items = ["x", "y", "b", "z"]
+    combo.items += ["Z"]
+    radio.value = not radio.value
+    #combo.value = "asd"
 
 btn = ControlButton("Do Something", on_click=do_something)
 
-MainWindow(Col(combo, btn))
+MainWindow(Col(combo, radio, btn))

@@ -6,6 +6,9 @@ import typing
 from formify.controls._list_base import ItemBase
 
 
+# TODO ControlList (list), ControlListDropdown, ControlListSidebar
+# TODO ControlSelect (combo), ControlSelectList, ControlSelectSidebar, ControlSelectRadio
+
 class ControlCombo(ControlBase, ItemBase):
 	def __init__(
 		self,
@@ -20,18 +23,15 @@ class ControlCombo(ControlBase, ItemBase):
 			self,
 			label,
 			*args,
+			creat_change_event=False,
 			**kwargs
 		)
-		ItemBase.__init__(self, items, display_name_callback)
 
+		ItemBase.__init__(self, items, display_name_callback)
 		self.change = self.selected_item_change
+
 		if value is not None:
 			self.value = value
-
-		#if value is not None:
-		#	self.value = value
-		#elif items is not None and len(items) > 0:
-		#	self.value = items[0]
 
 	def get_index(self) -> int:
 		return self.control.currentIndex()
@@ -42,9 +42,8 @@ class ControlCombo(ControlBase, ItemBase):
 
 	def set_display_names(self, display_names):
 		# add items
-		with self.change.suspend_updates():
-			self.control.clear()
-			self.control.addItems(display_names)
+		self.control.clear()
+		self.control.addItems(display_names)
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		self.control = QtWidgets.QComboBox(parent=self)

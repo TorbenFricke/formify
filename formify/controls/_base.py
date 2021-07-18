@@ -2,6 +2,7 @@ from PySide6 import QtWidgets, QtCore
 import typing
 from formify import app
 
+from formify.controls._events import EventDispatcher
 from formify.controls._value_base import ValueBase
 
 
@@ -10,12 +11,13 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 	_layout_class = QtWidgets.QVBoxLayout
 
 	def __init__(
-		self,
-		label: str = None,
-		variable_name: str = None,
-		value: typing.Any = None,
-		parent: QtWidgets.QWidget = None,
-		on_change: typing.Callable = None
+			self,
+			label: str = None,
+			variable_name: str = None,
+			value: typing.Any = None,
+			parent: QtWidgets.QWidget = None,
+			on_change: typing.Callable = None,
+			creat_change_event: bool = True,
 	):
 		"""
 		Base Class for most controls. On its own, this is just a Label in a BoxLayout.
@@ -36,7 +38,13 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 		self.setLayout(self.layout)
 		self.label = label
 
-		ValueBase.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
+		ValueBase.__init__(
+			self,
+			variable_name=variable_name,
+			on_change=on_change,
+			value=value,
+			creat_change_event=creat_change_event
+		)
 
 	def _make_label_widget(self, label):
 		self.label_widget = QtWidgets.QLabel(text=label, parent=self)

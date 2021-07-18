@@ -4,16 +4,20 @@ from formify.controls._events import EventDispatcher
 
 class ValueBase:
 	def __init__(
-		self,
-		variable_name: str = None,
-		value: typing.Any = None,
-		on_change: typing.Callable = None
+			self,
+			variable_name: str = None,
+			value: typing.Any = None,
+			on_change: typing.Callable = None,
+			creat_change_event: bool = True,
 	):
 
 		self.variable_name = variable_name
 
 		# event handling
-		self.change = EventDispatcher(self)
+		self.change = None
+		if creat_change_event:
+			self.change = EventDispatcher(self)
+
 		if on_change is not None:
 			self.change.subscribe(on_change)
 
