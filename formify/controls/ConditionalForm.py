@@ -1,11 +1,11 @@
 from formify.controls import Form
 from formify.controls.Form import walk, extract_values_dict
 from formify.layout import Col, ensure_widget
-from formify.controls import ControlSelectControl
+from formify.controls import ControlSelect
 
 
 def _make_condition_control(layouts):
-	return ControlSelectControl(
+	return ControlSelect(
 		variable_name="type",
 		label="Type",
 		items=[key for key in layouts.keys()]

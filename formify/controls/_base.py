@@ -53,11 +53,11 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		# to be implemented by subclass
-		raise NotImplemented
+		raise NotImplementedError
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		# to be implemented by subclass if multiple widgets shall be created
-		raise NotImplemented
+		raise NotImplementedError
 
 	def make_layout(self):
 		layout = self._layout_class()
@@ -73,11 +73,11 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 		try:
 			control = self._make_control_widget()
 			layout.addWidget(control)
-		except NotImplemented:
+		except NotImplementedError:
 			try:
 				for control in self._make_control_widgets():
 					layout.addWidget(control)
-			except NotImplemented:
+			except NotImplementedError:
 				pass
 
 		return layout

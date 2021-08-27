@@ -8,8 +8,8 @@ class SidebarContentView(QtWidgets.QWidget):
 		self.content = ConditionalLayout(layouts, visible=value)
 		self.content.layout().setContentsMargins(8,8,8,8)
 
-		from formify.controls import ControlSidebar
-		self.sidebar = ControlSidebar(list(layouts.keys()), **kwargs)
+		from formify.controls import ControlSelectSidebar
+		self.sidebar = ControlSelectSidebar(list(layouts.keys()), **kwargs)
 
 		from formify.layout import ScrollArea
 		self.setLayout(

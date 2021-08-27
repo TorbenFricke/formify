@@ -14,11 +14,12 @@ class suspend_updates:
 
 
 class EventDispatcher:
-	def __init__(self, parent):
+	def __init__(self, parent, always_fire=False):
 		self.parent = parent
 		self.subscriptions = []
 		self.suspend_update_count = 0
 		self._perv_value = None
+		self.always_fire = always_fire
 
 	def subscribe(self, handler):
 		self.subscriptions.append(handler)
@@ -43,7 +44,7 @@ class EventDispatcher:
 			value = self.parent.value
 
 		# check if anything actually changed
-		if value == self._perv_value:
+		if not self.always_fire and value == self._perv_value:
 			return
 		self._perv_value = value
 

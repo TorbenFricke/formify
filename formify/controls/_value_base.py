@@ -33,10 +33,10 @@ class ValueBase:
 			pass
 
 	def get_value(self):
-		raise NotImplemented
+		raise NotImplementedError
 
 	def set_value(self, value):
-		raise NotImplemented
+		raise NotImplementedError
 
 	def get_all_values(self):
 		return self.get_value()

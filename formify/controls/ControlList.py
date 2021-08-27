@@ -1,5 +1,5 @@
-from formify.controls import ControlBase, ControlButton
-from formify.controls._item_base import ItemBase
+from formify.controls import ControlButton
+from formify.controls._item_base import ListControlBase, SelectControlBase
 from formify.layout import Row, ensure_widget
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import Qt
@@ -13,43 +13,39 @@ def rearrange(some_list, r_from, r_to):
 	return some_list
 
 
-class ControlList(ControlBase, ItemBase):
-	def __init__(self,
-	             label: str = None,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             add_click: typing.Callable = None,
-	             remove_click: typing.Callable = None,
-	             items: list=None,
-	             parent: QtWidgets.QWidget = None,
-	             on_change: typing.Callable = None,
-				 display_name_callback: callable = str,
-	             rearrangeable:bool = True):
-
+class ControlList(ListControlBase):
+	def __init__(
+			self,
+			label: str = None,
+			variable_name: str = None,
+			value: typing.Any = None,
+			add_click: typing.Callable = None,
+			remove_click: typing.Callable = None,
+			parent: QtWidgets.QWidget = None,
+			on_change: typing.Callable = None,
+			display_name_callback: callable = str,
+			rearrangeable: bool = True
+	):
 		# events
 		self.add_click = add_click
 		self.remove_click = self.removeCurrentItem
 		if remove_click is not None:
 			self.remove_click = remove_click
-		self.index_change = EventDispatcher(self)
-		# repaint on every index change. Otherwise, the selection somtimes does not show on macOs Catalina
-		self.index_change.subscribe(self.repaint)
 
-		ControlBase.__init__(
+		ListControlBase.__init__(
 			self,
 			label=label,
 			variable_name=variable_name,
 			value=value,
-			parent=parent
+			parent=parent,
+			display_name_callback=display_name_callback,
+			on_change=on_change
 		)
 
-		ItemBase.__init__(self, items, display_name_callback=display_name_callback)
-		self.change = self.items_change
-		if on_change is not None:
-			self.change.subscribe(on_change)
+		# repaint on every index change. Otherwise, the selection somtimes does not show on macOs Catalina
+		#self.index_change.subscribe(self.repaint)
 
 		self.rearrangeable = rearrangeable
-
 
 	def removeCurrentItem(self):
 		if len(self._items) == 0:
@@ -119,23 +115,21 @@ class ControlList(ControlBase, ItemBase):
 					pass
 				return func()
 			return wrapped
+
+		from formify import app
+
 		self.add_button = ControlButton(app.translator("+ Add"), on_click=make_handler("add_click"))
 		self.remove_button = ControlButton(app.translator("- Remove"), on_click=make_handler("remove_click"))
 		yield ensure_widget(Row(self.add_button, self.remove_button))
 
-
-	@property
-	def index(self) -> int:
+	def get_index(self) -> int:
 		return self.control.currentRow()
 
-
-	@index.setter
-	def index(self, value: int):
-		self.control.setCurrentRow(value)
+	def set_index(self, index: int):
+		self.control.setCurrentRow(index)
 		# if the current row is set to -1 no event is triggered automatically. So we do it manually
-		if value == -1:
-			self.index_change(value)
-
+		if index == -1:
+			self.index_change(index)
 
 	def set_display_names(self, display_names):
 		def name_changed():
@@ -164,19 +158,33 @@ class ControlList(ControlBase, ItemBase):
 			self.index = index
 
 	@property
-	def value(self):
-		return self.items
-
-
-	@value.setter
-	def value(self, value):
-		self.items = value
-
-
-	@property
 	def rearrangeable(self):
 		return self.control.dragEnabled()
 
 	@rearrangeable.setter
 	def rearrangeable(self, value):
 		self.control.setDragEnabled(value)
+
+
+class ControlSelectList(SelectControlBase):
+	def _make_control_widget(self) -> typing.List[QtWidgets.QWidget]:
+		self.control = QtWidgets.QListWidget(parent=self)
+		# set the on change handler
+		self.control.itemSelectionChanged.connect(
+			lambda: self.index_change(self.index)
+		)
+
+		return self.control
+
+	def get_index(self) -> int:
+		return self.control.currentRow()
+
+	def set_index(self, index: int):
+		self.control.setCurrentRow(index)
+		self.index_change(index)
+
+	def set_display_names(self, display_names):
+		with self.index_change.suspend_updates():
+			self.control.clear()
+			if len(display_names) > 0:
+				self.control.addItems(display_names)

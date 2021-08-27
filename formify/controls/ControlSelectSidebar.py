@@ -3,16 +3,16 @@ import typing
 from formify.layout import Col, text, ensure_widget
 from formify.controls import ControlButton
 from formify.controls._value_base import ValueBase
-from formify.controls._item_base import ItemBase
+from formify.controls._item_base import SelectBase
 from formify.controls._events import EventDispatcher
 
 
 class SidebarButton(QtWidgets.QPushButton):
 	def __init__(self, label, checked=False, click=None):
-		super().__init__()
+		QtWidgets.QPushButton.__init__(self)
 		self.label = label
 		self.checked = checked
-		self.click = EventDispatcher(self)
+		self.click = EventDispatcher(self, always_fire=True)
 		self.setCheckable(True)
 		if click is not None:
 			self.click.subscribe(click)
@@ -37,7 +37,7 @@ class SidebarButton(QtWidgets.QPushButton):
 		self.setChecked(value)
 
 
-class ControlSidebar(QtWidgets.QFrame, ItemBase, ValueBase):
+class ControlSelectSidebar(QtWidgets.QFrame, SelectBase, ValueBase):
 	def __init__(
 		self,
 		items:typing.List[str],
@@ -57,13 +57,14 @@ class ControlSidebar(QtWidgets.QFrame, ItemBase, ValueBase):
 		if bottom_widget is not None:
 			self.bottom_layout.addWidget(bottom_widget)
 
-		# index change events
-		self.index_change = EventDispatcher(self)
-		self.index_change.subscribe(self._update_checked_states)
-
 		self._index = -1
-		ValueBase.__init__(self, variable_name, value=None, on_change=on_change)
-		ItemBase.__init__(self, items, display_name_callback)
+
+		ValueBase.__init__(self, variable_name, value=None, creat_change_event=False)
+		SelectBase.__init__(self, items, display_name_callback)
+
+		self.change = self.selected_item_change
+		if on_change is not None:
+			self.change.subscribe(on_change)
 
 		self.value = value
 
@@ -108,20 +109,14 @@ class ControlSidebar(QtWidgets.QFrame, ItemBase, ValueBase):
 		for i, btn in enumerate(self._buttons):
 			btn.checked = i == self._index
 
-	@property
-	def index(self) -> int:
+	def get_index(self) -> int:
 		return self._index
 
-	@index.setter
-	def index(self, value: int):
-		if value == self._index:
-			self._update_checked_states()
-			return
-		if self._index != value:
-			self._index = value
-			# cause events
-			self.index_change(value)
-			self.change()
+	def set_index(self, index: int):
+		if self._index != index:
+			self._index = index
+		self._update_checked_states()
+		self.index_change(index)
 
 	def ensure_number_buttons(self, n):
 		# correct number of _buttons
@@ -141,12 +136,10 @@ class ControlSidebar(QtWidgets.QFrame, ItemBase, ValueBase):
 		for i, name in enumerate(display_names):
 			self._buttons[i].label = name
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.items[self.index]
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		for i, item in enumerate(self.items):
 			if item != value:
 				continue

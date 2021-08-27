@@ -234,6 +234,56 @@ class SelectControlBase(ControlBase, SelectBase):
 			self.value = value
 
 
-
 class ListBase(ItemBase):
-	pass
+
+	def set_items(self, items):
+		value_before = self.selected_item
+
+		# change the actual items and display names
+		with \
+				self.index_change.suspend_updates(), \
+				self.items_change.suspend_updates(), \
+				self.selected_item_change.suspend_updates():
+			super().set_items(items)
+
+		# set previous value - if value before not in list -> index remains unchanged
+		if not self.set_index_by_item(value_before):
+			# index unchanged, but selected item changed
+			self.selected_item_change(self.selected_item)
+
+		# finally trigger items change event
+		self.items_change(self._items)
+
+	def get_value(self):
+		return self.items
+
+	def set_value(self, value):
+		self.items = value
+
+
+class ListControlBase(ControlBase, ListBase):
+	def __init__(
+			self,
+			label: str = None,
+			value: typing.Union[list, dict] = None,
+			display_name_callback=str,
+			on_change: callable = None,
+			*args,
+			**kwargs
+	):
+		if "value" in kwargs:
+			raise TypeError("Use 'value' instead of 'items' if you are using a ControlList*")
+
+		ControlBase.__init__(
+			self,
+			label,
+			*args,
+			creat_change_event=False,
+			**kwargs
+		)
+
+		ListBase.__init__(self, value, display_name_callback)
+		self.change = self.items_change
+
+		if on_change is not None:
+			self.change.subscribe(on_change)
