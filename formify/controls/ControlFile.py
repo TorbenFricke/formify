@@ -31,10 +31,8 @@ class ControlFile(ControlBase):
 			Row(self.control, self.button)
 		)
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.control.text()
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setText(value)

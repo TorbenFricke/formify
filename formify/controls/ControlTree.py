@@ -29,15 +29,17 @@ def dict_to_tree_items(d):
 
 
 class ControlTree(ControlBase):
-	def __init__(self,
-	             label: str = None,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             tree_data: dict=None,
-	             parent: QtWidgets.QWidget = None,
-	             on_change: typing.Callable = None):
-
-		super(ControlTree, self).__init__(
+	def __init__(
+			self,
+			label: str = None,
+			variable_name: str = None,
+			value: typing.Any = None,
+			tree_data: dict=None,
+			parent: QtWidgets.QWidget = None,
+			on_change: typing.Callable = None
+	):
+		ControlBase.__init__(
+			self,
 			label=label,
 			variable_name=variable_name,
 			value=value,
@@ -47,7 +49,6 @@ class ControlTree(ControlBase):
 
 		self._tree_data = None
 		self.tree_data = tree_data
-
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		self.control = QtWidgets.QTreeWidget()
@@ -70,17 +71,14 @@ class ControlTree(ControlBase):
 			self.value
 		)
 
-	@property
-	def value(self):
+	def get_value(self):
 		try:
 			_item = self.control.selectedItems()[0]
 		except:
 			return None
 		return [node.text(0) for node in parents(_item)] + [_item.text(0)]
 
-
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		def find(items, txt):
 			for item in items:
 				if item.text(0) == txt:

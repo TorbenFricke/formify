@@ -125,12 +125,10 @@ class Form(QtWidgets.QWidget, ValueBase):
 				if flattened_control is not None:
 					return flattened_control
 
-	@property
-	def value(self):
+	def get_value(self):
 		return extract_values_dict(self.controls)
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.set_values(value)
 
 	def set_values(self, data, all_values=False):
@@ -168,11 +166,9 @@ class Form(QtWidgets.QWidget, ValueBase):
 		# trigger the event manually
 		self.change(relevant_values)
 
-	@property
-	def all_values(self):
+	def get_all_values(self):
 		return extract_values_dict(self.controls, all_values=True)
 
-	@all_values.setter
-	def all_values(self, value):
+	def set_all_values(self, value):
 		self.set_values(value, all_values=True)
 

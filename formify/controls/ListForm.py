@@ -8,12 +8,13 @@ class ListForm(Form):
 	def __init__(
 			self,
 			model_form: Form,
-			value:typing.List=None,
-			label:str="",
-	        display_name_callback:typing.Callable=str,
-			layout_class=SplitterRow,
-			on_change=None,
-			**kwargs):
+			value: typing.List = None,
+			label: str = "",
+			display_name_callback: typing.Callable = str,
+			layout_class = SplitterRow,
+			on_change = None,
+			**kwargs
+	):
 		self.model_form = model_form
 
 		# generate the master layout containing all widgets and sub layouts
@@ -85,18 +86,14 @@ class ListForm(Form):
 		finally:
 			self._suspend_update_form = False
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.control.items
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.items = value
 
-	@property
-	def all_values(self):
+	def get_all_values(self):
 		return self.value
 
-	@all_values.setter
-	def all_values(self, value):
+	def set_all_values(self, value):
 		self.value = value

@@ -47,13 +47,14 @@ def table_item(text=""):
 
 
 class ControlTable(ControlBase):
-	def __init__(self,
-	             columns: list,
-	             label: str = None,
-	             column_types:list=None,
-	             *args,
-	             **kwargs):
-
+	def __init__(
+			self,
+			columns: list,
+			label: str = None,
+			column_types:list=None,
+			*args,
+			**kwargs
+	):
 		self.column_types = column_types
 
 		ControlBase.__init__(self,
@@ -63,7 +64,6 @@ class ControlTable(ControlBase):
 
 		self._columns = []
 		self.columns = columns
-
 
 		def ensure_empty_bottom_row():
 			def add_row():
@@ -111,19 +111,18 @@ class ControlTable(ControlBase):
 		self.control.setModel(self.model)
 		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
 
-		self.control.addAction(make_action(lambda : self.copy_selection(), QtGui.QKeySequence.Copy))
-		self.control.addAction(make_action(lambda : self.paste_selection(), QtGui.QKeySequence.Paste))
-		self.control.addAction(make_action(lambda : self.delete_selection(), QtGui.QKeySequence.Delete))
-		self.control.addAction(make_action(lambda : self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace)))
+		self.control.addAction(make_action(lambda: self.copy_selection(), QtGui.QKeySequence.Copy))
+		self.control.addAction(make_action(lambda: self.paste_selection(), QtGui.QKeySequence.Paste))
+		self.control.addAction(make_action(lambda: self.delete_selection(), QtGui.QKeySequence.Delete))
+		self.control.addAction(
+			make_action(lambda: self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace)))
 
-		self.model.itemChanged.connect(lambda : self.change())
+		self.model.itemChanged.connect(lambda: self.change())
 
 		return self.control
 
-
 	def data(self, row, column):
 		return self.model.data(self.model.index(row, column))
-
 
 	def copy_selection(self):
 		## source:
@@ -143,7 +142,6 @@ class ControlTable(ControlBase):
 			# convert
 			from formify import app
 			app.clipboard().setText("\n".join(["\t".join(map(str, row)) for row in table]))
-
 
 	def paste_selection(self):
 		## source:
@@ -169,7 +167,6 @@ class ControlTable(ControlBase):
 					column = index.column() - columns[0]
 					cast = self.get_cast_function(index.column())
 					model.setData(model.index(index.row(), index.column()), cast(arr[row][column]))
-
 
 	def delete_selection(self):
 		selection = self.control.selectedIndexes()
@@ -203,9 +200,7 @@ class ControlTable(ControlBase):
 		finally:
 			return cast
 
-
-	@property
-	def value(self):
+	def get_value(self):
 		out = []
 		for row in range(self.model.rowCount() - 1):
 			out.append([])
@@ -215,9 +210,7 @@ class ControlTable(ControlBase):
 
 		return out
 
-
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		n_rows = len(value)
 		n_column = len(value[0]) if len(value) > 0 else 1
 		self.model.setColumnCount(n_column)
@@ -233,7 +226,6 @@ class ControlTable(ControlBase):
 						table_item(cast(value[x][y]))
 					)
 		self.change(value)
-
 
 	@property
 	def columns(self):

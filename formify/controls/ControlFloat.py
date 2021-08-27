@@ -16,13 +16,10 @@ class ControlFloat(ControlText):
 		self._factor = kwargs.pop("factor", 1)
 		super().__init__(*args, **kwargs)
 
-
-	@property
-	def value(self):
+	def get_value(self):
 		return _str2float(self.control.text()) * self._factor
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setText(
 			str(_str2float(value) / self._factor)
 		)

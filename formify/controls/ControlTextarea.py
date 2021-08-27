@@ -9,12 +9,10 @@ class ControlTextarea(ControlBase):
 
 		return self.control
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.control.toPlainText()
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setPlainText(value)
 
 	@property

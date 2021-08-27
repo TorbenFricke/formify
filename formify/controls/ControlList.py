@@ -27,6 +27,8 @@ class ControlList(ListControlBase):
 			rearrangeable: bool = True
 	):
 		# events
+		if add_click is None:
+			add_click = lambda : print("No 'add_click' handler was passed to the ControlList. Doing nothing.")
 		self.add_click = add_click
 		self.remove_click = self.removeCurrentItem
 		if remove_click is not None:

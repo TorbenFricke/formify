@@ -5,12 +5,14 @@ import typing
 
 
 class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
-	def __init__(self,
-	             label: str = None,
-	             variable_name: str = None,
-	             value: typing.Any = None,
-	             parent: QtWidgets.QWidget = None,
-	             on_change: typing.Callable = None):
+	def __init__(
+			self,
+			label: str = None,
+			variable_name: str = None,
+			value: typing.Any = None,
+			parent: QtWidgets.QWidget = None,
+			on_change: typing.Callable = None
+	):
 
 		if label is None:
 			if variable_name is None:
@@ -27,12 +29,10 @@ class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
 			lambda: self.change()
 		)
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.isChecked()
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.setChecked(value)
 
 

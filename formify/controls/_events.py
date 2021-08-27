@@ -44,7 +44,7 @@ class EventDispatcher:
 			value = self.parent.value
 
 		# check if anything actually changed
-		if not self.always_fire and value == self._perv_value:
+		if not self.always_fire and not value_changed(self._perv_value, value):
 			return
 		self._perv_value = value
 
@@ -63,3 +63,10 @@ class EventDispatcher:
 
 	def suspend_updates(self):
 		return suspend_updates(self)
+
+
+def value_changed(prev, current):
+	if isinstance(prev, list):
+		return True
+
+	return prev != current

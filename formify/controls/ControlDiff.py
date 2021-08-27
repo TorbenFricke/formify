@@ -88,18 +88,13 @@ def compare(lines1, lines2, **kwargs):
 		)
 
 
-
-
 class ControlDiff(ControlHtml):
-
-	@property
-	def value(self):
+	def get_value(self):
 		try:
 			return self._data
 		except:
 			pass
 		return None
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setHtml(compare(value[0], value[1]))

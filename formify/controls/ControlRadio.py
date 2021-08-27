@@ -86,10 +86,3 @@ class ControlSelectRadio(SelectControlBase):
 		self.ensure_number_radios(len(display_names))
 		for i, name in enumerate(display_names):
 			self._radios[i].setText(name)
-
-	def get_value(self):
-		return self.items[self.index]
-
-	def set_value(self, value):
-		if value in self.items:
-			self.index = self.items.index(value)

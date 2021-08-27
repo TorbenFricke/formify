@@ -9,12 +9,10 @@ class ControlProgress(ControlBase):
 
 		return self.control
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.control.value()
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setValue(value)
 
 	@property

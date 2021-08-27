@@ -10,10 +10,8 @@ class ControlHtml(ControlBase):
 
 		return self.control
 
-	@property
-	def value(self):
+	def get_value(self):
 		return self.control.page()
 
-	@value.setter
-	def value(self, value):
+	def set_value(self, value):
 		self.control.setHtml(value)

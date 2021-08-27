@@ -44,7 +44,6 @@ class ControlImage(QtWidgets.QLabel):
 			return
 		self.scale(value, 100000)
 
-
 	@property
 	def height(self):
 		return super().height()

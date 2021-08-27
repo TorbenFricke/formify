@@ -233,6 +233,14 @@ class SelectControlBase(ControlBase, SelectBase):
 		if value is not None:
 			self.value = value
 
+	def get_value(self):
+		return self.get_selected_item()
+
+	def set_value(self, value):
+		if value not in self.items:
+			self.items += [value]
+
+		self.set_index_by_item(value)
 
 class ListBase(ItemBase):
 
@@ -287,3 +295,9 @@ class ListControlBase(ControlBase, ListBase):
 
 		if on_change is not None:
 			self.change.subscribe(on_change)
+
+	def get_value(self):
+		return self.items
+
+	def set_value(self, value):
+		self.items = value
