@@ -157,7 +157,10 @@ class ItemBase:
 	def get_selected_item(self):
 		if len(self._items) == 0:
 			return None
-		return self._items[self.index]
+		index = self.index
+		if index >= len(self._items):
+			index = len(self._items) - 1
+		return self._items[index]
 
 	def set_selected_item(self, item):
 		if len(self._items) == 0:
