@@ -279,11 +279,21 @@ class ListControlBase(ControlBase, ListBase):
 			value: typing.Union[list, dict] = None,
 			display_name_callback=str,
 			on_change: callable = None,
+			add_click: typing.Callable = None,
+			remove_click: typing.Callable = None,
 			*args,
 			**kwargs
 	):
 		if "value" in kwargs:
 			raise TypeError("Use 'value' instead of 'items' if you are using a ControlList*")
+
+		# events
+		if add_click is None:
+			add_click = lambda : print("No 'add_click' handler was passed to the ControlList. Doing nothing.")
+		self.add_click = add_click
+		self.remove_click = self.remove_current_item
+		if remove_click is not None:
+			self.remove_click = remove_click
 
 		ControlBase.__init__(
 			self,
@@ -304,3 +314,9 @@ class ListControlBase(ControlBase, ListBase):
 
 	def set_value(self, value):
 		self.items = value
+
+	def remove_current_item(self):
+		if len(self._items) == 0:
+			return
+		del self._items[self.index]
+		self.items = self._items

@@ -3,7 +3,10 @@ from formify import *
 items_dict = {"a": "a", "B": "b", "c": "c"}
 items = ["a", "b", "c"]
 
-combo = ControlList("ControlSelect", value=items)
+def add():
+    combo.items += ["ads"]
+
+combo = ControlListDropdown("ControlSelect", value=items, add_click=add)
 combo.items_change.subscribe(print)
 #combo.change.subscribe(print)
 #combo.index_change.subscribe(print)

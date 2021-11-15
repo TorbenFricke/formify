@@ -19,21 +19,13 @@ class ControlList(ListControlBase):
 			label: str = None,
 			variable_name: str = None,
 			value: typing.Any = None,
-			add_click: typing.Callable = None,
-			remove_click: typing.Callable = None,
 			parent: QtWidgets.QWidget = None,
 			on_change: typing.Callable = None,
 			display_name_callback: callable = str,
-			rearrangeable: bool = True
+			rearrangeable: bool = True,
+			add_click: typing.Callable = None,
+			remove_click: typing.Callable = None,
 	):
-		# events
-		if add_click is None:
-			add_click = lambda : print("No 'add_click' handler was passed to the ControlList. Doing nothing.")
-		self.add_click = add_click
-		self.remove_click = self.removeCurrentItem
-		if remove_click is not None:
-			self.remove_click = remove_click
-
 		ListControlBase.__init__(
 			self,
 			label=label,
@@ -41,19 +33,11 @@ class ControlList(ListControlBase):
 			value=value,
 			parent=parent,
 			display_name_callback=display_name_callback,
-			on_change=on_change
+			on_change=on_change,
+			add_click=add_click,
+			remove_click=remove_click,
 		)
-
-		# repaint on every index change. Otherwise, the selection somtimes does not show on macOs Catalina
-		#self.index_change.subscribe(self.repaint)
-
 		self.rearrangeable = rearrangeable
-
-	def removeCurrentItem(self):
-		if len(self._items) == 0:
-			return
-		del self._items[self.index]
-		self.items = self._items
 
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
