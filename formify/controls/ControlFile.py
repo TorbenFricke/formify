@@ -6,6 +6,7 @@ from formify.tools import open_dialog
 from formify import app
 import typing
 
+
 class ControlFile(ControlBase):
 
 	def show_dialog(self):

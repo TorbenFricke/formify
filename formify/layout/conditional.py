@@ -1,8 +1,9 @@
 from formify.layout import Col, ensure_widget
 from PySide6 import QtWidgets
 
+
 class ConditionalLayout(QtWidgets.QWidget):
-	def __init__(self, layouts:dict, visible:str=None):
+	def __init__(self, layouts:dict, visible: str = None):
 		super().__init__()
 		self.layouts = layouts
 
@@ -33,7 +34,6 @@ class ConditionalLayout(QtWidgets.QWidget):
 		return {
 			key: ensure_widget(sub_layout) for key, sub_layout in self.layouts.items()
 		}
-
 
 	def _update_show_hide(self, *_):
 		for key, panel in self._conditional_panels.items():

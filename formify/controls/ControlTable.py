@@ -3,16 +3,15 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtCore import Qt
 import typing, io, csv
 from formify.controls import ControlText, ControlFloat, ControlInt
+from formify.controls.ControlFloat import _str2float
+from formify.controls.ControlInt import _str2int
 
-
-# TODO fix . , issues
 
 class ValidatorDelegate(QtWidgets.QItemDelegate):
-	def __init__(self, parent, column_types:list=None):
-
+	def __init__(self, parent, column_types: list = None):
 		self.column_types = column_types
 
-		self.current_value_mixin = None
+		self.current_control = None
 		super().__init__(parent)
 
 	def createEditor(self, parent, option, index):
@@ -27,17 +26,23 @@ class ValidatorDelegate(QtWidgets.QItemDelegate):
 
 		editor = cls("", parent=parent)
 		editor.control.setParent(parent)
-		self.current_value_mixin = editor
+		self.current_control = editor
 		return editor.control
 
 	def setEditorData(self, editor, index):
-		self.current_value_mixin.value = index.model().data(index, QtCore.Qt.EditRole)
+		self.current_control.value = index.model().data(index, QtCore.Qt.EditRole)
 
 	def setModelData(self, editor, model, index):
-		model.setData(index, self.current_value_mixin.value, QtCore.Qt.EditRole)
+		model.setData(index, self.current_control.value, QtCore.Qt.EditRole)
 
 	def updateEditorGeometry(self, editor, option, index):
 		editor.setGeometry(option.rect)
+		editor.setStyleSheet("QLineEdit {border-radius: 0}")
+
+	def destroyEditor(self, editor, index):
+		self.current_control.deleteLater()
+		del self.current_control
+		self.current_control = None
 
 
 def table_item(text=""):
@@ -51,16 +56,18 @@ class ControlTable(ControlBase):
 			self,
 			columns: list,
 			label: str = None,
-			column_types:list=None,
+			column_types: list = None,
 			*args,
 			**kwargs
 	):
 		self.column_types = column_types
 
-		ControlBase.__init__(self,
-		                     label,
-		                     *args,
-		                     **kwargs)
+		ControlBase.__init__(
+			self,
+			label,
+			*args,
+			**kwargs
+		)
 
 		self._columns = []
 		self.columns = columns
@@ -97,7 +104,6 @@ class ControlTable(ControlBase):
 
 		self.change.subscribe(ensure_empty_bottom_row)
 		ensure_empty_bottom_row()
-
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def make_action(func, shortcut) -> QtGui.QAction:
@@ -179,19 +185,7 @@ class ControlTable(ControlBase):
 			self.change()
 
 	def get_cast_function(self, column: int):
-		def _int(s) -> int:
-			if s == "":
-				return 0
-			return int(s)
-
-		def _float(s) -> float:
-			if s == "":
-				return 0
-			if type(s) == str:
-				return float(s.replace(",", "."))
-			return float(s)
-
-		known = {int: _int, float: _float}
+		known = {int: _str2int, float: _str2float}
 		cast = str
 		try:
 			cast = self.column_types[column]
@@ -233,6 +227,8 @@ class ControlTable(ControlBase):
 
 	@columns.setter
 	def columns(self, value):
+		#if self.column_types is not None:
+		#	raise NotImplementedError("Cannot change columns if 'column_types' has been defined.")
 		self._columns = value
 		self.model.setColumnCount(len(value))
 		for i, name in enumerate(value):

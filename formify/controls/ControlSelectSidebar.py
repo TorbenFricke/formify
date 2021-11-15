@@ -41,12 +41,12 @@ class ControlSelectSidebar(QtWidgets.QFrame, SelectBase, ValueBase):
 	def __init__(
 		self,
 		items:typing.List[str],
-		variable_name:str=None,
-		value:str=None,
-		on_change:typing.Callable=None,
-		display_name_callback=str,
-		top_widget: QtWidgets.QWidget=None,
-		bottom_widget: QtWidgets.QWidget=None
+		variable_name: str = None,
+		value: str = None,
+		on_change: typing.Callable = None,
+		display_name_callback = str,
+		top_widget: QtWidgets.QWidget = None,
+		bottom_widget: QtWidgets.QWidget = None
 	):
 		QtWidgets.QFrame.__init__(self)
 		self._buttons: typing.List[SidebarButton] = []

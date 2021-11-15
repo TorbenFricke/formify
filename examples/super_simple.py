@@ -11,16 +11,41 @@ combo.items_change.subscribe(print)
 #combo.change.subscribe(print)
 #combo.index_change.subscribe(print)
 
-radio = ControlRadio(on_change=print)
+radios = SegmentAlt(Grid(
+    *[ControlRadio(str(i), on_change=print) for i in range(12)],
+    columns=4
+))
 
 def do_something():
     combo.items += ["Z"]
-    radio.value = not radio.value
     #combo.value = "asd"
 
 btn = ControlButton("Do Something", on_click=do_something)
 
-MainWindow(Row(
-    ControlSelectSidebar(["Hallo", "Welt"], on_change=print),
-    Col(combo, radio, btn)
+table = ControlTable(["B", "H", "Comment"], column_types=[float, float, str])
+
+
+def icon(title: str, *lines: str):
+    _icon = Segment(
+        h1(title),
+        *[mute(line) for line in lines]
+    )
+
+    # center text
+    _icon.layout().setAlignment(QtCore.Qt.AlignJustify)
+    for label in _icon.children():
+        label.setAlignment(QtCore.Qt.AlignCenter)
+
+    return SegmentSidebar(_icon)
+
+
+MainWindow(SidebarContentView({
+    "Hello": Segment(combo, radios, btn),
+    "World": Tabs({
+        "Cat": ControlFloat("Cat"),
+        "Dog": ControlButton("Dog"),
+    }),
+    "Table": table
+},
+    bottom_widget=icon("MyGui", "Version: 1.3", "Build: 4122"),
 ))

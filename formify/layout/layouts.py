@@ -6,10 +6,14 @@ from formify.controls import ControlBase
 TAB_PADDING = 5
 
 
+# used for css styling of Columns/rows
+class LayoutWidget(QtWidgets.QWidget): pass
+
+
 def ensure_widget(layout_or_widget: typing.Union[QtWidgets.QWidget, QtWidgets.QLayout]) -> QtWidgets.QWidget:
 	if isinstance(layout_or_widget, QtWidgets.QWidget):
 		return layout_or_widget
-	widget = QtWidgets.QWidget()
+	widget = LayoutWidget()
 	widget.setLayout(layout_or_widget)
 	return widget
 
@@ -63,14 +67,15 @@ def Tabs(tabs_dict: dict) -> QtWidgets.QTabWidget:
 	tabs = QtWidgets.QTabWidget()
 	for label, content in tabs_dict.items():
 		layout = ensure_layout(content)
-		layout.setMargin(TAB_PADDING)
+		layout.setContentsMargins(TAB_PADDING, TAB_PADDING, TAB_PADDING, TAB_PADDING)
 		tabs.addTab(
 			ensure_widget(layout),
-			label)
+			label
+		)
 	return tabs
 
 
-def Grid(*controls, columns=3):
+def _Grid(*controls, columns=3):
 	buckets = [[] for _ in range(columns)]
 	for i, control in enumerate(controls):
 		buckets[i % columns].append(control)
@@ -78,6 +83,20 @@ def Grid(*controls, columns=3):
 	return Row(
 		*[Col(*bucket) for bucket in buckets]
 	)
+
+
+def Grid(*controls, columns=3):
+	grid = QtWidgets.QGridLayout()
+	grid.setContentsMargins(0, 0, 0, 0)
+
+	for i, control in enumerate(controls):
+		grid.addWidget(
+			control,
+			i // columns,
+			i % columns,
+		)
+
+	return grid
 
 
 def SplitterRow(*args, collapsible=False, **kwargs):
