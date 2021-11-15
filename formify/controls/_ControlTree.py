@@ -2,6 +2,7 @@ from formify.controls import ControlBase
 from PySide6 import QtWidgets, QtCore
 import typing
 
+
 def parents(tree_item):
 	if tree_item is None or isinstance(tree_item, QtWidgets.QTreeWidget):
 		return []

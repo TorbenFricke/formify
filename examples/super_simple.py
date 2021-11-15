@@ -45,7 +45,7 @@ MainWindow(SidebarContentView({
         "Cat": ControlFloat("Cat"),
         "Dog": ControlButton("Dog"),
     }),
-    "Table": table
+    "Table": table,
 },
     bottom_widget=icon("MyGui", "Version: 1.3", "Build: 4122"),
 ))

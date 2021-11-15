@@ -12,7 +12,7 @@ from formify.controls.ControlMessagebox import ControlMessagebox
 from formify.controls.ControlList import ControlList, ControlSelectList
 from formify.controls.ControlTable import ControlTable
 from formify.controls.ControlTextarea import ControlTextarea
-from formify.controls.ControlTree import ControlTree
+#from formify.controls._ControlTree import ControlTree
 from formify.controls.ControlFile import ControlFile
 from formify.controls.ControlHtml import ControlHtml
 from formify.controls.ControlDiff import ControlDiff
