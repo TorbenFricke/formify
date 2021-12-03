@@ -1,96 +1,100 @@
-MainWindow {
-    background-color: #f1f1f1;
-}
 
 QLineEdit {
-    border-radius: 3px;
+    border-radius: 4px;
+    border: 1px solid rgba(138, 138, 138, 0.14);
     padding: 2px;
 }
 
 QTextEdit {
-    border-radius: 3px;
-    border: 1px solid #fefefe;
+    border-radius: 4px;
+    border: 1px solid rgba(138, 138, 138, 0.14);
     padding: 0;
 }
 
 QListWidget {
-    border: 1px solid #fefefe;
+    border: 1px solid rgba(138, 138, 138, 0.14);
     border-radius: 3px;
 }
 
 
 QLabel[whatsThis="h1"] {
-    color: #494949;
+    opacity: 0.8;
     font-weight: bold;
     font-size: 22pt;
 }
 
 QLabel[whatsThis="h2"] {
-    color: #494949;
+    opacity: 0.8;
     font-weight: bold;
     font-size: 20pt;
 }
 
 QLabel[whatsThis="h3"] {
-    color: #494949;
+    opacity: 0.8;
     font-weight: bold;
     font-size: 16pt;
 }
 
 QLabel[whatsThis="h4"] {
-    color: #494949;
+    opacity: 0.8;
     font-weight: bold;
     font-size: 14pt;
 }
 
 QLabel[whatsThis="h5"] {
-    color: #494949;
+    opacity: 0.8;
     font-weight: bold;
 }
 
 QLabel[whatsThis="mute"] {
-    color: #696969;
+    opacity: 0.9;
 }
 
 Segment {
-    background-color: #f8f8f8;
-    border: 1px solid #d6d6d6;
+    background-color: rgba(138, 138, 138, 0.03);
+    border: 1px solid rgba(138, 138, 138, 0.2);
     border-radius: 5px;
 }
 
 SegmentAlt {
-    background-color: #ffffff;
-    border: 1px solid #e9e9e9;
+    background-color: rgba(138, 138, 138, 0.08);
+    border: 1px solid rgba(138, 138, 138, 0.12);
 }
 
 SegmentRed {
     background-color: rgba(255, 0, 0, 0.07);
-    border: 1px solid rgba(255, 41, 41, 0.48);
+    border: 1px solid rgba(255, 13, 13, 0.25);
 }
 
 SegmentYellow {
-    background-color: rgba(255, 251, 0, 0.07);
-    border: 1px solid rgba(205, 205, 33, 0.78);
+    background-color: rgba(255, 252, 48, 0.12);
+    border: 1px solid rgba(210, 210, 4, 0.32);
 }
 
 SegmentBlue {
     background-color: rgba(0, 115, 255, 0.07);
-    border: 1px solid rgba(96, 167, 255, 0.36);
+    border: 1px solid rgba(0, 123, 253, 0.25);
 }
 
 SegmentGreen {
-    background-color: rgba(104, 226, 73, 0.07);
-    border: 1px solid rgba(9, 152, 0, 0.36);
+    background-color: rgba(77, 255, 36, 0.1);
+    border: 1px solid rgba(36, 239, 24, 0.25);
 }
 
 SegmentPurple {
-    background-color: rgb(228, 218, 250);
-    border: 1px solid rgb(169, 100, 205);
+    background-color: rgba(77, 0, 255, 0.07);
+    border: 1px solid rgba(166, 0, 253, 0.25);
 }
 
+SegmentSidebar {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
 
-QTableView, QScrollArea {
+QTableView {
     border: none;
+    gridline-color: rgba(102, 102, 102, 0.4);
 }
 
 QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QHeaderView::item, QTableCornerButton::section {
@@ -101,7 +105,7 @@ LayoutWidget, QScrollArea, ConditionalLayout {
     background-color: transparent;
 }
 
-QTreeWidget, QTreeView {
+QTreeWidget, QTreeView, QScrollArea {
     border: none;
 }
 
@@ -109,12 +113,13 @@ FigureCanvasQTAgg {
     background-color: transparent;
 }
 
+
 /* ------------------------------------------------------------------------ */
 /* ControlSidebar --------------------------------------------------------- */
 /* ------------------------------------------------------------------------ */
 
-ControlSelectSidebar, SegmentSidebar {
-    background-color: #e9e9e9;
+ControlSelectSidebar {
+    background-color: rgba(138, 138, 138, 0.08);
     border-radius: 0;
     border: 0;
     padding: 0;
@@ -124,7 +129,6 @@ ControlSelectSidebar, SegmentSidebar {
 SidebarButton {
     background-color: transparent;
     border-radius: 6px;
-    color: #151515;
     padding: 10px;
     margin: 2px 0 0 0;
     font-size: 13pt;
@@ -133,17 +137,14 @@ SidebarButton {
     min-width: 180px;
 }
 
-SidebarButton:disabled {
-    color: #bebebe;
-}
-
 SidebarButton:checked, SidebarButton:checked:hover {
-    background-color: #3278f6;
+    background-color: rgba(0, 93, 238, 0.89);
     color: white;
     border: 0;
 }
 
 SidebarButton:hover {
-    background-color: #f3f3f3;
+    background-color: rgba(138, 138, 138, 0.12);
 }
+
 

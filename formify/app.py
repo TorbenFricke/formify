@@ -13,7 +13,7 @@ def stylesheet() -> str:
 		with open(str(stylesheet_root / css_file), "r") as f:
 			return f.read()
 
-	css = read("testing.css")
+	css = read("style.css")
 	css += "\n"
 
 	# windows

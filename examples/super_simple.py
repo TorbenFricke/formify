@@ -46,7 +46,14 @@ def icon(title: str, *lines: str):
 MainWindow(SidebarContentView({
     "Hello": Segment(combo, radios, btn, ControlFile()),
     "World": Tabs({
-        "Cat": ControlFloat("Cat"),
+        "Cat": Col(
+            ControlFloat("Cat"),
+            SegmentRed(text("dasads")),
+            SegmentGreen(text("dasads")),
+            SegmentBlue(text("dasads")),
+            SegmentYellow(text("dasads")),
+            SegmentPurple(text("dasads")),
+        ),
         "Dog": ListForm(Form(Col(ControlFloat(variable_name="ads"), ControlInt(), ControlSelectRadio(items=["A", "B", "C"])))),
     }),
     "Table": table,
