@@ -1,5 +1,9 @@
 from formify import *
 
+#show_splashscreen()
+#import time
+#time.sleep(2)
+
 items_dict = {"a": "a", "B": "b", "c": "c"}
 items = ["a", "b", "c"]
 
@@ -26,7 +30,7 @@ table = ControlTable(["B", "H", "Comment"], column_types=[float, float, str])
 
 
 def icon(title: str, *lines: str):
-    _icon = Segment(
+    _icon = SegmentAlt(
         h1(title),
         *[mute(line) for line in lines]
     )
@@ -40,12 +44,12 @@ def icon(title: str, *lines: str):
 
 
 MainWindow(SidebarContentView({
-    "Hello": Segment(combo, radios, btn),
+    "Hello": Segment(combo, radios, btn, ControlFile()),
     "World": Tabs({
         "Cat": ControlFloat("Cat"),
-        "Dog": ControlButton("Dog"),
+        "Dog": ListForm(Form(Col(ControlFloat(variable_name="ads"), ControlInt(), ControlSelectRadio(items=["A", "B", "C"])))),
     }),
     "Table": table,
 },
     bottom_widget=icon("MyGui", "Version: 1.3", "Build: 4122"),
-))
+), title="Super Simple")

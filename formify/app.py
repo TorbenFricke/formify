@@ -13,7 +13,7 @@ def stylesheet() -> str:
 		with open(str(stylesheet_root / css_file), "r") as f:
 			return f.read()
 
-	css = read("style.css")
+	css = read("testing.css")
 	css += "\n"
 
 	# windows
@@ -40,6 +40,7 @@ class App(QtWidgets.QApplication):
 		self.name = _generate_appname()
 		self.singe_instance = None
 		self.translator = localization.default_translator()
+		self.splash = None
 
 	def run(self):
 		# Run the main Qt loop
@@ -74,6 +75,24 @@ class App(QtWidgets.QApplication):
 
 
 app = App()
+
+
+def show_splashscreen(image_filepath: str = None):
+	from PySide6.QtCore import Qt
+	from PySide6.QtGui import QPixmap
+	from PySide6.QtWidgets import QSplashScreen
+
+	if image_filepath is None:
+		image_filepath = str(pathlib.Path(__file__).parent / "splash.png")
+
+	splash_image = QPixmap(image_filepath)
+
+	app.splash = splash = QSplashScreen(splash_image, Qt.WindowStaysOnTopHint)
+	splash.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+	splash.setEnabled(False)
+
+	splash.show()
+	app.processEvents()
 
 
 def run():

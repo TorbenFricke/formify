@@ -1,3 +1,6 @@
+MainWindow {
+    background-color: #f1f1f1;
+}
 
 QWidget {
     font-size: 9pt;
@@ -27,9 +30,3 @@ ControlSidebar > SidebarButton {
     font-size: 10pt;
 }
 
-
-ControlSidebar > SidebarButton:checked, ControlSidebar > SidebarButton:checked:hover {
-    background-color: #f0f0f0;
-    color: #0a0a0a;
-    border: 0;
-}

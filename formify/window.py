@@ -65,19 +65,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		if auto_run:
 			self.show()
-			formify.run()
 
+			# hide splashscreen
+			if formify.app.splash is not None:
+				formify.app.splash.finish(self)
+
+			# run the app
+			formify.run()
 
 	@property
 	def title(self):
 		return self._title
 
-
 	@title.setter
 	def title(self, value):
 		self._title = value
 		self.update_window_title()
-
 
 	def update_window_title(self):
 		title = self._title
@@ -87,7 +90,6 @@ class MainWindow(QtWidgets.QMainWindow):
 			title += f"{self.load_save_handler.file_name}{'*' if self.load_save_handler.no_changes > 0 else ''}"
 		title += self.load_save_handler.restored_label
 		self.setWindowTitle(title)
-
 
 	def make_menu(self, menu_items: dict=None):
 		def make_action(text, func, shortcut="") -> QtGui.QAction:
