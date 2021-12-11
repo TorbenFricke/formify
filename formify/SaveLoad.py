@@ -227,23 +227,26 @@ class LoadSaveHandler:
 		try:
 			with open(self.recent_filename) as f:
 				lines = f.readlines()
-		except:
+		except FileNotFoundError:
 			return
 
-		lines = [clean for line in lines if (clean := line.strip(" \n")) != ""]
+		line_iterator = (clean for line in reversed(lines) if (clean := line.strip(" \n")) != "")
 
 		# remove duplicates and reverse
-		return remove_duplicates_from_list(reversed(lines), max_length=n)
+		return remove_duplicates_from_list(line_iterator, max_length=n)
 
 
-def remove_duplicates_from_list(some_list, max_length=None):
-	if max_length == None:
-		max_length = len(some_list)
+def remove_duplicates_from_list(some_iter, max_length=None):
+	if max_length is None:
+		max_length = 100000000
 
+	hashes = set()
 	de_duplicated = []
-	for item in some_list:
-		if item in de_duplicated:
+	for item in some_iter:
+		item_hash = hash(item)
+		if item_hash in hashes:
 			continue
+		hashes.add(item_hash)
 
 		de_duplicated.append(item)
 
