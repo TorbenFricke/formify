@@ -1,0 +1,16 @@
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+      watch:
+        - formify
+
+site_name: Formify
+site_url: https://example.com/
+
+nav:
+  - "Form": form.md
+
