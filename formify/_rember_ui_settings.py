@@ -2,11 +2,11 @@ import json, typing, os
 
 
 class UISaveLoad:
-    def __init__(self, get_ui_settings: callable, filename: str = None):
-        from formify.SaveLoad import Timer, ensure_appdata_dir
+    def __init__(self, get_ui_settings: callable, app_name: str, filename: str = None):
+        from formify._save_load_helpers import Timer, ensure_appdata_dir
 
         if filename is None:
-            filename = ensure_appdata_dir() / "ui_settings.json"
+            filename = ensure_appdata_dir(app_name) / "ui_settings.json"
         self.filename = filename
         self.timer = Timer(interval=20, target=self.save_if_changed)
         self.last_json = None

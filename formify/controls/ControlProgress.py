@@ -22,7 +22,7 @@ class ControlProgress(ControlBase):
 	
 	@maximum.setter
 	def maximum(self, value):
-		return self.control.setMaximum(value)
+		self.control.setMaximum(value)
 	
 	@property
 	def minimum(self):
@@ -30,7 +30,7 @@ class ControlProgress(ControlBase):
 	
 	@minimum.setter
 	def minimum(self, value):
-		return self.control.setMinimum(value)
+		self.control.setMinimum(value)
 
 	@property
 	def percentage_visible(self):
@@ -38,7 +38,7 @@ class ControlProgress(ControlBase):
 
 	@percentage_visible.setter
 	def percentage_visible(self, value):
-		return self.control.setTextVisible(value)
+		self.control.setTextVisible(value)
 
 	def spin(self):
 		self.maximum = 0

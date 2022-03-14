@@ -1,8 +1,6 @@
 from PySide6 import QtWidgets, QtCore
 import typing
 from formify import app
-
-from formify.controls._events import EventDispatcher
 from formify.controls._value_base import ValueBase
 
 

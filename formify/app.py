@@ -41,7 +41,7 @@ class App(QtWidgets.QApplication):
 		self.name = _generate_appname()
 		self.singe_instance = None
 		self.translator = localization.default_translator()
-		self.remember_ui_settings = _rember_ui_settings.UISaveLoad(self.get_ui_settings)
+		self.remember_ui_settings = _rember_ui_settings.UISaveLoad(self.get_ui_settings, app_name=self.name)
 		ui_settings = self.remember_ui_settings.load()
 		if ui_settings is not None:
 			self.apply_ui_settings(ui_settings)

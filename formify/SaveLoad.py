@@ -1,4 +1,6 @@
-import json, threading, time, pathlib, os, traceback, io
+import json, time, os, traceback
+
+from formify._save_load_helpers import Timer, ensure_appdata_dir
 from formify.controls import Form
 from formify.tools import save_dialog, open_dialog, yes_no_dialog, ok_dialog
 from formify.controls._events import EventDispatcher
@@ -20,36 +22,6 @@ def default_open(form, file_name):
 		return
 
 	form.all_values = json.loads(s)
-
-
-class Timer(threading.Thread):
-	def __init__(self, interval, target):
-		threading.Thread.__init__(self)
-		self.daemon = True
-		self.interval = interval
-		self.target = target
-		self.start()
-
-	def run(self):
-		while True:
-			time.sleep(self.interval)
-			self.target()
-
-
-def ensure_appdata_dir():
-	# import here to prevent circular imports
-	from formify import app
-	if os.getenv('APPDATA') is not None:
-		# windows
-		path = pathlib.Path(os.getenv('APPDATA'))
-	else:
-		# macos
-		path = pathlib.Path().home()
-		path = path / "Library" / "Application Support"
-		path /= app.name
-	# TODO Linux
-	path.mkdir(parents=True, exist_ok=True)
-	return path
 
 
 class LoadSaveHandler:
