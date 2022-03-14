@@ -1,15 +1,14 @@
 import json
+import locale
 
 
 class Translator:
-
+	"""
+	By the default, the system language is used (i.e. "en", "de", "fr", ...)
+	"""
 	def __init__(self, language: str = None):
-		"""
-		By the default, the system language is used (i.e. "en", "de", "fr", ...)
-		"""
 		# get the systems default language
 		if language is None:
-			import locale
 			language = locale.getdefaultlocale()[0].split("_")[0]
 		self.language = language
 		"""Set the current language (usually a language code)"""
@@ -21,10 +20,10 @@ class Translator:
 
 		```
 		translator = Translator()
-		translator.add("file", en="file", de="Datei"})
+		translator.add("button_open", en="Open", de="Öffnen"})
 
 		translator.language = "de"
-		print(translator("file")) # returns "Datei"
+		print(translator("button_open")) # returns "Öffnen"
 		```
 		"""
 		self.translations[id] = langauges
@@ -36,7 +35,7 @@ class Translator:
 		If no translation for the current language `translator.language` is provided, the id is returned.
 
 		```
-		translator("file_name")
+		translator("button_open")
 		```
 		"""
 		# grab the specified id, or an empty dict
@@ -61,7 +60,8 @@ class Translator:
 
 def default_translator(*args, **kwargs) -> Translator:
 	"""
-	Returns a `Translator`, prepopulated with a few default german english translations.
+	Returns a `Translator`, populated with translations for default menu items (Open, Close, ...) for german and english.
+	*args and **kwargs are passed to the Translator.__init__.
 	"""
 	translator = Translator(*args, **kwargs)
 	translator.translations.update({
@@ -82,7 +82,31 @@ def default_translator(*args, **kwargs) -> Translator:
 	return translator
 
 
-def language_switch(translator: Translator, language_order: list) -> callable:
+def make_language_switch(translator: Translator, language_order: list) -> callable:
+	"""
+	Makes a function, that selects the argument corresponding to the current language. Best read the example below:
+
+	```
+	translator = Translator()
+	switch = make_language_switch(translator, ["en", "de"])
+
+	translator.language = "en"
+	print(switch("open", "öffnen")) # prints "open"
+
+	translator.language = "de"
+	print(switch("open", "öffnen")) # prints "öffnen"
+
+	# set the text of a button
+	ControlButton(switch("open", "öffnen"))
+	```
+
+	Args:
+		translator:
+		language_order:
+
+	Returns:
+
+	"""
 	def switch(*args):
 		try:
 			index = language_order.index(translator.language)

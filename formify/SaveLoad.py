@@ -53,11 +53,13 @@ def ensure_appdata_dir():
 
 
 class LoadSaveHandler:
-	def __init__(self,
-				 main_form: Form,
-				 allowed_file_extensions: list = None,
-				 save_handler=default_save,
-				 open_handler=default_open):
+	def __init__(
+			self,
+			main_form: Form,
+			allowed_file_extensions: list = None,
+			save_handler=default_save,
+			open_handler=default_open
+	):
 
 		self.form = main_form
 		self.allowed_file_extensions = allowed_file_extensions

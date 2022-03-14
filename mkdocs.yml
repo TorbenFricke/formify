@@ -1,16 +1,22 @@
 plugins:
+  - search
   - mkdocstrings:
       default_handler: python
       handlers:
         python:
           rendering:
             show_source: true
+            members_order: source
+            show_signature_annotations: true
+            show_root_heading: false
       watch:
         - formify
 
+
 site_name: Formify
-site_url: https://example.com/
+site_url: https://formify.readthedocs.io
 
 nav:
-  - "Form": form.md
+  - "root": root.md
+  - "Localization": localization.md
 

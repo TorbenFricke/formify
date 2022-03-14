@@ -3,6 +3,7 @@ from PySide6 import QtGui
 from PySide6 import QtWidgets
 import sys
 from formify import localization
+from formify import _rember_ui_settings
 
 
 stylesheet_root = pathlib.Path(__file__).parent
@@ -40,7 +41,28 @@ class App(QtWidgets.QApplication):
 		self.name = _generate_appname()
 		self.singe_instance = None
 		self.translator = localization.default_translator()
+		self.remember_ui_settings = _rember_ui_settings.UISaveLoad(self.get_ui_settings)
+		ui_settings = self.remember_ui_settings.load()
+		if ui_settings is not None:
+			self.apply_ui_settings(ui_settings)
 		self.splash = None
+
+	def get_ui_settings(self):
+		"""
+		Can be overridden to include other UI Settings. Will be loaded, as the app is created.
+		Be sure to also override apply_ui_settings.
+
+		"""
+		return {
+			"language": self.translator.language
+		}
+
+	def apply_ui_settings(self, ui_settings: dict):
+		"""
+		Applies a ui_settings (dict). By default this us only the UI language. This is done, while formify is being
+		imported, so before any UI components are created.
+		"""
+		self.translator.language = ui_settings["language"]
 
 	def run(self):
 		# Run the main Qt loop
