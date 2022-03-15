@@ -92,16 +92,16 @@ class MainWindow(QtWidgets.QMainWindow):
 		self.setWindowTitle(title)
 
 	def make_menu(self, menu_items: dict=None):
-		def make_action(text, func, shortcut="") -> QtGui.QAction:
-			action = QtGui.QAction(text)
-			action.triggered.connect(func)
-			if shortcut != "":
-				action.setShortcut(
-					QtGui.QKeySequence(shortcut)
-				)
-			return action
-
 		def add_menus(menu, menu_items):
+			def make_action(text, func, shortcut="") -> QtGui.QAction:
+				action = QtGui.QAction(text, menu)
+				action.triggered.connect(func)
+				if shortcut != "":
+					action.setShortcut(
+						QtGui.QKeySequence(shortcut)
+					)
+				return action
+
 			for key, item in menu_items.items():
 				# another sub menu
 				if isinstance(item, dict):
@@ -126,13 +126,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		menubar = self.menuBar()
 
-		key = formify.app.translator("File")
-		menu = menubar.addMenu(key)
+		file_label = formify.app.translator("File")
+		file_menu = menubar.addMenu(file_label)
 
 		# load save menu
-		add_menus(menu, self.load_save_handler.menu())
-		menu.addSeparator()
+		add_menus(file_menu, self.load_save_handler.menu())
+		file_menu.addSeparator()
 
 		# user defined menus
-		add_menus(menu, menu_items.pop(key, {}))
+		add_menus(file_menu, menu_items.pop(file_label, {}))
 		add_menus(menubar, menu_items)
