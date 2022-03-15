@@ -1,5 +1,5 @@
 from formify import localization
-from formify.app import app, run, show_splashscreen
+from formify.app import app, run, show_splashscreen, add_font
 from formify.controls import *
 from formify.layout import *
 from formify import tools

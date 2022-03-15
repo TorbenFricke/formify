@@ -1,3 +1,6 @@
+QWidget {
+    font-family: Helvetica,Arial,Font Awesome 6 Free;
+}
 
 QLineEdit {
     border-radius: 4px;

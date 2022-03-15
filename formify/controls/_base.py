@@ -16,6 +16,7 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 			parent: QtWidgets.QWidget = None,
 			on_change: typing.Callable = None,
 			creat_change_event: bool = True,
+			**kwargs,
 	):
 		"""
 		Base Class for most controls. On its own, this is just a Label in a BoxLayout.
@@ -43,6 +44,8 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 			value=value,
 			creat_change_event=creat_change_event
 		)
+
+		set_props(self, kwargs)
 
 	def _make_label_widget(self, label):
 		self.label_widget = QtWidgets.QLabel(text=label, parent=self)
@@ -88,3 +91,14 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 	def label(self, value):
 		self.label_widget.setVisible(value != "")
 		self.label_widget.setText(value)
+
+
+def set_props(self, kwargs):
+	for _attr, _item in kwargs.items():
+		words = _attr.split("_")
+		_attr = "set" + "".join([
+			word.capitalize() for word in words
+		])
+
+		func = getattr(self, _attr)
+		func(_item)

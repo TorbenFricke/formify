@@ -99,6 +99,11 @@ class App(QtWidgets.QApplication):
 app = App()
 
 
+def add_font(tff_file_name):
+	QtGui.QFontDatabase.addApplicationFont(tff_file_name)
+
+
+
 def show_splashscreen(image_filepath: str = None):
 	from PySide6.QtCore import Qt
 	from PySide6.QtGui import QPixmap

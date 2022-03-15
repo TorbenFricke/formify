@@ -1,9 +1,12 @@
 from PySide6 import QtWidgets, QtGui
+from formify.controls._base import set_props
+
 
 class ControlImage(QtWidgets.QLabel):
-	def __init__(self, file_name:str=None, width=None, height=None):
+	def __init__(self, file_name:str=None, width=None, height=None, **kwargs):
 
 		QtWidgets.QLabel.__init__(self)
+		set_props(self, kwargs)
 
 		self._file_name = file_name
 		self._pixelmap = None

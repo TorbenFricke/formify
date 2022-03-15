@@ -2,6 +2,7 @@ from formify.controls._value_base import ValueBase
 from formify import app
 from PySide6 import QtWidgets
 import typing
+from formify.controls._base import set_props
 
 
 class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
@@ -11,7 +12,8 @@ class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
 			variable_name: str = None,
 			value: typing.Any = None,
 			parent: QtWidgets.QWidget = None,
-			on_change: typing.Callable = None
+			on_change: typing.Callable = None,
+			**kwargs
 	):
 
 		if label is None:
@@ -28,6 +30,8 @@ class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
 		self.stateChanged.connect(
 			lambda: self.change()
 		)
+
+		set_props(self, kwargs)
 
 	def get_value(self):
 		return self.isChecked()
