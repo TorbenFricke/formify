@@ -105,20 +105,20 @@ class ItemBase:
 
 		## set the correct index
 		# index was -1 but and item was added
-		if index == -1 and len(self._items) > 0:
+		if index == -1 and len(items) > 0:
 			self.index = 0
 
 		# no items remaining
-		elif len(self._items) == 0:
+		elif len(items) == 0:
 			if index != -1:
 				self.index = -1
 
 		# index is fine and does not need to be adjusted
-		elif len(self._items) > index:
+		elif len(items) > index:
 			self.index = index
 
 		# not enough items - reduce index by
-		elif len(self._items) > 0:
+		elif len(items) <= index:
 			self.index = len(self._items) - 1
 
 		# trigger event

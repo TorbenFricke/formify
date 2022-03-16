@@ -54,11 +54,9 @@ class ListForm(Form):
 		if value is not None:
 			self.value = value
 
-
 	def new_item(self):
 		self.control.items += [self.model_form.value]
 		self.control.index = len(self.control.items) - 1
-
 
 	def _update_form(self, *_):
 		if self._suspend_update_form:
@@ -66,10 +64,10 @@ class ListForm(Form):
 
 		if self.control.index == -1:
 			# nothing is selected? hide the Form and return early.
-			self.model_form.setVisible(False)
+			self.model_form.setEnabled(False)
 			return
 		else:
-			self.model_form.setVisible(True)
+			self.model_form.setEnabled(True)
 
 		with self.model_form.change.suspend_updates():
 			#print("_update_form")
