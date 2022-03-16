@@ -3,6 +3,12 @@ from formify import *
 #show_splashscreen()
 #import time
 #time.sleep(2)
+"""
+QWidget {
+    font-family: Helvetica,Arial,Font Awesome 6 Free;
+}
+
+"""
 
 items_dict = {"a": "a", "B": "b", "c": "c"}
 items = ["a", "b", "c"]

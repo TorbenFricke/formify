@@ -2,6 +2,7 @@ from formify.controls import ControlBase
 from PySide6 import QtWidgets, QtCore
 import typing
 
+
 class ControlSlider(ControlBase):
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		self.control = QtWidgets.QSlider(QtCore.Qt.Horizontal)

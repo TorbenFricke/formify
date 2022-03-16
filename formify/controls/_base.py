@@ -96,9 +96,12 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 def set_props(self, kwargs):
 	for _attr, _item in kwargs.items():
 		words = _attr.split("_")
-		_attr = "set" + "".join([
+		func_name = "set" + "".join([
 			word.capitalize() for word in words
 		])
 
-		func = getattr(self, _attr)
+		try:
+			func = getattr(self, func_name)
+		except AttributeError as e:
+			raise AttributeError(f"Cannot set '{_attr}' of '{self.__class__.__name__}' object; {e.args[0]}")
 		func(_item)

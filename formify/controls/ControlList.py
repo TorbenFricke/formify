@@ -1,7 +1,7 @@
 from formify.controls import ControlButton
 from formify.controls._item_base import ListControlBase, SelectControlBase
 from formify.layout import Row, ensure_widget
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import Qt
 import typing
 
@@ -14,31 +14,6 @@ def rearrange(some_list, r_from, r_to):
 
 
 class ControlList(ListControlBase):
-	def __init__(
-			self,
-			label: str = None,
-			variable_name: str = None,
-			value: typing.Any = None,
-			parent: QtWidgets.QWidget = None,
-			on_change: typing.Callable = None,
-			display_name_callback: callable = str,
-			rearrangeable: bool = True,
-			add_click: typing.Callable = None,
-			remove_click: typing.Callable = None,
-	):
-		ListControlBase.__init__(
-			self,
-			label=label,
-			variable_name=variable_name,
-			value=value,
-			parent=parent,
-			display_name_callback=display_name_callback,
-			on_change=on_change,
-			add_click=add_click,
-			remove_click=remove_click,
-		)
-		self.rearrangeable = rearrangeable
-
 	def _make_control_widgets(self) -> typing.List[QtWidgets.QWidget]:
 		self.control = QtWidgets.QListWidget(parent=self)
 		# set the on change handler
@@ -107,6 +82,33 @@ class ControlList(ListControlBase):
 		self.add_button = ControlButton(app.translator("+ Add"), on_click=make_handler("add_click"))
 		self.remove_button = ControlButton(app.translator("- Remove"), on_click=make_handler("remove_click"))
 		yield ensure_widget(Row(self.add_button, self.remove_button))
+
+	def __init__(
+			self,
+			label: str = None,
+			variable_name: str = None,
+			value: typing.Any = None,
+			parent: QtWidgets.QWidget = None,
+			on_change: typing.Callable = None,
+			display_name_callback: callable = str,
+			rearrangeable: bool = True,
+			add_click: typing.Callable = None,
+			remove_click: typing.Callable = None,
+			**kwargs,
+	):
+		ListControlBase.__init__(
+			self,
+			label=label,
+			variable_name=variable_name,
+			value=value,
+			parent=parent,
+			display_name_callback=display_name_callback,
+			on_change=on_change,
+			add_click=add_click,
+			remove_click=remove_click,
+			**kwargs,
+		)
+		self.rearrangeable = rearrangeable
 
 	def get_index(self) -> int:
 		return self.control.currentRow()

@@ -1,7 +1,6 @@
 from PySide6 import QtWidgets, QtCore
 import typing
-from formify.layout import Col, text, ensure_widget
-from formify.controls import ControlButton
+from formify.controls._base import set_props
 from formify.controls._value_base import ValueBase
 from formify.controls._item_base import SelectBase
 from formify.controls._events import EventDispatcher
@@ -40,14 +39,15 @@ class SidebarButton(QtWidgets.QPushButton):
 
 class ControlSelectSidebar(QtWidgets.QFrame, SelectBase, ValueBase):
 	def __init__(
-		self,
-		items:typing.List[str],
-		variable_name: str = None,
-		value: str = None,
-		on_change: typing.Callable = None,
-		display_name_callback = str,
-		top_widget: QtWidgets.QWidget = None,
-		bottom_widget: QtWidgets.QWidget = None
+			self,
+			items:typing.List[str],
+			variable_name: str = None,
+			value: str = None,
+			on_change: typing.Callable = None,
+			display_name_callback = str,
+			top_widget: QtWidgets.QWidget = None,
+			bottom_widget: QtWidgets.QWidget = None,
+			**kwargs
 	):
 		QtWidgets.QFrame.__init__(self)
 		self._buttons: typing.List[SidebarButton] = []
@@ -68,6 +68,8 @@ class ControlSelectSidebar(QtWidgets.QFrame, SelectBase, ValueBase):
 			self.change.subscribe(on_change)
 
 		self.value = value
+
+		set_props(self, kwargs)
 
 	def _make_button(self, text):
 		def make_set_checked(idx):

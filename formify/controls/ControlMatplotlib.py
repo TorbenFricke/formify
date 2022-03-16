@@ -1,3 +1,4 @@
+from formify.controls._base import set_props
 from PySide6 import QtWidgets, QtCore
 import warnings
 
@@ -10,10 +11,12 @@ class Signaller(QtCore.QObject):
 
 
 class ControlMatplotlib(QtWidgets.QWidget):
-	def __init__(self,
-	             toolbar_visible=True,
-	             parent: QtWidgets.QWidget = None):
-
+	def __init__(
+			self,
+			toolbar_visible=True,
+			parent: QtWidgets.QWidget = None,
+			**kwargs,
+	):
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
 		# importing matplotlib takes a while, so we only do it if required
@@ -38,6 +41,8 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		# we use a signal to make sure redrawing is done in the main Thread
 		self._repaint_signal = Signaller()
 		self._repaint_signal.signal.connect(self._actually_draw)
+
+		set_props(self, kwargs)
 
 	@property
 	def fig(self):

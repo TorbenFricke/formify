@@ -3,7 +3,7 @@ from formify.controls._base import set_props
 
 
 class ControlImage(QtWidgets.QLabel):
-	def __init__(self, file_name:str=None, width=None, height=None, **kwargs):
+	def __init__(self, file_name: str = None, width=None, height=None, **kwargs):
 
 		QtWidgets.QLabel.__init__(self)
 		set_props(self, kwargs)

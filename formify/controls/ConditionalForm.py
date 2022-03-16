@@ -13,7 +13,7 @@ def _make_condition_control(layouts):
 
 
 class ConditionalForm(Form):
-	def __init__(self, layouts:dict, condition_control=None, *args, **kwargs):
+	def __init__(self, layouts: dict, condition_control=None, *args, **kwargs):
 		self.layouts = layouts
 
 		# make conditional control

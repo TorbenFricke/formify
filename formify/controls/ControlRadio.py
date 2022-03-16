@@ -3,6 +3,7 @@ from formify.controls._value_base import ValueBase
 from formify.controls._item_base import SelectControlBase
 from formify.layout.segments import Segment
 from formify.layout.layouts import Col
+from formify.controls._base import set_props
 from PySide6 import QtWidgets
 import typing
 
@@ -14,7 +15,8 @@ class ControlRadio(ValueBase, QtWidgets.QRadioButton):
 			variable_name: str = None,
 			value: typing.Any = None,
 			parent: QtWidgets.QWidget = None,
-			on_change: typing.Callable = None
+			on_change: typing.Callable = None,
+			**kwargs
 	):
 		if label is None:
 			if variable_name is None:
@@ -25,6 +27,8 @@ class ControlRadio(ValueBase, QtWidgets.QRadioButton):
 		QtWidgets.QRadioButton.__init__(self, parent=parent, text=label)
 
 		ValueBase.__init__(self, variable_name=variable_name, on_change=on_change, value=value)
+
+		set_props(self, kwargs)
 
 		# set the on change handler
 		self.toggled.connect(

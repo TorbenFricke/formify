@@ -1,5 +1,6 @@
 from formify.controls._value_base import ValueBase
 from formify.layout import ensure_layout
+from formify.controls._base import set_props
 from PySide6 import QtWidgets
 import typing
 
@@ -64,12 +65,15 @@ __FLATTEN__ = "__flatten__"
 
 
 class Form(QtWidgets.QWidget, ValueBase):
-	def __init__(self,
-				 layout: QtWidgets.QLayout,
-				 variable_name: str = None,
-				 value: typing.Any = None,
-				 on_change: typing.Callable = None,
-				 parent: QtWidgets.QWidget = None, ):
+	def __init__(
+			self,
+			layout: QtWidgets.QLayout,
+			variable_name: str = None,
+			value: typing.Any = None,
+			on_change: typing.Callable = None,
+			parent: QtWidgets.QWidget = None,
+			**kwargs,
+	):
 		"""
 		Acts as a master control for all controls inside the "layout" that include a variable name.
 
@@ -89,10 +93,12 @@ class Form(QtWidgets.QWidget, ValueBase):
 
 		layout = ensure_layout(layout)
 		self.setLayout(layout)
-		# Forms should not add any margin
-		layout.setContentsMargins(0,0,0,0)
+		# Forms should not add any margin by default
+		layout.setContentsMargins(0, 0, 0, 0)
 		self.controls = self.get_controls()
 		self._subscribe_to_controls()
+
+		set_props(self, kwargs)
 
 	def get_controls(self):
 		controls = walk(self)

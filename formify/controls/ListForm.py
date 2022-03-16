@@ -1,6 +1,6 @@
 from formify.controls import Form
 from formify.layout import SplitterRow
-from formify.controls import ControlList
+from formify.controls import ControlList, _item_base
 import typing
 
 
@@ -11,14 +11,20 @@ class ListForm(Form):
 			value: typing.List = None,
 			label: str = "",
 			display_name_callback: typing.Callable = str,
-			layout_class = SplitterRow,
-			on_change = None,
+			list_control: _item_base.ListBase = None,
+			layout_class=SplitterRow,
+			on_change=None,
 			**kwargs
 	):
 		self.model_form = model_form
 
 		# generate the master layout containing all widgets and sub layouts
-		self.control = ControlList(label=label, add_click=self.new_item)
+		if list_control is None:
+			self.control = ControlList(label=label)
+		else:
+			self.control = list_control
+		self.control.add_click = self.new_item
+
 		layout = layout_class(
 			self.control,
 			self.model_form

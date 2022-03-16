@@ -2,6 +2,7 @@ from formify.controls import ControlBase
 from PySide6 import QtWidgets, QtGui
 import typing
 
+
 class ControlText(ControlBase):
 	_line_edit_validator = None
 
