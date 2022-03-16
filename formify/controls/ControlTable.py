@@ -85,7 +85,7 @@ class ControlTable(ControlBase):
 			**kwargs
 		)
 
-		self.change.subscriptions.insert(0, self.ensure_empty_bottom_row)
+		self.change.subscriptions.insert(0, self.ensure_no_rows)
 
 		self._columns = []
 		self.columns = columns
@@ -118,7 +118,7 @@ class ControlTable(ControlBase):
 				new_item
 			)
 
-	def ensure_empty_bottom_row(self):
+	def ensure_no_rows(self):
 		with self.change.suspend_updates():
 			# fixed number of rows
 			if self.fixed_no_rows is not None:
@@ -146,7 +146,7 @@ class ControlTable(ControlBase):
 	def fixed_no_rows(self, value):
 		prev = self._fixed_no_rows
 		self._fixed_no_rows = value
-		self.ensure_empty_bottom_row()
+		self.ensure_no_rows()
 		if prev != value:
 			self.change()
 
@@ -258,6 +258,8 @@ class ControlTable(ControlBase):
 					except IndexError:
 						break
 
+			self.ensure_no_rows()
+
 		self.change()
 
 	def delete_selection(self):
@@ -267,7 +269,7 @@ class ControlTable(ControlBase):
 				for index in selection:
 					self.set_data(index.row(), index.column(), None)
 
-				self.ensure_empty_bottom_row()
+				self.ensure_no_rows()
 
 			self.change()
 
@@ -309,17 +311,11 @@ class ControlTable(ControlBase):
 		elif n_column > n_column_labels:
 			n_column = n_column_labels
 
-		self.model.setRowCount(n_rows)
-
 		with self.change.suspend_updates():
 			for x in range(n_rows):
+				self.ensure_no_rows()
 				for y in range(n_column):
-					cast = self.get_cast_function(y)
-					self.model.setItem(
-						x,
-						y,
-						table_item(cast(value[x][y]))
-					)
+					self.set_data(x, y, value[x][y])
 		self.change(value)
 
 	@property
