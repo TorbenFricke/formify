@@ -1,6 +1,6 @@
 import typing
 from PySide6 import QtWidgets, QtCore
-from formify.controls import ControlBase
+from formify.controls._base import set_props
 
 
 TAB_PADDING = 5
@@ -99,21 +99,37 @@ def Grid(*controls, columns=3):
 	return grid
 
 
-def SplitterRow(*args, collapsible=False, **kwargs):
-	splitter = QtWidgets.QSplitter()
+def _setup_splitter(splitter, controls, collapsible, kwargs):
+	splitter.setHandleWidth(2)
 	splitter.setChildrenCollapsible(collapsible)
-	for widget in args:
+	for widget in controls:
 		splitter.addWidget(
 			ensure_widget(widget)
 		)
+	set_props(splitter, kwargs)
 
-	return splitter
+
+class SplitterRow(QtWidgets.QSplitter):
+	def __init__(
+			self,
+			*controls,
+			collapsible=False,
+			**kwargs,
+	):
+		QtWidgets.QSplitter.__init__(self)
+		_setup_splitter(self, controls, collapsible, kwargs)
 
 
-def SplitterCol(*args, **kwargs):
-	splitter = SplitterRow(*args, **kwargs)
-	splitter.setOrientation(QtCore.Qt.Orientation.Vertical)
-	return splitter
+class SplitterCol(QtWidgets.QSplitter):
+	def __init__(
+			self,
+			*controls,
+			collapsible=False,
+			**kwargs,
+	):
+		QtWidgets.QSplitter.__init__(self)
+		self.setOrientation(QtCore.Qt.Orientation.Vertical)
+		_setup_splitter(self, controls, collapsible, kwargs)
 
 
 def ScrollArea(widget):
@@ -121,3 +137,25 @@ def ScrollArea(widget):
 	area.setWidgetResizable(True)
 	area.setWidget(widget)
 	return area
+
+
+class HLine(QtWidgets.QFrame):
+	def __init__(self, **kwargs):
+		super(HLine, self).__init__()
+		self.setFrameShape(QtWidgets.QFrame.HLine)
+		set_props(self, kwargs)
+
+
+class VLine(QtWidgets.QFrame):
+	def __init__(self, **kwargs):
+		super(VLine, self).__init__()
+		self.setFrameShape(QtWidgets.QFrame.VLine)
+		set_props(self, kwargs)
+
+
+class Placeholder(QtWidgets.QFrame):
+	def __init__(self, width=0, height=0, **kwargs):
+		super(Placeholder, self).__init__()
+		set_props(self, kwargs)
+		self.setFixedWidth(width)
+		self.setFixedHeight(height)

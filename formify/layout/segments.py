@@ -18,6 +18,10 @@ class Segment(QtWidgets.QFrame):
 			))
 
 
+class SegmentLight(Segment):
+	pass
+
+
 class SegmentAlt(Segment):
 	pass
 

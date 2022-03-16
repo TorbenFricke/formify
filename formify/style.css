@@ -1,7 +1,3 @@
-QWidget {
-    font-family: Helvetica,Arial,Font Awesome 6 Free;
-}
-
 QLineEdit {
     border-radius: 4px;
     border: 1px solid rgba(138, 138, 138, 0.14);
@@ -64,6 +60,11 @@ SegmentAlt {
     border: 1px solid rgba(138, 138, 138, 0.12);
 }
 
+SegmentLight {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 SegmentRed {
     background-color: rgba(255, 0, 0, 0.07);
     border: 1px solid rgba(255, 13, 13, 0.25);
@@ -93,6 +94,38 @@ SegmentSidebar {
     background-color: transparent;
     border: 0;
     padding: 0;
+}
+
+HLine, VLine {
+    color: rgba(138, 138, 138, 0.3);
+}
+
+QSplitter::handle {
+    border-radius: 1px;
+    /*
+    border: 1px solid rgb(96, 166, 255);
+    background-color: rgba(23, 107, 238, 0.89);
+     */
+    background-color: rgba(115, 121, 128, 0.7);
+}
+
+SplitterRow::handle {
+    margin: 0 7px;
+}
+
+SplitterCol::handle {
+    margin: 7px 0;
+}
+
+QToolBox::tab {
+    background: deeppink;
+}
+
+QToolBar {
+    background-color: transparent;
+    border: 1px solid rgba(138, 138, 138, 0.2);
+    border-radius: 5px;
+    padding: 3px;
 }
 
 QTableView {
