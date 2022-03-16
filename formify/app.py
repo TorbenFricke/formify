@@ -1,7 +1,7 @@
 import pathlib, os
 from PySide6 import QtGui
 from PySide6 import QtWidgets
-import sys
+import sys, typing
 from formify import localization
 from formify import _rember_ui_settings
 
@@ -45,7 +45,7 @@ class App(QtWidgets.QApplication):
 		ui_settings = self.remember_ui_settings.load()
 		if ui_settings is not None:
 			self.apply_ui_settings(ui_settings)
-		self.splash = None
+		self.splash: typing.Optional[QtWidgets.QSplashScreen] = None
 
 	def get_ui_settings(self):
 		"""
