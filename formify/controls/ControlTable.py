@@ -7,6 +7,15 @@ from formify.controls.ControlFloat import _str2float
 from formify.controls.ControlInt import _str2int
 
 
+def _str2bool(s):
+	if not isinstance(s, str):
+		return bool(s)
+
+	lower = s.lower()
+	if lower in ["true", "x", "y", "yes"]:
+		return True
+
+
 class ValidatorDelegate(QtWidgets.QItemDelegate):
 	def __init__(self, parent, column_types: list = None):
 		self.column_types = column_types
@@ -21,6 +30,8 @@ class ValidatorDelegate(QtWidgets.QItemDelegate):
 			cls = ControlFloat
 		elif self.column_types[index.column()] is int:
 			cls = ControlInt
+		elif self.column_types[index.column()] is bool:
+			return None
 		else:
 			cls = ControlText
 
@@ -57,6 +68,7 @@ class ControlTable(ControlBase):
 			columns: list,
 			label: str = None,
 			column_types: list = None,
+			fixed_no_rows: int = None,
 			*args,
 			**kwargs
 	):
@@ -69,41 +81,73 @@ class ControlTable(ControlBase):
 			**kwargs
 		)
 
+		self.change.subscriptions.insert(0, self.ensure_empty_bottom_row)
+
 		self._columns = []
 		self.columns = columns
 
-		def ensure_empty_bottom_row():
-			def add_row():
-				row = self.model.rowCount()
-				self.model.insertRow(row)
-				for column in range(self.model.columnCount()):
-					self.model.setItem(
-						row,
-						column,
-						table_item()
-					)
+		self._fixed_no_rows = None
+		self.fixed_no_rows = fixed_no_rows
 
-			def is_row_empty(row):
-				for column in range(self.model.columnCount()):
-					if self.data(row, column) != "":
-						return False
-				return True
+	def is_row_empty(self, row):
+		for column in range(self.model.columnCount()):
+			if self.is_bool_column(column):
+				# not empty if the bool value has been set
+				if self.data(row, column):
+					return False
+			elif self.data(row, column) != "":
+				return False
+		return True
 
-			with self.change.suspend_updates():
-				# no rows?
-				if self.model.rowCount() == 0:
+	def ensure_empty_bottom_row(self):
+		def add_row():
+			row = self.model.rowCount()
+			self.model.insertRow(row)
+			for column in range(self.model.columnCount()):
+				new_item = table_item()
+
+				if self.is_bool_column(column):
+					new_item.setCheckable(True)
+
+				self.model.setItem(
+					row,
+					column,
+					new_item
+				)
+
+		with self.change.suspend_updates():
+			# fixed number of rows
+			if self.fixed_no_rows is not None:
+				while self.fixed_no_rows > self.model.rowCount():
 					add_row()
-				# last row not empty?
-				elif not is_row_empty(self.model.rowCount() - 1):
-					add_row()
-				# last row is empty?
-				else:
-					# multiple empty rows?
-					while is_row_empty(self.model.rowCount() - 2):
-						self.model.removeRow(self.model.rowCount() - 2)
+				while self.fixed_no_rows < self.model.rowCount():
+					self.model.removeRow(self.model.rowCount() - 1)
+			# no rows?
+			elif self.model.rowCount() == 0:
+				add_row()
+			# last row not empty?
+			elif not self.is_row_empty(self.model.rowCount() - 1):
+				add_row()
+			# last row is empty?
+			elif self.model.rowCount() >= 2:
+				# multiple empty rows?
+				while self.is_row_empty(self.model.rowCount() - 2):
+					self.model.removeRow(self.model.rowCount() - 2)
 
-		self.change.subscribe(ensure_empty_bottom_row)
-		ensure_empty_bottom_row()
+	@property
+	def fixed_no_rows(self):
+		return self._fixed_no_rows
+
+	@fixed_no_rows.setter
+	def fixed_no_rows(self, value):
+		prev = self._fixed_no_rows
+		self._fixed_no_rows = value
+		self.ensure_empty_bottom_row()
+		if prev != value:
+			self.change()
+
+	def is_bool_column(self, column_index):
+		return len(self.column_types) > column_index and self.column_types[column_index] is bool
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def make_action(func, shortcut) -> QtGui.QAction:
@@ -121,14 +165,37 @@ class ControlTable(ControlBase):
 		self.control.addAction(make_action(lambda: self.paste_selection(), QtGui.QKeySequence.Paste))
 		self.control.addAction(make_action(lambda: self.delete_selection(), QtGui.QKeySequence.Delete))
 		self.control.addAction(
-			make_action(lambda: self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace)))
+			make_action(lambda: self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace))
+		)
 
 		self.model.itemChanged.connect(lambda: self.change())
 
 		return self.control
 
 	def data(self, row, column):
+		if self.is_bool_column(column):
+			item = self.model.item(row, column)
+			if item is None:
+				return None
+			return item.checkState() == Qt.CheckState.Checked
 		return self.model.data(self.model.index(row, column))
+
+	def set_data(self, row, column, data):
+		cast = self.get_cast_function(column)
+		if data is not None:
+			casted = cast(data)
+		else:
+			casted = ""
+
+		if self.is_bool_column(column):
+			item = self.model.item(row, column)
+			if item is None:
+				return
+			item.setCheckState(
+				Qt.CheckState.Checked if casted else Qt.CheckState.Unchecked
+			)
+		else:
+			self.model.setData(self.model.index(row, column), casted)
 
 	def copy_selection(self):
 		## source:
@@ -143,7 +210,7 @@ class ControlTable(ControlBase):
 			for index in selection:
 				row = index.row() - rows[0]
 				column = index.column() - columns[0]
-				table[row][column] = index.data()
+				table[row][column] = str(self.data(row, column))
 
 			# convert
 			from formify import app
@@ -164,28 +231,27 @@ class ControlTable(ControlBase):
 			if len(rows) == 1 and len(columns) == 1:
 				for i, line in enumerate(reader):
 					for j, cell in enumerate(line):
-						cast = self.get_cast_function(columns[0] + j)
-						model.setData(model.index(rows[0] + i, columns[0] + j), cast(cell))
+						row = rows[0] + i
+						column = columns[0] + j
+						self.set_data(row, column, cell)
 			else:
 				arr = [[cell for cell in row] for row in reader]
 				for index in selection:
 					row = index.row() - rows[0]
 					column = index.column() - columns[0]
-					cast = self.get_cast_function(index.column())
-					model.setData(model.index(index.row(), index.column()), cast(arr[row][column]))
+					self.set_data(row, column, arr[row][column])
 
 	def delete_selection(self):
 		selection = self.control.selectedIndexes()
-		model = self.control.model()
 		if selection:
 			with self.change.suspend_updates():
 				for index in selection:
-					model.setData(index, "")
+					self.set_data(index.row(), index.column(), None)
 
 			self.change()
 
 	def get_cast_function(self, column: int):
-		known = {int: _str2int, float: _str2float}
+		known = {int: _str2int, float: _str2float, bool: _str2bool}
 		cast = str
 		try:
 			cast = self.column_types[column]
@@ -196,7 +262,12 @@ class ControlTable(ControlBase):
 
 	def get_value(self):
 		out = []
-		for row in range(self.model.rowCount() - 1):
+		n_rows = self.model.rowCount()
+		for row in range(self.model.rowCount()):
+			# break if last row is empty and we are not using fixed row numbers
+			if self.fixed_no_rows is None and row == n_rows - 1 and self.is_row_empty(row):
+				break
+
 			out.append([])
 			for column in range(self.model.columnCount()):
 				cast = self.get_cast_function(column)
@@ -207,7 +278,14 @@ class ControlTable(ControlBase):
 	def set_value(self, value):
 		n_rows = len(value)
 		n_column = len(value[0]) if len(value) > 0 else 1
-		self.model.setColumnCount(n_column)
+		n_column_labels = len(self.columns)
+
+		# only change the number of columns if no labels were set
+		if n_column_labels == 0:
+			self.model.setColumnCount(n_column)
+		elif n_column > n_column_labels:
+			n_column = n_column_labels
+
 		self.model.setRowCount(n_rows)
 
 		with self.change.suspend_updates():

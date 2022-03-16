@@ -1,15 +1,18 @@
-from formify.controls import ControlBase, ControlTree
-from PySide2 import QtWidgets, QtCore
+from formify import *
 import typing
 import formify
 
 
-table = formify.controls.ControlTable(columns=["H", "B"], column_types=[int, float])
+table = ControlTable(columns=["H", "B"], column_types=[bool, float])
+table.change.subscribe(print)
+
+def do_stuff():
+	table.fixed_no_rows = 4
 
 
-window = formify.MainWindow(formify.layout.Col(
+window = MainWindow(Col(
 	table,
-	formify.controls.ControlButton("Print", lambda : print(table.value))
+	ControlButton("Print", do_stuff)
 ), margin=8)
 
 
