@@ -2,7 +2,7 @@ from formify.controls import ControlBase
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtCore import Qt
 import typing, io, csv
-from formify.controls import ControlText, ControlFloat, ControlInt
+from formify.controls import ControlText, ControlFloat, ControlInt, ControlSelect
 from formify.controls.ControlFloat import _str2float
 from formify.controls.ControlInt import _str2int
 
@@ -32,11 +32,15 @@ class ValidatorDelegate(QtWidgets.QItemDelegate):
 			cls = ControlInt
 		elif self.column_types[index.column()] is bool:
 			return None
+		elif type(self.column_types[index.column()]) is tuple:
+			cls = ControlSelect
 		else:
 			cls = ControlText
 
 		editor = cls("", parent=parent)
 		editor.control.setParent(parent)
+		if isinstance(editor, ControlSelect):
+			editor.items = list(self.column_types[index.column()])
 		self.current_control = editor
 		return editor.control
 
@@ -99,35 +103,35 @@ class ControlTable(ControlBase):
 				return False
 		return True
 
+	def add_row(self):
+		row = self.model.rowCount()
+		self.model.insertRow(row)
+		for column in range(self.model.columnCount()):
+			new_item = table_item()
+
+			if self.is_bool_column(column):
+				new_item.setCheckable(True)
+
+			self.model.setItem(
+				row,
+				column,
+				new_item
+			)
+
 	def ensure_empty_bottom_row(self):
-		def add_row():
-			row = self.model.rowCount()
-			self.model.insertRow(row)
-			for column in range(self.model.columnCount()):
-				new_item = table_item()
-
-				if self.is_bool_column(column):
-					new_item.setCheckable(True)
-
-				self.model.setItem(
-					row,
-					column,
-					new_item
-				)
-
 		with self.change.suspend_updates():
 			# fixed number of rows
 			if self.fixed_no_rows is not None:
 				while self.fixed_no_rows > self.model.rowCount():
-					add_row()
+					self.add_row()
 				while self.fixed_no_rows < self.model.rowCount():
 					self.model.removeRow(self.model.rowCount() - 1)
 			# no rows?
 			elif self.model.rowCount() == 0:
-				add_row()
+				self.add_row()
 			# last row not empty?
 			elif not self.is_row_empty(self.model.rowCount() - 1):
-				add_row()
+				self.add_row()
 			# last row is empty?
 			elif self.model.rowCount() >= 2:
 				# multiple empty rows?
@@ -210,7 +214,7 @@ class ControlTable(ControlBase):
 			for index in selection:
 				row = index.row() - rows[0]
 				column = index.column() - columns[0]
-				table[row][column] = str(self.data(row, column))
+				table[row][column] = str(self.data(index.row(), index.column()))
 
 			# convert
 			from formify import app
@@ -220,26 +224,41 @@ class ControlTable(ControlBase):
 		## source:
 		# https://stackoverflow.com/questions/40225270/copy-paste-multiple-items-from-qtableview-in-pyqt4
 		selection = self.control.selectedIndexes()
-		if selection:
-			model = self.control.model()
+		if not selection:
+			return
 
-			from formify import app
-			buffer = app.clipboard().text()
-			rows = sorted(index.row() for index in selection)
-			columns = sorted(index.column() for index in selection)
-			reader = csv.reader(io.StringIO(buffer), delimiter='\t')
+		from formify import app
+		buffer = app.clipboard().text()
+
+		rows = sorted(index.row() for index in selection)
+		columns = sorted(index.column() for index in selection)
+		reader = csv.reader(io.StringIO(buffer), delimiter='\t')
+
+		with self.change.suspend_updates():
+			# only one cell selected
 			if len(rows) == 1 and len(columns) == 1:
 				for i, line in enumerate(reader):
+					row = rows[0] + i
+
+					# need new rows?
+					if row >= self.model.rowCount():
+						self.add_row()
+
 					for j, cell in enumerate(line):
-						row = rows[0] + i
 						column = columns[0] + j
 						self.set_data(row, column, cell)
+
 			else:
 				arr = [[cell for cell in row] for row in reader]
 				for index in selection:
 					row = index.row() - rows[0]
 					column = index.column() - columns[0]
-					self.set_data(row, column, arr[row][column])
+					try:
+						self.set_data(row, column, arr[row][column])
+					except IndexError:
+						break
+
+		self.change()
 
 	def delete_selection(self):
 		selection = self.control.selectedIndexes()
@@ -248,6 +267,8 @@ class ControlTable(ControlBase):
 				for index in selection:
 					self.set_data(index.row(), index.column(), None)
 
+				self.ensure_empty_bottom_row()
+
 			self.change()
 
 	def get_cast_function(self, column: int):
@@ -255,6 +276,8 @@ class ControlTable(ControlBase):
 		cast = str
 		try:
 			cast = self.column_types[column]
+			if type(cast) is tuple:
+				cast = lambda x: x
 			if cast in known:
 				cast = known[cast]
 		finally:

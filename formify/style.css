@@ -133,7 +133,7 @@ QTableView {
     gridline-color: rgba(102, 102, 102, 0.4);
 }
 
-QTableCornerButton, QHeaderView, QTableView::section, QHeaderView::section, QHeaderView::item, QTableCornerButton::section {
+QTableCornerButton, QHeaderView {
     background-color: transparent;
 }
 
