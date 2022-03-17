@@ -78,6 +78,13 @@ def default_translator(*args, **kwargs) -> Translator:
 		"File": {"de": "Datei"},
 		"+ Add": {"de": "+ Hinzufügen"},
 		"- Remove": {"de": "- Löschen"},
+		"Undo": {"de": "Rückgängig Machen"},
+		"Redo": {"de": "Wiederholen"},
+		"Cut": {"de": "Ausschneiden"},
+		"Copy": {"de": "Kopieren"},
+		"Paste": {"de": "Einfügen"},
+		"Delete": {"de": "Löschen"},
+		"Select All": {"de": "Alles Auswählen"},
 	})
 	return translator
 

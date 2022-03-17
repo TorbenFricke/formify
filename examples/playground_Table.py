@@ -7,7 +7,7 @@ table = ControlTable(columns=["H", "B"], column_types=[bool, ("A", "B")])
 table.change.subscribe(print)
 
 def do_stuff():
-	table.fixed_no_rows = 4
+	table.undo()
 
 
 window = MainWindow(Col(

@@ -5,6 +5,8 @@ import typing, io, csv
 from formify.controls import ControlText, ControlFloat, ControlInt, ControlSelect
 from formify.controls.ControlFloat import _str2float
 from formify.controls.ControlInt import _str2int
+from formify.controls._events import EventDispatcher
+import formify
 
 
 def _str2bool(s):
@@ -66,12 +68,33 @@ def table_item(text=""):
 	return item
 
 
+class TableUndoRedoCommand(QtGui.QUndoCommand):
+	def __init__(self, old_value, new_value, table_view: 'ControlTable', *args, **kwargs):
+		super().__init__()
+		self.old_value = old_value
+		self.new_value = new_value
+		self.table_view = table_view
+
+	def set(self, data):
+		with self.table_view.undo_redo_event.suspend_updates():
+			self.table_view.set_value(data)
+
+	def undo(self):
+		self.set(self.old_value)
+
+	def redo(self):
+		if self.table_view.undo_redo_event.suspend_update_count > 0:
+			return
+		self.set(self.new_value)
+
+
 class ControlTable(ControlBase):
 	def __init__(
 			self,
 			columns: list,
 			label: str = None,
 			column_types: list = None,
+			column_widths: list = None,
 			fixed_no_rows: int = None,
 			*args,
 			**kwargs
@@ -92,6 +115,34 @@ class ControlTable(ControlBase):
 
 		self._fixed_no_rows = None
 		self.fixed_no_rows = fixed_no_rows
+
+		if column_widths is not None:
+			for i, column_width in enumerate(column_widths):
+				if column_width is None:
+					continue
+				self.control.setColumnWidth(i, column_width)
+
+		self.undo_stack = QtGui.QUndoStack(self.control)
+		self._prev_state = self.value
+
+		def add_undo_item(_, value):
+			new_state = value
+			cmd = TableUndoRedoCommand(self._prev_state, new_state, self)
+			# make sure not to run the redo command
+			with self.undo_redo_event.suspend_updates():
+				self.undo_stack.push(cmd)
+			self._prev_state = new_state
+
+		# this event will be triggered on every change, except when the chage was tiggered by an undo/redo
+		self.undo_redo_event = EventDispatcher(None)
+		self.undo_redo_event.subscribe(add_undo_item)
+		self.change.subscribe(lambda _, value: self.undo_redo_event(value))
+
+	def undo(self):
+		self.undo_stack.undo()
+
+	def redo(self):
+		self.undo_stack.redo()
 
 	def is_row_empty(self, row):
 		for column in range(self.model.columnCount()):
@@ -138,6 +189,12 @@ class ControlTable(ControlBase):
 				while self.is_row_empty(self.model.rowCount() - 2):
 					self.model.removeRow(self.model.rowCount() - 2)
 
+	def _set_no_rows(self, no_rows):
+		while no_rows > self.model.rowCount():
+			self.add_row()
+		while no_rows < self.model.rowCount():
+			self.model.removeRow(self.model.rowCount() - 1)
+
 	@property
 	def fixed_no_rows(self):
 		return self._fixed_no_rows
@@ -165,6 +222,9 @@ class ControlTable(ControlBase):
 		self.control.setModel(self.model)
 		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
 
+		self.control.addAction(make_action(lambda: self.undo(), QtGui.QKeySequence.Undo))
+		self.control.addAction(make_action(lambda: self.redo(), QtGui.QKeySequence.Redo))
+		self.control.addAction(make_action(lambda: self.cut_selection(), QtGui.QKeySequence.Cut))
 		self.control.addAction(make_action(lambda: self.copy_selection(), QtGui.QKeySequence.Copy))
 		self.control.addAction(make_action(lambda: self.paste_selection(), QtGui.QKeySequence.Paste))
 		self.control.addAction(make_action(lambda: self.delete_selection(), QtGui.QKeySequence.Delete))
@@ -175,6 +235,40 @@ class ControlTable(ControlBase):
 		self.model.itemChanged.connect(lambda: self.change())
 
 		return self.control
+
+	def contextMenuEvent(self, event):
+		def action(text):
+			return menu.addAction(
+				formify.app.translator(text)
+			)
+
+		menu = QtWidgets.QMenu(parent=self)
+		undo = action("Undo")
+		undo.setEnabled(self.undo_stack.canUndo())
+		redo = action("Redo")
+		redo.setEnabled(self.undo_stack.canRedo())
+		menu.addSeparator()
+		cut = action("Cut")
+		copy = action("Copy")
+		paste = action("Paste")
+		delete = action("Delete")
+		menu.addSeparator()
+		select = action("Select All")
+		action = menu.exec_(self.mapToGlobal(event.pos()))
+		if action == undo:
+			self.undo()
+		if action == redo:
+			self.redo()
+		if action == cut:
+			self.cut_selection()
+		elif action == copy:
+			self.copy_selection()
+		elif action == paste:
+			self.paste_selection()
+		elif action == delete:
+			self.delete_selection()
+		elif action == select:
+			self.control.selectAll()
 
 	def data(self, row, column):
 		if self.is_bool_column(column):
@@ -273,6 +367,18 @@ class ControlTable(ControlBase):
 
 			self.change()
 
+	def delete_all(self):
+		with self.change.suspend_updates():
+			for row in range(self.model.rowCount()):
+				for col in range(self.model.columnCount()):
+					self.set_data(row, col, None)
+			self.ensure_no_rows()
+		self.change()
+
+	def cut_selection(self):
+		self.copy_selection()
+		self.delete_selection()
+
 	def get_cast_function(self, column: int):
 		known = {int: _str2int, float: _str2float, bool: _str2bool}
 		cast = str
@@ -301,6 +407,12 @@ class ControlTable(ControlBase):
 		return out
 
 	def set_value(self, value):
+		# delete everything
+		self.delete_all()
+
+		if not value:
+			return
+
 		n_rows = len(value)
 		n_column = len(value[0]) if len(value) > 0 else 1
 		n_column_labels = len(self.columns)
@@ -312,10 +424,16 @@ class ControlTable(ControlBase):
 			n_column = n_column_labels
 
 		with self.change.suspend_updates():
+			if self.fixed_no_rows is not None:
+				self._set_no_rows(self.fixed_no_rows)
+				n_rows = self.fixed_no_rows
+			else:
+				self._set_no_rows(n_rows)
+
 			for x in range(n_rows):
-				self.ensure_no_rows()
 				for y in range(n_column):
 					self.set_data(x, y, value[x][y])
+			self.ensure_no_rows()
 		self.change(value)
 
 	@property
