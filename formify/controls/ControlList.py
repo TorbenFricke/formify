@@ -5,7 +5,6 @@ from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import Qt
 import typing
 
-from formify.controls._events import EventDispatcher
 
 def rearrange(some_list, r_from, r_to):
 	#print(f"from {r_from} to {r_to}")

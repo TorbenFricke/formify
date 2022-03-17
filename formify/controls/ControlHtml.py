@@ -5,7 +5,12 @@ import typing
 
 class ControlHtml(ControlBase):
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
-		from PySide6 import QtWebEngineWidgets
+		try:
+			from PySide6 import QtWebEngineWidgets
+		except ImportError as e:
+			raise ImportError(
+				"The QWebEngineView is currently nor supported by PySide6. " + e.args[0]
+			)
 		self.control = QtWebEngineWidgets.QWebEngineView()
 		self.control.urlChanged.connect(lambda : self.change())
 

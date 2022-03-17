@@ -1,6 +1,5 @@
 from PySide6 import QtWidgets
 from formify.controls._base import set_props
-import typing
 
 
 class ControlMessagebox(QtWidgets.QMessageBox):

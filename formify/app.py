@@ -54,7 +54,7 @@ class App(QtWidgets.QApplication):
 
 		"""
 		return {
-			"language": self.translator.language
+			"language": self.translator.language,
 		}
 
 	def apply_ui_settings(self, ui_settings: dict):
@@ -101,7 +101,6 @@ app = App()
 
 def add_font(tff_file_name):
 	QtGui.QFontDatabase.addApplicationFont(tff_file_name)
-
 
 
 def show_splashscreen(image_filepath: str = None):
