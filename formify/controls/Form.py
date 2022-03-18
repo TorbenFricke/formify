@@ -67,7 +67,7 @@ __FLATTEN__ = "__flatten__"
 class Form(QtWidgets.QWidget, ValueBase):
 	def __init__(
 			self,
-			layout: QtWidgets.QLayout,
+			layout: typing.Union[QtWidgets.QLayout, QtWidgets.QWidget],
 			variable_name: str = None,
 			value: typing.Any = None,
 			on_change: typing.Callable = None,

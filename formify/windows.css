@@ -40,6 +40,7 @@ QHeaderView {
 QHeaderView::section, QTableCornerButton::section {
     border: 1px solid rgba(125, 125, 130, 0.3);
     border-top: 0;
+    padding-left: 8px;
     border-left: 0;
     background-color: transparent;
 }
