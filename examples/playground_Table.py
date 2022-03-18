@@ -3,7 +3,7 @@ import typing
 import formify
 
 
-table = ControlTable(columns=["H", "B"], column_types=[bool, ("A", "B")])
+table = ControlTable(columns=["H", "B", "C"], column_types=[bool, ("A", "B"), str])
 table.change.subscribe(print)
 
 def do_stuff():

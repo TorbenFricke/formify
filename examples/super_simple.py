@@ -1,6 +1,6 @@
 from formify import *
 
-#show_splashscreen()
+show_splashscreen()
 #import time
 #time.sleep(2)
 """
@@ -32,7 +32,7 @@ def do_something():
 
 btn = ControlButton("Do Something", on_click=do_something)
 
-table = ControlTable(["B", "H", "Comment"], column_types=[float, float, str])
+table = ControlTable(["B", "H", "Comment"], column_types=[bool, float, str])
 
 
 def icon(title: str, *lines: str):
