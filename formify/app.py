@@ -65,6 +65,18 @@ class App(QtWidgets.QApplication):
 		self.translator.language = ui_settings["language"]
 
 	def run(self):
+		# close the pyinstaller spashscreen
+		try:
+			import pyi_splash
+			pyi_splash.close()
+		except ImportError:
+			pass
+
+		# hide splashscreen
+		if self.splash is not None:
+			self.splash.finish(self)
+			self.splash.deleteLater()
+
 		# Run the main Qt loop
 		sys.exit(self.exec_())
 

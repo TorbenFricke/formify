@@ -66,11 +66,6 @@ class MainWindow(QtWidgets.QMainWindow):
 		if auto_run:
 			self.show()
 
-			# hide splashscreen
-			if formify.app.splash is not None:
-				formify.app.splash.finish(self)
-				formify.app.splash.deleteLater()
-
 			# run the app
 			formify.run()
 
