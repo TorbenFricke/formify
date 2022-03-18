@@ -1,5 +1,5 @@
 from formify import *
-import os, subprocess
+import os, pathlib
 
 
 def _file_and_image_ui(name, valriable_prefix, more_ui=None):
@@ -80,12 +80,17 @@ def main():
 		ControlTextarea("Other Excluded Modules (seperated by newline)", variable_name="_others"),
 	), variable_name="excludes")
 
+	onefile = ControlCheckbox("Create a one-file bundled executable", variable_name="onefile", value=False)
+	onefile_warning = SegmentYellow(
+		text("A one-file bundled executable can significantly slow down initial startup.")
+	)
+	onefile_warning.hide()
+	onefile.change.subscribe(lambda: onefile_warning.setVisible(onefile.value))
+
 	ui_general = Col(
 		h2("General Settings"),
-		SegmentYellow(
-			ControlCheckbox("Create a one-file bundled executable", variable_name="onefile", value=False),
-			text("A one-file bundled executable can significantly slow down initial startup.")
-		),
+		onefile,
+		onefile_warning,
 		ControlCheckbox("Replace files in output directory without asking", variable_name="noconfirm", value=True),
 		ControlCheckbox("Clean flies from previous build", variable_name="clean", value=True),
 		ControlFile("Output directory (Leave empty for default './dist')", variable_name="dist"),
@@ -109,7 +114,7 @@ def main():
 		#tools.do_in_ui_thread(lambda: progress.setVisible(True))
 
 		# Needs to be shell since start isn't an executable, its a shell cmd
-		os.system(f"start /wait cmd  /k {command.value}")
+		os.system(f'start /wait cmd  /k {command.value}')
 
 		#tools.do_in_ui_thread(lambda: progress.setVisible(False))
 
@@ -157,10 +162,16 @@ def main():
 			cmd += " --onefile"
 		if d['clean']:
 			cmd += " --clean"
-		if d['dist']:
-			cmd += ' --distpath "{}"'.format(d['dist'])
-		if d['build']:
-			cmd += ' --workpath "{}"'.format(d['build'])
+
+		path = d['dist']
+		if not path:
+			path = pathlib.Path(d['entry']).parent / "dist"
+		cmd += ' --distpath "{}"'.format(path)
+
+		path = d['build']
+		if not path:
+			path = pathlib.Path(d['entry']).parent / "build"
+		cmd += ' --workpath "{}"'.format(path)
 
 		for module, exclude in d["excludes"].items():
 			if exclude and module != "_others":
