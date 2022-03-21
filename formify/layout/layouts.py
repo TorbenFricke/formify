@@ -132,10 +132,11 @@ class SplitterCol(QtWidgets.QSplitter):
 		_setup_splitter(self, controls, collapsible, kwargs)
 
 
-def ScrollArea(widget):
+def ScrollArea(widget, **kwargs):
 	area = QtWidgets.QScrollArea()
 	area.setWidgetResizable(True)
 	area.setWidget(widget)
+	set_props(area, kwargs)
 	return area
 
 

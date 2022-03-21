@@ -208,6 +208,8 @@ class ControlTable(ControlBase):
 			self.change()
 
 	def is_bool_column(self, column_index):
+		if self.column_types is None:
+			return False
 		return len(self.column_types) > column_index and self.column_types[column_index] is bool
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
@@ -220,6 +222,7 @@ class ControlTable(ControlBase):
 		self.control = QtWidgets.QTableView(parent=self)
 		self.model = QtGui.QStandardItemModel(parent=self)
 		self.control.setModel(self.model)
+		self.control.horizontalHeader().setStretchLastSection(True)
 		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
 
 		self.control.addAction(make_action(lambda: self.undo(), QtGui.QKeySequence.Undo))

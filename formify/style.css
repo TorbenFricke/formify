@@ -137,7 +137,7 @@ QTableCornerButton, QHeaderView {
     background-color: transparent;
 }
 
-LayoutWidget, QScrollArea, ConditionalLayout {
+LayoutWidget, QScrollArea, ConditionalLayout, QLabel {
     background-color: transparent;
 }
 

@@ -61,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		# icon
 		if icon_path is not None:
-			formify.app.setIcon(icon_path, self)
+			formify.app.set_icon(icon_path)
 
 		if auto_run:
 			self.show()

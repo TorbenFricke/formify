@@ -45,22 +45,21 @@ class ItemBase:
 		# display name callback is a dict?
 		if isinstance(display_name_callback, dict):
 			# put it into known filenames...
-			self._known_display_names = display_name_callback
+			self.known_display_names = display_name_callback
 			# ... and set display_name_callback to default value
 			display_name_callback = str
 		else:
-			self._known_display_names = {}
+			self.known_display_names = {}
 
 		self.display_name_callback = display_name_callback
 		self._items = []
 
 		if items is not None:
 			if isinstance(items, dict):
-				self._known_display_names.update({
-					value: key for key, value in items.items()
-				})
-				items = list(items.values())
-			self.items = items
+				self.known_display_names.update(items)
+				self.items = list(items.keys())
+			else:
+				self.items = items
 
 	def display_names(self, _items):
 		if _items is None:
@@ -70,7 +69,7 @@ class ItemBase:
 	def display_name(self, item):
 		# display name is known
 		try:
-			return self._known_display_names[item]
+			return self.known_display_names[item]
 		except:
 			pass
 		# use the display name callback
@@ -142,7 +141,7 @@ class ItemBase:
 
 	def append(self, value, label=None):
 		if label is not None:
-			self._known_display_names[value] = label
+			self.known_display_names[value] = label
 		self.items = self.items + [value]
 
 	def set_display_names(self, display_names):
@@ -200,6 +199,7 @@ class SelectBase(ItemBase):
 			self.selected_item_change(self.selected_item)
 
 		# finally trigger items change event
+		self.index_change(self.index)
 		self.items_change(self._items)
 
 	def get_value(self):
@@ -219,6 +219,7 @@ class SelectControlBase(ControlBase, SelectBase):
 			items: typing.Union[list, dict] = None,
 			value=None,
 			display_name_callback=str,
+			on_change=None,
 			*args,
 			**kwargs
 	):
@@ -233,6 +234,9 @@ class SelectControlBase(ControlBase, SelectBase):
 		SelectBase.__init__(self, items, display_name_callback)
 		self.change = self.selected_item_change
 
+		if on_change is not None:
+			self.change.subscribe(on_change)
+
 		if value is not None:
 			self.value = value
 
@@ -244,6 +248,7 @@ class SelectControlBase(ControlBase, SelectBase):
 			self.items += [value]
 
 		self.set_index_by_item(value)
+
 
 class ListBase(ItemBase):
 
@@ -263,6 +268,7 @@ class ListBase(ItemBase):
 			self.selected_item_change(self.selected_item)
 
 		# finally trigger items change event
+		self.index_change(self.index)
 		self.items_change(self._items)
 
 	def get_value(self):

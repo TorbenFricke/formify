@@ -22,8 +22,9 @@ QLineEdit, QTextEdit {
     border: 1px solid #ccc;
 }
 
-ControlSidebar > SidebarButton {
-    font-size: 10pt;
+SegmentGreen {
+    background-color: rgba(170, 255, 150, 0.1);
+    border: 1px solid rgba(106, 238, 98, 0.25);
 }
 
 QTableView {

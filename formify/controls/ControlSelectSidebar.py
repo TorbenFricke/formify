@@ -10,7 +10,6 @@ class SidebarButton(QtWidgets.QPushButton):
 	def __init__(self, label, checked=False, click=None):
 		QtWidgets.QPushButton.__init__(self)
 		self.label = label
-		self.setFont("Font Awesome 6 Free")
 		self.checked = checked
 		self.click = EventDispatcher(self, always_fire=True)
 		self.setCheckable(True)

@@ -4,7 +4,7 @@ import os, pathlib
 
 def _file_and_image_ui(name, valriable_prefix, more_ui=None):
 	control_file = ControlFile("", variable_name=f"{valriable_prefix}_file")
-	control_image = ControlImage()
+	control_image = ControlImage(alignment=QtCore.Qt.AlignCenter)
 	check_enabled = ControlCheckbox(
 		f"Set a custom {name.lower()} for the application",
 		variable_name=f"{valriable_prefix}",
@@ -45,7 +45,13 @@ def _file_and_image_ui(name, valriable_prefix, more_ui=None):
 		more_ui,
 		control_file,
 		error_segment,
-		control_image,
+		Segment(
+			ScrollArea(
+				control_image,
+				minimum_height=200,
+			),
+			margin=0,
+		)
 	)
 
 
@@ -61,6 +67,7 @@ def main():
 		"PySide6.QtWebEngineWidgets",
 	]
 	excludes_default = [
+		"tornado",
 		"PySide6.QtQml",
 		"PySide6.QtQuickWidgets",
 		"PySide6.QtPrintSupport",
@@ -68,21 +75,36 @@ def main():
 		"PySide6.Quick",
 		"PySide6.Qml",
 		"PySide6.QtNetwork",
+		"PyQt5",
+		"PySide2",
+		"shiboken2",
 	]
 
 	ui_excludes = Form(Col(
 		h2("Exclude Modules"),
-		SegmentBlue(text("Excluding unnecessary modules saves disk space and startup time")),
+		SegmentBlue(text("Excluding unnecessary modules saves disk space and startup time.")),
 		Grid(
 			*[ControlCheckbox(variable_name=name, value=False) for name in excludes],
 			*[ControlCheckbox(variable_name=name, value=True) for name in excludes_default],
 		),
-		ControlTextarea("Other Excluded Modules (seperated by newline)", variable_name="_others"),
+		ControlTextarea("Other modules to exclude (separated by newline)", variable_name="_others"),
 	), variable_name="excludes")
+
+	ui_includes = Col(
+		h2("Data Collection"),
+		ControlTable(
+			label="Add data (file or directory paths)",
+			columns=["Source", "Destination"],
+			column_widths=[370, 200],
+			variable_name="add-data",
+		),
+		ControlTextarea("Include all data from these moules (separated by newline)", variable_name="collect-data"),
+		ControlCheckbox("Add directory of entry point script to the search path (recommended)", variable_name="path", value=True),
+	)
 
 	onefile = ControlCheckbox("Create a one-file bundled executable", variable_name="onefile", value=False)
 	onefile_warning = SegmentYellow(
-		text("A one-file bundled executable can significantly slow down initial startup.")
+		text("A one-file bundled executable can significantly slow down initial startup. I tested 9 instead of 3 seconds for a larger app.")
 	)
 	onefile_warning.hide()
 	onefile.change.subscribe(lambda: onefile_warning.setVisible(onefile.value))
@@ -114,9 +136,11 @@ def main():
 		#tools.do_in_ui_thread(lambda: progress.setVisible(True))
 
 		# Needs to be shell since start isn't an executable, its a shell cmd
+		os.chdir(pathlib.Path(entry.value).parent)
 		os.system(f'start /wait cmd  /k {command.value}')
 
 		#tools.do_in_ui_thread(lambda: progress.setVisible(False))
+	install.lazy = True
 
 	os_warning = None
 	if not os.name == "nt":
@@ -133,6 +157,7 @@ def main():
 			Tabs({
 				"General": 	ui_general,
 				"Exlcude Modules": 	ui_excludes,
+				"Data Collection": 	ui_includes,
 				"Icon": _file_and_image_ui("Icon", "icon", SegmentBlue(
 					text(".ico and .exe are allowed file endings. Thre preview does not work for exe files.")
 				)),
@@ -176,8 +201,22 @@ def main():
 		for module, exclude in d["excludes"].items():
 			if exclude and module != "_others":
 				cmd += ' --exclude-module "{}"'.format(module)
-		for line in d["excludes"]["_others"]:
-			cmd += ' --exclude-module "{}"'.format(line.strip())
+
+		if d["excludes"]["_others"]:
+			for line in d["excludes"]["_others"].split("\n"):
+				cmd += ' --exclude-module "{}"'.format(line.strip())
+
+		if d["path"]:
+			#cmd += ' --paths "{}"'.format(pathlib.Path(d['entry']).parent)
+			cmd += ' -p "{}"'.format(pathlib.Path(d['entry']).parent)
+
+		if d["collect-data"]:
+			for line in d["collect-data"].split("\n"):
+				cmd += ' --collect-data {}'.format(line.strip())
+
+		separator = ";" if os.name == "nt" else ":"
+		for row in d["add-data"]:
+			cmd += f' --add-data="{row[0]}{separator}{row[1]}"'
 
 		if d["icon"]:
 			cmd += ' --icon "{}"'.format(d["icon_file"])
@@ -188,10 +227,10 @@ def main():
 
 	ui.change.subscribe(update_command)
 
-
 	MainWindow(
 		ui,
 		title="Formify Installer",
+		height=800,
 		margin=8,
 	)
 

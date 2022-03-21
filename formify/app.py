@@ -38,14 +38,19 @@ class App(QtWidgets.QApplication):
 	def __init__(self, css=""):
 		super().__init__(sys.argv)
 		self.setStyleSheet(f"{stylesheet()}\n{css}")
-		self.name = _generate_appname()
+		self._name = _generate_appname()
 		self.singe_instance = None
+		self._remember_ui_settings_handler = _rember_ui_settings.UISaveLoad(self.get_ui_settings, app_name=self.name)
 		self.translator = localization.default_translator()
-		self.remember_ui_settings = _rember_ui_settings.UISaveLoad(self.get_ui_settings, app_name=self.name)
-		ui_settings = self.remember_ui_settings.load()
+		self.splash: typing.Optional[QtWidgets.QSplashScreen] = None
+
+	def load_ui_settings(self):
+		ui_settings = self._remember_ui_settings_handler.load()
 		if ui_settings is not None:
 			self.apply_ui_settings(ui_settings)
-		self.splash: typing.Optional[QtWidgets.QSplashScreen] = None
+
+	def save_ui_settings(self):
+		self._remember_ui_settings_handler.save_if_changed()
 
 	def get_ui_settings(self):
 		"""
@@ -64,6 +69,15 @@ class App(QtWidgets.QApplication):
 		"""
 		self.translator.language = ui_settings["language"]
 
+	@property
+	def name(self):
+		return self._name
+
+	@name.setter
+	def name(self, value):
+		self._name = value
+		self._remember_ui_settings_handler.set_app_name(self.name)
+
 	def run(self):
 		# close the pyinstaller spashscreen
 		try:
@@ -80,7 +94,7 @@ class App(QtWidgets.QApplication):
 		# Run the main Qt loop
 		sys.exit(self.exec_())
 
-	def setIcon(self, icon: str, window):
+	def set_icon(self, icon: str):
 		_icon = QtGui.QIcon(icon)
 		self.setWindowIcon(_icon)
 		# windows
@@ -88,6 +102,10 @@ class App(QtWidgets.QApplication):
 			import ctypes
 			myappid = icon  # arbitrary string
 			ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+	def ensure_appdata_dir(self):
+		from formify._save_load_helpers import ensure_appdata_dir
+		return ensure_appdata_dir(self.name)
 
 	@property
 	def allow_multiple_instances(self):
