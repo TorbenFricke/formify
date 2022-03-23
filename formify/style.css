@@ -106,7 +106,7 @@ QSplitter::handle {
     border: 1px solid rgb(96, 166, 255);
     background-color: rgba(23, 107, 238, 0.89);
      */
-    background-color: rgba(115, 121, 128, 0.7);
+    background-color: rgba(115, 121, 128, 0.4);
 }
 
 SplitterRow::handle {
