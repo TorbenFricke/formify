@@ -56,7 +56,9 @@ def _file_and_image_ui(name, valriable_prefix, more_ui=None):
 
 
 def main():
+	show_splashscreen("splash.png")
 	app.name = "formify-install"
+	app.set_icon("formify.ico")
 
 	command = ControlTextarea("Command", variable_name="cmd")
 	command.read_only = True

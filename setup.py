@@ -8,7 +8,7 @@ setup(
 		'console_scripts': ['formify-install=formify.install_ui:main'],
 	},
 	package_data={
-        "": ["*.css", "*.png"],
+        "": ["*.css", "*.png", "*.ico"],
     },
 	install_requires=["pyside6", "matplotlib", "pyinstaller"]
 )
