@@ -86,11 +86,6 @@ class App(QtWidgets.QApplication):
 		except ImportError:
 			pass
 
-		# hide splashscreen
-		if self.splash is not None:
-			self.splash.finish(self)
-			self.splash.deleteLater()
-
 		# Run the main Qt loop
 		sys.exit(self.exec_())
 
