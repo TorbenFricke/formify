@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
 	name="formify",
-	version="1.2.0",
+	version="1.2.1",
 	author="Torben Fricke",
 	author_email="mail@torben.co",
 	description="An easy to use UI Framework on top of Qt.",
