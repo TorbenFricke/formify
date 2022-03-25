@@ -435,7 +435,10 @@ class ControlTable(ControlBase):
 
 			for x in range(n_rows):
 				for y in range(n_column):
-					self.set_data(x, y, value[x][y])
+					try:
+						self.set_data(x, y, value[x][y])
+					except IndexError:
+						break
 			self.ensure_no_rows()
 		self.change(value)
 
