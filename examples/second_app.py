@@ -16,7 +16,7 @@ def print_text():
 
 
 # Create a grid layout by nesting "Row" and "Col" as needed
-# Wrap the layout in "Form" to enable querying: ui.value[text]
+# Wrap the layout in "Form" to enable querying: ui.value["text"]
 ui = Form(Col(
     Row(
         # provide variable names to enable save, load and autosave functionality as a JSON file

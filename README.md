@@ -56,7 +56,7 @@ def print_text():
 
 
 # Create a grid layout by nesting "Row" and "Col" as needed
-# Wrap the layout in "Form" to enable querying: ui.value[text]
+# Wrap the layout in "Form" to enable querying: ui.value["text"]
 ui = Form(Col(
     Row(
         # provide variable names to enable save, load and autosave functionality as a JSON file
@@ -83,6 +83,10 @@ menu = {
 # create the main window. If you do not pass auto_run=False, the app launches.
 MainWindow(ui, menu=menu, margin=8)
 ```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/TorbenFricke/formify/release/screenshots/second-app.png" />
+</p>
 
 # Bundle Your App
 
