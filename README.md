@@ -35,7 +35,7 @@ MainWindow(ui, title="First App", margin=8)
 
 ### A more complex Example
 
-Including a menu, basic grid layout
+...including a menu and basic grid layout:
 
 ```python
 from formify import *

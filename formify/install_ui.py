@@ -40,7 +40,7 @@ def _file_and_image_ui(name, valriable_prefix, more_ui=None):
 	check_enabled.change.subscribe(update_image)
 
 	return Col(
-		h2(name),
+		header(name),
 		check_enabled,
 		more_ui,
 		control_file,
@@ -53,6 +53,11 @@ def _file_and_image_ui(name, valriable_prefix, more_ui=None):
 			margin=0,
 		)
 	)
+
+
+def header(txt):
+	return None
+	return h5(txt)
 
 
 def main():
@@ -83,7 +88,7 @@ def main():
 	]
 
 	ui_excludes = Form(Col(
-		h2("Exclude Modules"),
+		header("Exclude Modules"),
 		SegmentBlue(text("Excluding unnecessary modules saves disk space and startup time.")),
 		Grid(
 			*[ControlCheckbox(variable_name=name, value=False) for name in excludes],
@@ -93,7 +98,7 @@ def main():
 	), variable_name="excludes")
 
 	ui_includes = Col(
-		h2("Data Collection"),
+		header("Data Collection"),
 		ControlTable(
 			label="Add data (file or directory paths)",
 			columns=["Source", "Destination"],
@@ -112,7 +117,7 @@ def main():
 	onefile.change.subscribe(lambda: onefile_warning.setVisible(onefile.value))
 
 	ui_general = Col(
-		h2("General Settings"),
+		header("General Settings"),
 		onefile,
 		onefile_warning,
 		ControlCheckbox("Replace files in output directory without asking", variable_name="noconfirm", value=True),
