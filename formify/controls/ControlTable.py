@@ -214,9 +214,12 @@ class ControlTable(ControlBase):
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def make_action(func, shortcut) -> QtGui.QAction:
-			action = QtGui.QAction("", self.control, self)
+			action = QtGui.QAction(self)
 			action.triggered.connect(func)
 			action.setShortcut(shortcut)
+			# make sure the shortcut only works for this widget
+			action.setShortcutVisibleInContextMenu(True)
+			action.setShortcutContext(QtCore.Qt.ShortcutContext.WidgetShortcut)
 			return action
 
 		self.control = QtWidgets.QTableView(parent=self)
