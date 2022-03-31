@@ -61,17 +61,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
 		# icon
 		if icon_path is not None:
-			formify.app.setIcon(icon_path, self)
+			formify.app.set_icon(icon_path)
+
+		# hide splashscreen
+		if formify.app.splash is not None:
+			formify.app.splash.finish(self)
+			formify.app.splash.deleteLater()
 
 		formify.app.main_window = self
 
 		if auto_run:
 			self.show()
-
-			# hide splashscreen
-			if formify.app.splash is not None:
-				formify.app.splash.finish(self)
-				formify.app.splash.deleteLater()
 
 			# run the app
 			formify.run()

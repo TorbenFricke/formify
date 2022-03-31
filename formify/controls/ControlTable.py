@@ -208,18 +208,24 @@ class ControlTable(ControlBase):
 			self.change()
 
 	def is_bool_column(self, column_index):
+		if self.column_types is None:
+			return False
 		return len(self.column_types) > column_index and self.column_types[column_index] is bool
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:
 		def make_action(func, shortcut) -> QtGui.QAction:
-			action = QtGui.QAction("", self.control, self)
+			action = QtGui.QAction(self)
 			action.triggered.connect(func)
 			action.setShortcut(shortcut)
+			# make sure the shortcut only works for this widget
+			action.setShortcutVisibleInContextMenu(True)
+			action.setShortcutContext(QtCore.Qt.ShortcutContext.WidgetShortcut)
 			return action
 
 		self.control = QtWidgets.QTableView(parent=self)
 		self.model = QtGui.QStandardItemModel(parent=self)
 		self.control.setModel(self.model)
+		self.control.horizontalHeader().setStretchLastSection(True)
 		self.control.setItemDelegate(ValidatorDelegate(self, column_types=self.column_types))
 
 		self.control.addAction(make_action(lambda: self.undo(), QtGui.QKeySequence.Undo))
@@ -432,7 +438,10 @@ class ControlTable(ControlBase):
 
 			for x in range(n_rows):
 				for y in range(n_column):
-					self.set_data(x, y, value[x][y])
+					try:
+						self.set_data(x, y, value[x][y])
+					except IndexError:
+						break
 			self.ensure_no_rows()
 		self.change(value)
 

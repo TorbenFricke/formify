@@ -1,6 +1,6 @@
 from formify import *
 
-#show_splashscreen()
+show_splashscreen()
 #import time
 #time.sleep(2)
 """
@@ -32,7 +32,7 @@ def do_something():
 
 btn = ControlButton("Do Something", on_click=do_something)
 
-table = ControlTable(["B", "H", "Comment"], column_types=[float, float, str])
+table = ControlTable(["B", "H", "Comment"], column_types=[bool, float, str])
 
 
 def icon(title: str, *lines: str):
@@ -50,6 +50,7 @@ def icon(title: str, *lines: str):
 
 
 MainWindow(SidebarContentView({
+    "Table": Row(table, ControlTable(columns=["A", "B"])),
     "Hello": Segment(combo, radios, btn, ControlFile()),
     "World": Tabs({
         "Cat": Col(
@@ -61,8 +62,7 @@ MainWindow(SidebarContentView({
             SegmentPurple(text("dasads")),
         ),
         "Dog": ListForm(Form(Col(ControlFloat(variable_name="ads"), ControlInt(), ControlSelectRadio(items=["A", "B", "C"])))),
-    }),
-    "Table": table,
+    })
 },
     bottom_widget=icon("MyGui", "Version: 1.3", "Build: 4122"),
 ), title="Super Simple")

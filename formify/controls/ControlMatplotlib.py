@@ -20,9 +20,12 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		QtWidgets.QWidget.__init__(self, parent=parent)
 
 		# importing matplotlib takes a while, so we only do it if required
-		from matplotlib.figure import Figure
-		from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-		from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+		try:
+			from matplotlib.figure import Figure
+			from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+			from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+		except IndexError as e:
+			raise IndexError("Please run 'pip install matplotlib'. " + e.args[0])
 
 		self._fig = Figure((5.0, 4.0), dpi=100)
 		self._fig.patch.set_alpha(0)

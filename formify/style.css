@@ -61,8 +61,8 @@ SegmentAlt {
 }
 
 SegmentLight {
-    background-color: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 SegmentRed {
@@ -106,7 +106,7 @@ QSplitter::handle {
     border: 1px solid rgb(96, 166, 255);
     background-color: rgba(23, 107, 238, 0.89);
      */
-    background-color: rgba(115, 121, 128, 0.7);
+    background-color: rgba(115, 121, 128, 0.4);
 }
 
 SplitterRow::handle {
@@ -137,7 +137,7 @@ QTableCornerButton, QHeaderView {
     background-color: transparent;
 }
 
-LayoutWidget, QScrollArea, ConditionalLayout {
+LayoutWidget, QScrollArea, ConditionalLayout, QLabel {
     background-color: transparent;
 }
 

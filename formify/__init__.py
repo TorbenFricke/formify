@@ -4,5 +4,6 @@ from formify.controls import *
 from formify.layout import *
 from formify import tools
 from formify.SaveLoad import LoadSaveHandler
+from formify._save_load_helpers import ensure_appdata_dir
 from formify.window import MainWindow
 
