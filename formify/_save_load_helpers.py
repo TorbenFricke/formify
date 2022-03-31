@@ -31,7 +31,8 @@ def ensure_appdata_dir(app_name: str = None):
 		# macos
 		path = pathlib.Path().home()
 		path = path / "Library" / "Application Support"
-		path /= app_name
+
+	path /= app_name
 	# TODO Linux
 	path.mkdir(parents=True, exist_ok=True)
 	return path
