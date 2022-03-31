@@ -50,6 +50,7 @@ def icon(title: str, *lines: str):
 
 
 MainWindow(SidebarContentView({
+    "Table": Row(table, ControlTable(columns=["A", "B"])),
     "Hello": Segment(combo, radios, btn, ControlFile()),
     "World": Tabs({
         "Cat": Col(
@@ -61,8 +62,7 @@ MainWindow(SidebarContentView({
             SegmentPurple(text("dasads")),
         ),
         "Dog": ListForm(Form(Col(ControlFloat(variable_name="ads"), ControlInt(), ControlSelectRadio(items=["A", "B", "C"])))),
-    }),
-    "Table": table,
+    })
 },
     bottom_widget=icon("MyGui", "Version: 1.3", "Build: 4122"),
 ), title="Super Simple")

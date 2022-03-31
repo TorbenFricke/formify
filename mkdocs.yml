@@ -5,12 +5,19 @@ plugins:
       handlers:
         python:
           rendering:
-            show_source: true
+            show_source: false
             members_order: source
             show_signature_annotations: true
             show_root_heading: false
       watch:
         - formify
+
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - python
+        - json
 
 
 site_name: Formify
