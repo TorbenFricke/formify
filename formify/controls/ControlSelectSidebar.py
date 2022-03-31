@@ -138,9 +138,6 @@ class ControlSelectSidebar(QtWidgets.QFrame, SelectBase, ValueBase):
 		for i, name in enumerate(display_names):
 			self._buttons[i].label = name
 
-	def get_value(self):
-		return self.items[self.index]
-
 	def set_value(self, value):
 		for i, item in enumerate(self.items):
 			if item != value:

@@ -8,22 +8,32 @@ plugins:
             show_source: false
             members_order: source
             show_signature_annotations: true
-            show_root_heading: false
+            show_root_heading: true
       watch:
         - formify
 
 theme:
-    name: readthedocs
+    name: material
     highlightjs: true
     hljs_languages:
         - python
         - json
 
 
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.snippets
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+
+
 site_name: Formify
 site_url: https://formify.readthedocs.io
 
 nav:
-  - "root": root.md
+  - "Overview": index.md
   - "Localization": localization.md
+  - "GitHub": "https://github.com/TorbenFricke/formify"
+  - "PyPi": "https://pypi.org/project/formify/"
 

@@ -8,12 +8,10 @@ If you change the language, the program has to be restarted.
 ## Translator
 
 ###### ::: formify.localization.Translator
-    rendering:
-        show_root_heading: true
 
 ## Default Translator
 ###### ::: formify.localization.default_translator
 
 
-## Simple Language Switch
+## Language Switch
 ###### ::: formify.localization.make_language_switch
