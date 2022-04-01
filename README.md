@@ -2,6 +2,13 @@
   <img src="https://raw.githubusercontent.com/TorbenFricke/formify/release/formify/splash.png" />
 </p>
 
+<b style="font-size: 1.5rem">
+<p align="center">
+    <a href="https://torbenfricke.github.io/formify/">Docs</a> - 
+<a href="https://pypi.org/project/formify/">PyPi</a>
+</p>
+</b>
+
 An easy-to-use Python UI Framework on top of Qt (PySide6). Simple things are simple, hard things are not any harder than they are in Qt.
 
 # Features
