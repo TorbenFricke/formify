@@ -1,9 +1,9 @@
-from formify.controls import *
-from formify.layout import *
-import formify, shapes
+from formify import *
 import copy
+# import shapes.py
+import shapes
 
-plot = ControlMatplotlib()
+
 form = Form(
 	Col(
 		Row(
@@ -39,6 +39,9 @@ list_form = ListForm(
 	variable_name="list_form"
 )
 
+plot = ControlMatplotlib()
+
+
 def _draw():
 	# setup
 	plot.fig.clear()
@@ -54,17 +57,17 @@ def _draw():
 	ax.plot()
 	plot.draw()
 
-draw = formify.tools.BackgroundMethod(_draw, lazy=True)
-list_form.change.subscribe(draw)
-formify.tools.maximize(list_form)
 
-formify.MainWindow(
-	Row(
-		Segment(
-			h2("Shapes"),
-			list_form,
-		),
-		plot
+draw = tools.BackgroundMethod(_draw, lazy=True)
+list_form.change.subscribe(draw)
+tools.maximize(list_form)
+
+ui = Row(
+	SegmentLight(
+		h2("Shapes"),
+		list_form,
 	),
-	margin=8
+	plot
 )
+
+MainWindow(ui, margin=8)

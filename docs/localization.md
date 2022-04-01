@@ -5,13 +5,8 @@ First, the **Translator** and a simple **language switch**.
 Whichever option you choose, the localization happens on start up. 
 If you change the language, the program has to be restarted.
 
-## Translator
+### ::: formify.localization.Translator
 
-###### ::: formify.localization.Translator
+### ::: formify.localization.make_language_switch
 
-## Default Translator
-###### ::: formify.localization.default_translator
-
-
-## Language Switch
-###### ::: formify.localization.make_language_switch
+### ::: formify.localization.default_translator

@@ -18,6 +18,8 @@ theme:
     hljs_languages:
         - python
         - json
+    features:
+      - content.tabs.link
 
 
 markdown_extensions:
@@ -26,14 +28,23 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
 
 
 site_name: Formify
 site_url: https://formify.readthedocs.io
+site_dir: 'docs-build'
 
 nav:
   - "Overview": index.md
+  - "Gallery":
+      - "People Editor": 'gallery/people.md'
+      - 'gallery/matplotlib.md'
+      - "Material Editor": 'gallery/material-editor.md'
   - "Localization": localization.md
-  - "GitHub": "https://github.com/TorbenFricke/formify"
+  - " GitHub": "https://github.com/TorbenFricke/formify"
   - "PyPi": "https://pypi.org/project/formify/"
 
