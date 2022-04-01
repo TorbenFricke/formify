@@ -9,13 +9,14 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - release
 
 jobs:
   deploy:
 
-    runs-on: GitHub-Synology-Runner
+    runs-on: debian-bullseye
 
     steps:
     - uses: actions/checkout@v3
