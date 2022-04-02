@@ -2,12 +2,19 @@
   <img src="https://raw.githubusercontent.com/TorbenFricke/formify/release/formify/splash.png" />
 </p>
 
-An easy-to-use UI Framework on top of Qt (PySide6). Simple things are simple, hard things are not any harder than they are in Qt.
+<b>
+<p align="center">
+    <a href="https://torbenfricke.github.io/formify/">Docs</a> - 
+<a href="https://pypi.org/project/formify/">PyPi</a> - 
+<a href="https://github.com/TorbenFricke/formify">GitHub</a>
+</b>
+
+An easy-to-use Python UI Framework on top of Qt (PySide6). Simple things are simple, hard things are not any harder than they are in Qt.
 
 # Features
 
 - Cross Platform: Tested on Windows and macOS
-- No Boilerplate: Save, load and autosave functionality out of the box
+- Low Boilerplate: Save, load and autosave functionality out of the box
 - A unified API to set and retrieve data in UI elements
 - Layout using tabs, segments, a sidebar and a grid system `Row`, `Col` 
 - Singe instance enforcement

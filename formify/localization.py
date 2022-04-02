@@ -61,7 +61,7 @@ class Translator:
 def default_translator(*args, **kwargs) -> Translator:
 	"""
 	Returns a `Translator`, populated with translations for default menu items (Open, Close, ...) for german and english.
-	*args and **kwargs are passed to the Translator.__init__.
+	*args and **kwargs are passed to the Translator(*args, **kwargs).
 	"""
 	translator = Translator(*args, **kwargs)
 	translator.translations.update({
@@ -108,8 +108,8 @@ def make_language_switch(translator: Translator, language_order: list) -> callab
 	```
 
 	Args:
-		translator:
-		language_order:
+		translator: used to determine the current language
+		language_order: language order of the language switch arguments
 
 	Returns:
 
