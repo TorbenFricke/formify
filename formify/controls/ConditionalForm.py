@@ -52,21 +52,17 @@ class ConditionalForm(Form):
 
 		return master_layout
 
-
 	def _update_show_hide(self, *_):
 		condition = self.condition_control.value
 		for key, panel in self._conditional_panels.items():
 			panel.setVisible(key == condition)
 
-
-	@Form.value.getter
-	def value(self):
+	def get_value(self):
 		out = extract_values_dict(self._controls_by_condition[self.condition_control.value])
 		out[self.condition_control.variable_name] = self.condition_control.value
 		return out
 
-	@Form.all_values.getter
-	def all_values(self):
+	def get_all_values(self):
 		# We want to do this complicated dance instead of just writing "retrun extract_values_dict(self.controls)" to
 		# make sure, the values of the currently shown controls 'win' if there are multiple controls with the same
 		# variable_name.
