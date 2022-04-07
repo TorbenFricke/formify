@@ -22,7 +22,8 @@ class EventDispatcher:
 		self.always_fire = always_fire
 
 	def subscribe(self, handler):
-		self.subscriptions.append(handler)
+		if handler not in self.subscriptions:
+			self.subscriptions.append(handler)
 
 	def unsubscribe(self, handler):
 		try:
