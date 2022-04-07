@@ -46,7 +46,7 @@ QLabel[whatsThis="h5"] {
 }
 
 QLabel[whatsThis="mute"] {
-    opacity: 0.9;
+    opacity: 0.4;
 }
 
 Segment {

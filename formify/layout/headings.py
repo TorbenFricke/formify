@@ -4,6 +4,7 @@ def _make_h(css_label):
 	def func(label):
 		widget = QtWidgets.QLabel(text=label)
 		widget.setWhatsThis(css_label)
+		widget.setWordWrap(True)
 		return widget
 	return func
 

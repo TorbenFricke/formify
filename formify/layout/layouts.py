@@ -3,7 +3,8 @@ from PySide6 import QtWidgets, QtCore
 from formify.controls._base import set_props
 
 
-TAB_PADDING = 5
+# the windows default padding
+TAB_PADDING = 9
 
 
 # used for css styling of Columns/rows
@@ -63,11 +64,18 @@ def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
 	return layout
 
 
-def Tabs(tabs_dict: dict) -> QtWidgets.QTabWidget:
+def Tabs(
+		tabs_dict: dict,
+		padding_left=TAB_PADDING,
+		padding_top=TAB_PADDING,
+		padding_right=TAB_PADDING,
+		padding_bottom=TAB_PADDING
+) -> QtWidgets.QTabWidget:
+
 	tabs = QtWidgets.QTabWidget()
 	for label, content in tabs_dict.items():
 		layout = ensure_layout(content)
-		layout.setContentsMargins(TAB_PADDING, TAB_PADDING, TAB_PADDING, TAB_PADDING)
+		layout.setContentsMargins(padding_left, padding_top, padding_right, padding_bottom)
 		tabs.addTab(
 			ensure_widget(layout),
 			label
