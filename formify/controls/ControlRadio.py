@@ -52,7 +52,7 @@ class ControlSelectRadio(SelectControlBase):
 		return self.segment
 
 	def _make_radio(self, txt):
-		radio = QtWidgets.QRadioButton(txt)
+		radio = QtWidgets.QRadioButton(txt, self.segment)
 		self._radios.append(radio)
 		self.radio_layout.addWidget(radio)
 		radio.toggled.connect(
@@ -81,9 +81,9 @@ class ControlSelectRadio(SelectControlBase):
 
 	def set_index(self, index: int):
 		for i, radio in enumerate(self._radios):
-			if i == index:
-				radio.setChecked(i)
-				self.index_change(index)
+			radio.setChecked(i == index)
+
+		self.index_change(index)
 
 	def set_display_names(self, display_names):
 		# add items
