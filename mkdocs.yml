@@ -1,5 +1,6 @@
 plugins:
   - search
+  - mkdocs-video:
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -43,6 +44,9 @@ nav:
   - "Gallery":
       - "People Editor": 'gallery/people.md'
       - 'gallery/matplotlib.md'
+      - "Material Editor": 'gallery/material-editor.md'
+      - "Pyvista Wave": 'gallery/pyvista-wave.md'
+      - "Pyvista Solids": 'gallery/pyvista-solids.md'
       - "Material Editor": 'gallery/material-editor.md'
   - "Localization": localization.md
   - " GitHub": "https://github.com/TorbenFricke/formify"
