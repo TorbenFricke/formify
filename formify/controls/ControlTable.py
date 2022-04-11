@@ -373,12 +373,13 @@ class ControlTable(ControlBase):
 
 			self.change()
 
-	def delete_all(self):
+	def delete_all(self, remove_rows=True):
 		with self.change.suspend_updates():
 			for row in range(self.model.rowCount()):
 				for col in range(self.model.columnCount()):
 					self.set_data(row, col, None)
-			self.ensure_no_rows()
+			if remove_rows:
+				self.ensure_no_rows()
 		self.change()
 
 	def cut_selection(self):
@@ -413,23 +414,23 @@ class ControlTable(ControlBase):
 		return out
 
 	def set_value(self, value):
-		# delete everything
-		self.delete_all()
-
-		if not value:
-			return
-
-		n_rows = len(value)
-		n_column = len(value[0]) if len(value) > 0 else 1
-		n_column_labels = len(self.columns)
-
-		# only change the number of columns if no labels were set
-		if n_column_labels == 0:
-			self.model.setColumnCount(n_column)
-		elif n_column > n_column_labels:
-			n_column = n_column_labels
-
 		with self.change.suspend_updates():
+			# delete everything
+			self.delete_all(remove_rows=False)
+
+			if not value:
+				return
+
+			n_rows = len(value)
+			n_column = len(value[0]) if len(value) > 0 else 1
+			n_column_labels = len(self.columns)
+
+			# only change the number of columns if no labels were set
+			if n_column_labels == 0:
+				self.model.setColumnCount(n_column)
+			elif n_column > n_column_labels:
+				n_column = n_column_labels
+
 			if self.fixed_no_rows is not None:
 				self._set_no_rows(self.fixed_no_rows)
 				n_rows = self.fixed_no_rows
