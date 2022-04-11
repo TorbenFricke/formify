@@ -68,6 +68,10 @@ def table_item(text=""):
 	return item
 
 
+def copy_2d_list(a_list):
+	return [row[::1] for row in a_list]
+
+
 class TableUndoRedoCommand(QtGui.QUndoCommand):
 	def __init__(self, old_value, new_value, table_view: 'ControlTable', *args, **kwargs):
 		super().__init__()
@@ -91,8 +95,8 @@ class TableUndoRedoCommand(QtGui.QUndoCommand):
 class ControlTable(ControlBase):
 	def __init__(
 			self,
-			columns: list,
 			label: str = None,
+			columns: list = None,
 			column_types: list = None,
 			column_widths: list = None,
 			fixed_no_rows: int = None,
@@ -100,6 +104,8 @@ class ControlTable(ControlBase):
 			**kwargs
 	):
 		self.column_types = column_types
+		# used as a cache
+		self._value = None
 
 		ControlBase.__init__(
 			self,
@@ -111,6 +117,8 @@ class ControlTable(ControlBase):
 		self.change.subscriptions.insert(0, self.ensure_no_rows)
 
 		self._columns = []
+		if columns is None:
+			columns = ["A", "B"]
 		self.columns = columns
 
 		self._fixed_no_rows = None
@@ -238,9 +246,13 @@ class ControlTable(ControlBase):
 			make_action(lambda: self.delete_selection(), QtGui.QKeySequence(QtCore.Qt.Key_Backspace))
 		)
 
-		self.model.itemChanged.connect(lambda: self.change())
+		self.model.itemChanged.connect(self._item_changed_handler)
 
 		return self.control
+
+	def _item_changed_handler(self):
+		self._value = None
+		self.change()
 
 	def contextMenuEvent(self, event):
 		def action(text):
@@ -285,6 +297,8 @@ class ControlTable(ControlBase):
 		return self.model.data(self.model.index(row, column))
 
 	def set_data(self, row, column, data):
+		self._value = None
+
 		cast = self.get_cast_function(column)
 		if data is not None:
 			casted = cast(data)
@@ -399,6 +413,12 @@ class ControlTable(ControlBase):
 			return cast
 
 	def get_value(self):
+		# return cached value
+		if self._value is not None:
+			# make a copy of the data first
+			return copy_2d_list(self._value)
+
+		# get current value
 		out = []
 		n_rows = self.model.rowCount()
 		for row in range(self.model.rowCount()):
@@ -410,6 +430,8 @@ class ControlTable(ControlBase):
 			for column in range(self.model.columnCount()):
 				cast = self.get_cast_function(column)
 				out[-1].append(cast(self.data(row, column)))
+
+		self._value = copy_2d_list(out)
 
 		return out
 
@@ -454,9 +476,10 @@ class ControlTable(ControlBase):
 	def columns(self, value):
 		#if self.column_types is not None:
 		#	raise NotImplementedError("Cannot change columns if 'column_types' has been defined.")
-		self._columns = value
-		self.model.setColumnCount(len(value))
-		for i, name in enumerate(value):
+		columns = list(value)
+		self._columns = columns
+		self.model.setColumnCount(len(columns))
+		for i, name in enumerate(columns):
 			item = QtGui.QStandardItem()
 			item.setText(name)
 			self.model.setHorizontalHeaderItem(i, item)
