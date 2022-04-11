@@ -1,12 +1,19 @@
 
 A [Pyvista](https://docs.pyvista.org/) plot embedded in a formify GUI. The plot can be manipulated and animated using the controls on the left.
 
+
 === "Screenshot"
     ![](pyvista-wave.png)
 === "Video"
     ![type:video](./pyvista-wave.mp4)
 
 #### Source
+
+
+To run this example you need to install pyvista first:
+```bash
+pip install pyvista && pip install pyvistaqt
+```
 
 ````python
 from formify import *

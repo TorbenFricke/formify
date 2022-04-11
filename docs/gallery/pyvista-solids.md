@@ -8,6 +8,10 @@ A [Pyvista](https://docs.pyvista.org/) plot embedded in a formify GUI. Shapes ar
 
 #### Source
 
+To run this example you need to install pyvista first:
+```bash
+pip install pyvista && pip install pyvistaqt
+```
 
 ````python
 from formify import *
