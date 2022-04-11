@@ -34,7 +34,7 @@ MainWindow(ui, title="First App", margin=8)
     ![first app](first-app.png)
 
 === "macOS"
-    ![first app](first-app-macos.png)
+    ![first app](first-app-mac.png)
 
 ## More Examples
 

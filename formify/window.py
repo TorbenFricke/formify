@@ -68,6 +68,8 @@ class MainWindow(QtWidgets.QMainWindow):
 			formify.app.splash.finish(self)
 			formify.app.splash.deleteLater()
 
+		formify.app.main_window = self
+
 		if auto_run:
 			self.show()
 

@@ -52,14 +52,25 @@ class App(QtWidgets.QApplication):
 	def save_ui_settings(self):
 		self._remember_ui_settings_handler.save_if_changed()
 
+		# will be set when the main window is created
+		self.main_window = None
+
 	def get_ui_settings(self):
 		"""
 		Can be overridden to include other UI Settings. Will be loaded, as the app is created.
 		Be sure to also override apply_ui_settings.
 
 		"""
+		#pos = self.main_window.pos()
+
 		return {
 			"language": self.translator.language,
+			#"main_window": {
+			#	"x": pos.x(),
+			#	"y": pos.y(),
+			#	"heigth": self.main_window.height(),
+			#	"width": self.main_window.width(),
+			#}
 		}
 
 	def apply_ui_settings(self, ui_settings: dict):
@@ -68,6 +79,7 @@ class App(QtWidgets.QApplication):
 		imported, so before any UI components are created.
 		"""
 		self.translator.language = ui_settings["language"]
+		# TODO apply window settings after the window was created
 
 	@property
 	def name(self):
