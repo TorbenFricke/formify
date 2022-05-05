@@ -31,6 +31,7 @@ class ControlMatplotlib(QtWidgets.QWidget):
 		self._fig.patch.set_alpha(0)
 		self.canvas = FigureCanvas(self.fig)
 		self.canvas.setParent(self)
+		self.canvas.setMinimumHeight(10)
 
 		self.toolbar = NavigationToolbar(self.canvas, self)
 		self.toolbar_visible = toolbar_visible

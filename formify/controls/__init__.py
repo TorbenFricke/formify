@@ -19,6 +19,7 @@ from formify.controls.ControlDiff import ControlDiff
 from formify.controls.ControlImage import ControlImage
 
 from formify.controls.ControlMatplotlib import ControlMatplotlib
+from formify.controls.ControlPyvista import ControlPyvista
 
 from formify.controls.Form import Form
 from formify.controls.ConditionalForm import ConditionalForm

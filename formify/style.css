@@ -46,7 +46,7 @@ QLabel[whatsThis="h5"] {
 }
 
 QLabel[whatsThis="mute"] {
-    opacity: 0.4;
+    color: #4a4a4a;
 }
 
 Segment {
@@ -70,9 +70,17 @@ SegmentRed {
     border: 1px solid rgba(255, 13, 13, 0.25);
 }
 
+SegmentRed > QLabel {
+    color: #860e05;
+}
+
 SegmentYellow {
     background-color: rgba(255, 252, 48, 0.12);
     border: 1px solid rgba(210, 210, 4, 0.32);
+}
+
+SegmentYellow > QLabel {
+    color: #858504;
 }
 
 SegmentBlue {
@@ -80,14 +88,26 @@ SegmentBlue {
     border: 1px solid rgba(0, 123, 253, 0.25);
 }
 
+SegmentBlue > QLabel {
+    color: #1a56a1;
+}
+
 SegmentGreen {
     background-color: rgba(77, 255, 36, 0.1);
     border: 1px solid rgba(36, 239, 24, 0.25);
 }
 
+SegmentGreen > QLabel {
+    color: #2c8528;
+}
+
 SegmentPurple {
     background-color: rgba(77, 0, 255, 0.07);
     border: 1px solid rgba(166, 0, 253, 0.25);
+}
+
+SegmentPurple > QLabel {
+    color: #772c9e;
 }
 
 SegmentSidebar {
