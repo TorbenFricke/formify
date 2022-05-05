@@ -102,6 +102,7 @@ class App(QtWidgets.QApplication):
 		sys.exit(self.exec_())
 
 	def set_icon(self, icon: str):
+		icon = str(icon)
 		_icon = QtGui.QIcon(icon)
 		self.setWindowIcon(_icon)
 		# windows

@@ -32,13 +32,13 @@ def do_something():
 
 btn = ControlButton("Do Something", on_click=do_something)
 
-table = ControlTable(["B", "H", "Comment"], column_types=[bool, float, str])
+table = ControlTable(columns=["B", "H", "Comment"], column_types=[bool, float, str])
 
 
 def icon(title: str, *lines: str):
     _icon = SegmentAlt(
         h1(title),
-        *[mute(line) for line in lines]
+        *[text(line) for line in lines]
     )
 
     # center text
@@ -60,6 +60,7 @@ MainWindow(SidebarContentView({
             SegmentBlue(text("dasads")),
             SegmentYellow(text("dasads")),
             SegmentPurple(text("dasads")),
+            mute("dasads"),
         ),
         "Dog": ListForm(Form(Col(ControlFloat(variable_name="ads"), ControlInt(), ControlSelectRadio(items=["A", "B", "C"])))),
     })
