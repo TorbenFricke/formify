@@ -1,1 +1,6 @@
 /site/
+.idea/*
+build/*
+dist/*
+docs-build/*
+formify.egg-info/*

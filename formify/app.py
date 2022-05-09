@@ -146,6 +146,8 @@ def show_splashscreen(image_filepath: str = None):
 	from PySide6.QtGui import QPixmap
 	from PySide6.QtWidgets import QSplashScreen
 
+	image_filepath = str(image_filepath)
+
 	if image_filepath is None:
 		image_filepath = str(pathlib.Path(__file__).parent / "splash.png")
 
