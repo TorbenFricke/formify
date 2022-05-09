@@ -61,9 +61,12 @@ def header(txt):
 
 
 def main():
-	show_splashscreen("splash.png")
+	import formify
+	module_root = pathlib.Path(formify.__file__).parent
+
+	show_splashscreen(module_root / "splash.png")
 	app.name = "formify-install"
-	app.set_icon("formify.ico")
+	app.set_icon(module_root / "formify.ico")
 
 	command = ControlTextarea("Command", variable_name="cmd")
 	command.read_only = True
@@ -74,6 +77,7 @@ def main():
 		"PySide6.QtWebEngineWidgets",
 	]
 	excludes_default = [
+		"pyvista",
 		"tornado",
 		"PySide6.QtQml",
 		"PySide6.QtQuickWidgets",
