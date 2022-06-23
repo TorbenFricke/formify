@@ -1,12 +1,12 @@
 from PySide6 import QtWidgets, QtCore
 import typing
-from formify.controls._base import set_props
+from formify.controls._base import set_props, ControlMixin
 from formify.controls._value_base import ValueBase
 from formify.controls._item_base import SelectBase
 from formify.controls._events import EventDispatcher
 
 
-class SidebarButton(QtWidgets.QPushButton):
+class SidebarButton(QtWidgets.QPushButton, ControlMixin):
 	def __init__(self, label, checked=False, click=None):
 		QtWidgets.QPushButton.__init__(self)
 		self.label = label

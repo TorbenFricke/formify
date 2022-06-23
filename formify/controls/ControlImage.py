@@ -1,8 +1,8 @@
 from PySide6 import QtWidgets, QtGui
-from formify.controls._base import set_props
+from formify.controls._base import set_props, ControlMixin
 
 
-class ControlImage(QtWidgets.QLabel):
+class ControlImage(QtWidgets.QLabel, ControlMixin):
 	def __init__(self, file_name: str = None, width=None, height=None, **kwargs):
 
 		QtWidgets.QLabel.__init__(self)

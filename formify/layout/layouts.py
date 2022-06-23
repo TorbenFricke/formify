@@ -53,14 +53,24 @@ def Col(*controls) -> QtWidgets.QLayout:
 	return layout
 
 
-def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
-	layout = QtWidgets.QVBoxLayout()
+def _make_space_between(layout, controls, stretch):
 	layout.setContentsMargins(0,0,0,0)
 	n = len(controls)
 	for i, control in enumerate(controls):
 		layout.addWidget(ensure_widget(control))
 		if i != n - 1:
 			layout.addStretch(stretch)
+
+
+def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
+	layout = QtWidgets.QVBoxLayout()
+	_make_space_between(layout, controls, stretch)
+	return layout
+
+
+def RowSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
+	layout = QtWidgets.QVBoxLayout()
+	_make_space_between(layout, controls, stretch)
 	return layout
 
 
@@ -70,7 +80,7 @@ def Tabs(
 		padding_top=TAB_PADDING,
 		padding_right=TAB_PADDING,
 		padding_bottom=TAB_PADDING
-) -> QtWidgets.QTabWidget:
+	) -> QtWidgets.QTabWidget:
 
 	tabs = QtWidgets.QTabWidget()
 	for label, content in tabs_dict.items():
