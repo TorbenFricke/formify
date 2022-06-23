@@ -1,4 +1,4 @@
-from formify.controls._base import set_props
+from formify.controls._base import set_props, ControlMixin
 from PySide6 import QtWidgets, QtCore
 import warnings
 
@@ -10,7 +10,7 @@ class Signaller(QtCore.QObject):
 		super().__init__()
 
 
-class ControlPyvista(QtWidgets.QWidget):
+class ControlPyvista(QtWidgets.QWidget, ControlMixin):
 	def __init__(
 			self,
 			parent: QtWidgets.QWidget = None,

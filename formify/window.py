@@ -22,6 +22,7 @@ class MainWindow(QtWidgets.QMainWindow):
 		menu: dict = None,
 		load_save_handler: LoadSaveHandler = None,
 		allowed_file_extensions: list = None,
+		on_close: callable = None,
 		auto_run=True
 	):
 		super().__init__()
@@ -40,7 +41,9 @@ class MainWindow(QtWidgets.QMainWindow):
 		# close event handler
 		self.on_close = formify.controls.EventDispatcher(self)
 		self.closeEvent = self.on_close
-		self.on_close.subscribe(self.load_save_handler.autosave) # do an autosave if required
+		self.on_close.subscribe(self.load_save_handler.autosave)  # do an autosave if required
+		if on_close is not None:
+			self.on_close.subscribe(on_close)
 
 		if width is None:
 			width = self.width()

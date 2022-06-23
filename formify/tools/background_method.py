@@ -12,6 +12,8 @@ class Task:
 
 
 class BackgroundMethod(Thread):
+	_lazy = False
+
 	def __init__(self, target: typing.Callable, lazy=False, cleanup: typing.Callable = None):
 		"""
 		A callable thread, that executes the target with Callable. If a cleanup is provided, this runs afterwards.
@@ -22,7 +24,7 @@ class BackgroundMethod(Thread):
 		Thread.__init__(self)
 		self.daemon = True
 		self.queue = Queue()
-		self.lazy = lazy
+		self.lazy = self._lazy
 		self.target = target
 		self.cleanup = cleanup
 		self.start()
@@ -57,6 +59,10 @@ class BackgroundMethod(Thread):
 			func,
 			lazy=self.lazy
 		))
+
+
+class LazyBackgroundMethod(BackgroundMethod):
+	_lazy = True
 
 
 class Signaller(QtCore.QObject):

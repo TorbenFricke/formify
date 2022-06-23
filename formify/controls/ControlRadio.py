@@ -3,12 +3,12 @@ from formify.controls._value_base import ValueBase
 from formify.controls._item_base import SelectControlBase
 from formify.layout.segments import Segment
 from formify.layout.layouts import Col
-from formify.controls._base import set_props
+from formify.controls._base import set_props, ControlMixin
 from PySide6 import QtWidgets
 import typing
 
 
-class ControlRadio(ValueBase, QtWidgets.QRadioButton):
+class ControlRadio(ValueBase, QtWidgets.QRadioButton, ControlMixin):
 	def __init__(
 			self,
 			label: str = None,

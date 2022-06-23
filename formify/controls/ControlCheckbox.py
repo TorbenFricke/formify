@@ -2,10 +2,10 @@ from formify.controls._value_base import ValueBase
 from formify import app
 from PySide6 import QtWidgets
 import typing
-from formify.controls._base import set_props
+from formify.controls._base import set_props, ControlMixin
 
 
-class ControlCheckbox(ValueBase, QtWidgets.QCheckBox):
+class ControlCheckbox(ValueBase, QtWidgets.QCheckBox, ControlMixin):
 	def __init__(
 			self,
 			label: str = None,

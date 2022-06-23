@@ -2,6 +2,7 @@ from formify.controls import ControlBase
 from PySide6 import QtWidgets
 from formify.layout import ensure_widget, Row
 from formify.controls import ControlButton
+from formify.controls._base import ControlMixin
 from formify.tools import open_dialog
 from formify import app
 import typing

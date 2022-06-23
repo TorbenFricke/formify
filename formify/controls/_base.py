@@ -93,6 +93,12 @@ class ControlBase(QtWidgets.QWidget, ValueBase):
 		self.label_widget.setText(value)
 
 
+class ControlMixin:
+	@property
+	def control(self):
+		return self
+
+
 def set_props(self, kwargs):
 	for _attr, _item in kwargs.items():
 		words = _attr.split("_")
