@@ -18,7 +18,7 @@ class Translator:
 		"""
 		Add translations for an id. You can use any string as `id.
 
-		```
+		```python
 		translator = Translator()
 		translator.add("button_open", en="Open", de="Öffnen"})
 
@@ -34,7 +34,7 @@ class Translator:
 		Grab the translation for id based on the current language. Always returns a string.
 		If no translation for the current language `translator.language` is provided, the id is returned.
 
-		```
+		```python
 		translator("button_open")
 		```
 		"""
@@ -93,7 +93,7 @@ def make_language_switch(translator: Translator, language_order: list) -> callab
 	"""
 	Makes a function, that selects the argument corresponding to the current language. Best read the example below:
 
-	```
+	```python
 	translator = Translator()
 	switch = make_language_switch(translator, ["en", "de"])
 
@@ -112,6 +112,7 @@ def make_language_switch(translator: Translator, language_order: list) -> callab
 		language_order: language order of the language switch arguments
 
 	Returns:
+		language_switch: language switch function
 
 	"""
 	def switch(*args):
