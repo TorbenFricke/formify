@@ -51,7 +51,8 @@ nav:
       - "Material Editor": 'gallery/material-editor.md'
       - "Pyvista Wave": 'gallery/pyvista-wave.md'
       - "Pyvista Solids": 'gallery/pyvista-solids.md'
-  - "Controls": 'controls.md'
+  #- "Controls": 'controls.md' # need to wait for inherited_members to be implemented https://mkdocstrings.github.io/handlers/overview/#selection-options
+  - "Data Modelling": 'data_modeling.md'
   - "Threading": 'threading.md'
   - "Localization": 'localization.md'
   - "GitHub": "https://github.com/TorbenFricke/formify"
