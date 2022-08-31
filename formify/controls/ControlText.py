@@ -4,6 +4,9 @@ import typing
 
 
 class ControlText(ControlBase):
+	"""
+	A textfield
+	"""
 	_line_edit_validator = None
 
 	def _make_control_widget(self) -> typing.Optional[QtWidgets.QWidget]:

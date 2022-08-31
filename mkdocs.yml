@@ -2,16 +2,20 @@ plugins:
   - search
   - mkdocs-video:
   - mkdocstrings:
-      default_handler: python
       handlers:
         python:
+          paths: [formify]
           rendering:
+            heading_level: 3
             show_source: false
             members_order: source
-            show_signature_annotations: true
+            show_signature_annotations: false
             show_root_heading: true
-      watch:
-        - formify
+            show_submodules: true
+            merge_init_into_class: false
+          selection:
+            inherited_members: true
+      watch: [formify]
 
 theme:
     name: material
@@ -47,8 +51,10 @@ nav:
       - "Material Editor": 'gallery/material-editor.md'
       - "Pyvista Wave": 'gallery/pyvista-wave.md'
       - "Pyvista Solids": 'gallery/pyvista-solids.md'
-      - "Material Editor": 'gallery/material-editor.md'
-  - "Localization": localization.md
-  - " GitHub": "https://github.com/TorbenFricke/formify"
+  #- "Controls": 'controls.md' # need to wait for inherited_members to be implemented https://mkdocstrings.github.io/handlers/overview/#selection-options
+  - "Data Modelling": 'data_modeling.md'
+  - "Threading": 'threading.md'
+  - "Localization": 'localization.md'
+  - "GitHub": "https://github.com/TorbenFricke/formify"
   - "PyPi": "https://pypi.org/project/formify/"
 
