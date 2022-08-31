@@ -69,7 +69,7 @@ def ColSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
 
 
 def RowSpaceBetween(*controls, stretch=1) -> QtWidgets.QLayout:
-	layout = QtWidgets.QVBoxLayout()
+	layout = QtWidgets.QHBoxLayout()
 	_make_space_between(layout, controls, stretch)
 	return layout
 
